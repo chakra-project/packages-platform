@@ -1,0 +1,26 @@
+--- Makefile.orig	2010-01-20 01:46:53.000000000 +0100
++++ Makefile	2010-01-20 02:37:45.000000000 +0100
+@@ -908,9 +908,9 @@ sub-examples-distclean-ordered: examples
+ sub-examples-distclean: examples/$(MAKEFILE) FORCE
+ 	cd examples/ && $(MAKE) -f $(MAKEFILE) distclean
+ sub-examples-install_subtargets-ordered: examples/$(MAKEFILE) sub-translations-install_subtargets-ordered  FORCE
+-	cd examples/ && $(MAKE) -f $(MAKEFILE) install
++	/bin/true
+ sub-examples-install_subtargets: examples/$(MAKEFILE) FORCE
+-	cd examples/ && $(MAKE) -f $(MAKEFILE) install
++	/bin/true
+ sub-examples-uninstall_subtargets-ordered: examples/$(MAKEFILE) sub-translations-uninstall_subtargets-ordered  FORCE
+ 	cd examples/ && $(MAKE) -f $(MAKEFILE) uninstall
+ sub-examples-uninstall_subtargets: examples/$(MAKEFILE) FORCE
+@@ -944,9 +944,9 @@ sub-demos-distclean-ordered: demos/$(MAK
+ sub-demos-distclean: demos/$(MAKEFILE) FORCE
+ 	cd demos/ && $(MAKE) -f $(MAKEFILE) distclean
+ sub-demos-install_subtargets-ordered: demos/$(MAKEFILE) sub-examples-install_subtargets-ordered  FORCE
+-	cd demos/ && $(MAKE) -f $(MAKEFILE) install
++	/bin/true
+ sub-demos-install_subtargets: demos/$(MAKEFILE) FORCE
+-	cd demos/ && $(MAKE) -f $(MAKEFILE) install
++	/bin/true
+ sub-demos-uninstall_subtargets-ordered: demos/$(MAKEFILE) sub-examples-uninstall_subtargets-ordered  FORCE
+ 	cd demos/ && $(MAKE) -f $(MAKEFILE) uninstall
+ sub-demos-uninstall_subtargets: demos/$(MAKEFILE) FORCE
