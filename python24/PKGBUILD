@@ -1,10 +1,10 @@
-# $Id: PKGBUILD 42805 2009-06-18 20:31:42Z tpowa $
+# $Id: PKGBUILD 75307 2010-04-01 09:52:56Z allan $
 # Maintainer: Allan McRae <allan@archlinux.org>
 # Contributor: Jason Chu <jason@archlinux.org>
 
 pkgname=python24
 pkgver=2.4.6
-pkgrel=2
+pkgrel=3
 pkgdesc="A high-level scripting language"
 arch=('i686' 'x86_64')
 license=('custom')

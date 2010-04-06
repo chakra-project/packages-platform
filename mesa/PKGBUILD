@@ -1,23 +1,26 @@
-	# $Id: PKGBUILD 61814 2009-12-26 11:28:13Z jgc $
+	# $Id: PKGBUILD 73879 2010-03-29 08:38:00Z andyrtr $
 # Maintainer: Jan de Groot <jgc@archlinux.org>
 
 pkgbase="mesa"
 pkgname=('mesa' 'libgl' 'ati-dri' 'intel-dri' 'unichrome-dri' 'mach64-dri' 'mga-dri' 'r128-dri' 'savage-dri' 'sis-dri' 'tdfx-dri') # 'nouveau-dri')
-pkgver=7.7
+pkgver=7.7.1
 pkgrel=1
 arch=(i686 x86_64)
-makedepends=('glproto>=1.4.10' 'pkgconfig' 'libdrm>=2.4.17-2' 'libxxf86vm>=1.1.0' 'libxdamage>=1.1.2' 'expat>=2.0.1' 'libx11>=1.3.2' 'libxt>=1.0.7' 'gcc-libs>=4.4.2' 'dri2proto=2.1' 'python')
+makedepends=('glproto>=1.4.11' 'pkgconfig' 'libdrm>=2.4.19' 'libxxf86vm>=1.1.0' 'libxdamage>=1.1.2' 'expat>=2.0.1' 'libx11>=1.3.3' 'libxt>=1.0.7' 
+'gcc-libs>=4.4.3' 'dri2proto=2.1' 'python')
 url="http://mesa3d.sourceforge.net"
 license=('custom')
-#options=(!makeflags)
+options=(!makeflags)
 source=(ftp://ftp.freedesktop.org/pub/mesa/${pkgver}/MesaLib-${pkgver}.tar.bz2
+	#ftp://ftp.freedesktop.org/pub/mesa/${pkgver/.0.902//}RC/MesaLib-${pkgver/0.902/1-rc2}.tar.bz2
         ftp://ftp.freedesktop.org/pub/mesa/${pkgver}/MesaDemos-${pkgver}.tar.bz2
+	#ftp://ftp.freedesktop.org/pub/mesa/${pkgver/.0.902//}RC/MesaDemos-${pkgver/0.902/1-rc2}.tar.bz2
         ftp://ftp.archlinux.org/other/mesa/gl-manpages-1.0.1.tar.bz2
         mesa-7.1-link-shared.patch
         intel-revert-vbl.patch
         LICENSE)
-md5sums=('e3fa64a1508bc23dd9de9dd2cea7cfb1'
-         '6fd616b27b9826d0faa23e08e05d9435'
+md5sums=('46664d99e03f1e3ac078a7fea02af115'
+         'aeb39645d80d656e0adebaa09e5bcd03'
          '6ae05158e678f4594343f32c2ca50515'
          '8420bed348e7016ef03cac6545d68389'
          'a111f4dc82e894f8801bc3fa129af7af'
@@ -25,6 +28,7 @@ md5sums=('e3fa64a1508bc23dd9de9dd2cea7cfb1'
 
 build() {
   cd "${srcdir}/Mesa-${pkgver}"
+  #cd "${srcdir}/Mesa-${pkgver/0.902/1-rc2}"
   patch -Np1 -i "${srcdir}/mesa-7.1-link-shared.patch" || return 1
   patch -Np1 -i "${srcdir}/intel-revert-vbl.patch" || return 1
   ./configure --prefix=/usr \
@@ -63,6 +67,7 @@ package_libgl() {
   pkgdesc="Mesa 3-D graphics library and DRI software rasterizer"
 
   cd "${srcdir}/Mesa-${pkgver}" || return 1
+#  cd "${srcdir}/Mesa-${pkgver/0.902/1-rc2}" || return 1
   install -m755 -d "${pkgdir}/usr/lib" || return 1
   install -m755 -d "${pkgdir}/usr/lib/xorg/modules/extensions"
 
@@ -82,6 +87,7 @@ package_mesa() {
   pkgdesc="Mesa 3-D graphics libraries and include files"
 
   cd "${srcdir}/Mesa-${pkgver}" || return 1
+#  cd "${srcdir}/Mesa-${pkgver/0.902/1-rc2}" || return 1
   make DESTDIR="${pkgdir}" install || return 1
   install -m755 -d "${pkgdir}/usr/bin"
   install -m755 progs/xdemos/glx{gears,info} "${pkgdir}/usr/bin/" || return 1
@@ -105,6 +111,7 @@ package_ati-dri() {
   conflicts=('xf86-video-ati<6.9.0-6')
 
   cd "${srcdir}/Mesa-${pkgver}/src/mesa/drivers/dri" || return 1
+#  cd "${srcdir}/Mesa-${pkgver/0.902/1-rc2}/src/mesa/drivers/dri" || return 1
   make -C radeon DESTDIR="${pkgdir}" install || return 1
   make -C r200 DESTDIR="${pkgdir}" install || return 1
   make -C r300 DESTDIR="${pkgdir}" install || return 1
@@ -116,6 +123,7 @@ package_intel-dri() {
   pkgdesc="Mesa DRI drivers for Intel"
 
   cd "${srcdir}/Mesa-${pkgver}/src/mesa/drivers/dri" || return 1
+#  cd "${srcdir}/Mesa-${pkgver/0.902/1-rc2}/src/mesa/drivers/dri" || return 1
   make -C i810 DESTDIR="${pkgdir}" install || return 1
   make -C i915 DESTDIR="${pkgdir}" install || return 1
   make -C i965 DESTDIR="${pkgdir}" install || return 1
@@ -130,6 +138,7 @@ package_unichrome-dri() {
   pkgdesc="Mesa DRI drivers for S3 Graphics/VIA Unichrome"
 
   cd "${srcdir}/Mesa-${pkgver}/src/mesa/drivers/dri" || return 1
+#  cd "${srcdir}/Mesa-${pkgver/0.902/1-rc2}/src/mesa/drivers/dri" || return 1
   make -C unichrome DESTDIR="${pkgdir}" install || return 1
 }
 
@@ -139,6 +148,7 @@ package_mach64-dri() {
   conflicts=('xf86-video-mach64<6.8.2')
 
   cd "${srcdir}/Mesa-${pkgver}/src/mesa/drivers/dri" || return 1
+#  cd "${srcdir}/Mesa-${pkgver/0.902/1-rc2}/src/mesa/drivers/dri" || return 1
   make -C mach64 DESTDIR="${pkgdir}" install || return 1
 }
 
@@ -148,6 +158,7 @@ package_mga-dri() {
   conflicts=('xf86-video-mga<1.4.11')
 
   cd "${srcdir}/Mesa-${pkgver}/src/mesa/drivers/dri" || return 1
+#  cd "${srcdir}/Mesa-${pkgver/0.902/1-rc2}/src/mesa/drivers/dri" || return 1
   make -C mga DESTDIR="${pkgdir}" install || return 1
 }
 
@@ -157,6 +168,7 @@ package_r128-dri() {
   conflicts=('xf86-video-r128<6.8.1')
 
   cd "${srcdir}/Mesa-${pkgver}/src/mesa/drivers/dri" || return 1
+#  cd "${srcdir}/Mesa-${pkgver/0.902/1-rc2}/src/mesa/drivers/dri" || return 1
   make -C r128 DESTDIR="${pkgdir}" install || return 1
 }
 
@@ -166,6 +178,7 @@ package_savage-dri() {
   conflicts=('xf86-video-savage<2.3.1')
 
   cd "${srcdir}/Mesa-${pkgver}/src/mesa/drivers/dri" || return 1
+#  cd "${srcdir}/Mesa-${pkgver/0.902/1-rc2}/src/mesa/drivers/dri" || return 1
   make -C savage DESTDIR="${pkgdir}" install || return 1
 }
 
@@ -175,6 +188,7 @@ package_sis-dri() {
   conflicts=('xf86-video-sis<0.10.2')
 
   cd "${srcdir}/Mesa-${pkgver}/src/mesa/drivers/dri" || return 1
+#  cd "${srcdir}/Mesa-${pkgver/0.902/1-rc2}/src/mesa/drivers/dri" || return 1
   make -C sis DESTDIR="${pkgdir}" install || return 1
 }
 
@@ -184,6 +198,7 @@ package_tdfx-dri() {
   conflicts=('xf86-video-tdfx<1.4.3')
 
   cd "${srcdir}/Mesa-${pkgver}/src/mesa/drivers/dri" || return 1
+#  cd "${srcdir}/Mesa-${pkgver/0.902/1-rc2}/src/mesa/drivers/dri" || return 1
   make -C tdfx DESTDIR="${pkgdir}" install || return 1
 }
 

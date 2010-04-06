@@ -1,9 +1,9 @@
-# $Id: PKGBUILD 52138 2009-09-16 10:13:53Z allan $
+# $Id: PKGBUILD 75332 2010-04-01 10:36:02Z allan $
 # Maintainer: Jan de Groot <jgc@archlinux.org>
 
 pkgname=cyrus-sasl-plugins
 pkgver=2.1.23
-pkgrel=1
+pkgrel=2
 pkgdesc="Cyrus Simple Authentication Service Layer (SASL) library"
 arch=('i686' 'x86_64')
 url="http://cyrusimap.web.cmu.edu/"

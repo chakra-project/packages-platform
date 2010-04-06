@@ -39,4 +39,3 @@ SERVER_PARAMS="-s -d alsa"
 #   -S, --shorts    Try 16-bit samples before 32-bit (default: false)
 
 DRIVER_PARAMS="-d hw:0 -p 1024"
-

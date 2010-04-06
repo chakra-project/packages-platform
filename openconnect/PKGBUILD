@@ -1,9 +1,9 @@
-# $Id: PKGBUILD 72305 2010-03-13 22:52:13Z ibiru $
-# Maintainer: Ionut Biru <ionut@archlinux.org>
+# $Id: PKGBUILD 75530 2010-04-01 19:03:16Z ibiru $
+# Maintainer: Ionut Biru <ibiru@archlinux.org>
 
 pkgname=openconnect
 pkgver=2.22
-pkgrel=1
+pkgrel=2
 pkgdesc="Open client for Cisco AnyConnect VPN"
 arch=('i686' 'x86_64')
 license=('GPL')

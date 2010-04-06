@@ -1,9 +1,9 @@
-# $Id: PKGBUILD 61258 2009-12-14 02:30:05Z eric $
+# $Id: PKGBUILD 75335 2010-04-01 10:43:20Z allan $
 # Maintainer: Jan de Groot <jgc@archlinux.org>
 
 pkgname=cyrus-sasl
 pkgver=2.1.23
-pkgrel=3
+pkgrel=4
 pkgdesc="SASL authentication daemon"
 arch=('i686' 'x86_64')
 license=('custom')

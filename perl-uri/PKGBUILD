@@ -1,11 +1,11 @@
-# $Id: PKGBUILD 62292 2010-01-07 10:11:55Z francois $
+# $Id: PKGBUILD 74492 2010-03-31 09:22:30Z francois $
 # Maintainer: eric <eric@archlinux.org>
 # Contributor: Manolis Tzanidakis
 # Contributor: Firmicus <francois.archlinux.org> 
 
 pkgname=perl-uri
 _realname=URI
-pkgver=1.52
+pkgver=1.54
 pkgrel=1
 pkgdesc="Uniform Resource Identifiers (absolute and relative)"
 arch=(any)
@@ -14,7 +14,7 @@ url="http://search.cpan.org/dist/${_realname}/"
 depends=('perl>=5.10.0')
 options=(!emptydirs)
 source=(http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/${_realname}-$pkgver.tar.gz)
-md5sums=('d6ba96cc3e650af6537675e016e83d3e')
+md5sums=('dabc621fd116064395483d80c329095b')
 
 build() {
   cd ${srcdir}/${_realname}-$pkgver
