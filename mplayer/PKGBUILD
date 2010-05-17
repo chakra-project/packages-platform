@@ -1,22 +1,22 @@
-# $Id: PKGBUILD 72270 2010-03-13 21:57:15Z ibiru $
-# Maintainer : Ionut Biru <ionut@archlinux.ro>
+# $Id: PKGBUILD 79976 2010-05-09 20:33:34Z ibiru $
+# Maintainer : Ionut Biru <ibiru@archlinux.org>
 # Contributor: Hugo Doria <hugo@archlinux.org>
 
 pkgname=mplayer
-pkgver=30886
+pkgver=31147
 pkgrel=1
 pkgdesc="A movie player for linux"
 arch=('i686' 'x86_64')
 depends=('libxxf86dga' 'libxv' 'libmad' 'giflib' 'cdparanoia' 'libxinerama'
          'sdl' 'lame' 'libtheora' 'xvidcore' 'zlib' 'libmng' 'libxss'
          'libgl' 'smbclient' 'aalib' 'jack' 'libcaca'
-         'x264>=20100312' 'faac' 'lirc-utils' 'ttf-dejavu' 'libxvmc' 'libjpeg>=8'
-	 'enca' 'libvdpau>=0.4' 'opencore-amr' 'libdca')
+         'x264>=20100410' 'faac' 'lirc-utils' 'ttf-dejavu' 'libxvmc' 'libjpeg>=8'
+	 'enca' 'libvdpau>=0.4' 'opencore-amr' 'libdca' 'a52dec' 'schroedinger>=1.0.9')
 license=('GPL')
 url="http://www.mplayerhq.hu/"
 makedepends=('unzip' 'mesa' 'live-media>=2010.01.13')
 backup=('etc/mplayer/codecs.conf' 'etc/mplayer/input.conf')
-source=(ftp://ftp.archlinux.org/other/${pkgname}/${pkgname}-${pkgver}.tar.bz2 mplayer.desktop mplayer.png)
+source=(ftp://ftp.archlinux.org/other/${pkgname}/${pkgname}-${pkgver}.tar.xz mplayer.desktop mplayer.png)
 
 build() {
   # Custom CFLAGS break the mplayer build
@@ -37,10 +37,8 @@ build() {
 	--disable-esd \
 	--disable-mga \
 	--enable-xvmc \
-	--enable-liba52-internal \
 	--language=all \
-      	--confdir=/etc/mplayer \
-	--extra-cflags="-fno-strict-aliasing" || return 1
+      	--confdir=/etc/mplayer || return 1
 
   [ "$CARCH" = "i686" ] &&  sed 's|-march=i486|-march=i686|g' -i config.mak
 
@@ -54,6 +52,9 @@ build() {
   install -Dm644 ${srcdir}/mplayer.desktop ${pkgdir}/usr/share/applications/mplayer.desktop || return 1
   install -Dm644 ${srcdir}/mplayer.png ${pkgdir}/usr/share/pixmaps/mplayer.png || return 1
 }
-md5sums=('ed736419e4efc0e8385d257a38052609'
-         'f91b1be03ed301cc15142f49455c1b88'
+md5sums=('9829e6bcf159464a97acbff739268e75'
+         'c0d6ef795cf6de48e3b87ff7c23f0319'
          'd00874ccc644b7f43d6ef1c942fcef28')
+sha256sums=('55659cd4517ce38bdbe536de9ee1e663526b7c1babc1b21e431f8a46e0fc53e6'
+            'cff7e885d39999267efbb6e500bea5648b982a8a24ec25ca4ccdbd060eee488c'
+            '061739a8cc267748ad58f168034cc39785d949a5262772535e1b347c7842af48')

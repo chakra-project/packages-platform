@@ -1,10 +1,10 @@
-# $Id: PKGBUILD 68008 2010-02-10 13:40:37Z giovanni $
+# $Id: PKGBUILD 78144 2010-04-20 00:19:11Z dgriffiths $
 # Maintainer: Giovanni Scafora <giovanni@archlinux.org>
 # Contributor 03/08/04 <lefungus@altern.org>
 
 pkgname=libmatroska
 pkgver=0.8.1
-pkgrel=2
+pkgrel=3
 pkgdesc="Matroska library"
 arch=('i686' 'x86_64')
 url="http://dl.matroska.org/downloads/libmatroska/"

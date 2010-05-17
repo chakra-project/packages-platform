@@ -1,10 +1,10 @@
-# $Id: PKGBUILD 75407 2010-04-01 13:02:29Z andrea $
+# $Id: PKGBUILD 77123 2010-04-10 21:21:07Z andrea $
 # Maintainer: Andrea Scarpino <andrea@archlinux.org>
 # Contributor: Dan McGee <dan@archlinux.org>
 
 pkgname=rdesktop
 pkgver=1.6.0
-pkgrel=4
+pkgrel=5
 depends=('libx11' 'openssl' 'libao' 'libsamplerate')
 pkgdesc="Is used to connect to windows terminal servers"
 url="http://www.rdesktop.org/"
