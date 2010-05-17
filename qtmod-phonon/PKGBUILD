@@ -1,0 +1,170 @@
+#
+# KDEmod, mod[ded|ular] KDE packages for Arch Linux, part of chakra-project.org
+#
+# maintainer (i686): Jan Mette (funkyou) <funkyou @ kdemod.ath.cx>
+# maintainer (x86_64): Martin Sandsmark (PhinnFort) <sandsmark @ kdemod.ath.cx>
+
+# include global config
+source ../_buildsystem/${current_repo}-${_arch}_cfg.conf
+
+
+
+# original name (used for the source and pkgnames)
+_origname=phonon
+bename=vlc
+
+
+pkgbase=('qtmod-phonon')
+
+pkgname=('qtmod-phonon'
+	'qtmod-phonon-xine'
+	'qtmod-phonon-gstreamer'
+	'qtmod-phonon-mplayer'
+	'qtmod-phonon-vlc')
+
+pkgver=4.4.1
+_pkgver=4.4.1
+pkgrel=1
+pkgdesc='The multimedia API for Qt 4 and KDE 4'
+arch=('i686' 'x86_64')
+url='http://phonon.kde.org'
+license=('LGPL')
+
+makedepends=("qtmod>=${_qtver}"
+	'pkgconfig'
+	'cmake'
+	'automoc4'
+	'mplayer'
+	'xine-lib'
+	'vlc'
+	'gstreamer0.10'
+	'gstreamer0.10-base'
+	'gstreamer0.10-base-plugins')
+
+source=("http://download.kde.org/stable/${_origname}/${pkgver}/${_origname}-${pkgver}.tar.bz2" \
+	'01-phonon-includes.patch')
+
+options=('!splitdbg' '!splithdr')
+
+
+
+build() {
+	cd $srcdir/${_origname}-${pkgver}
+	patch -Np1 -i $srcdir/01-phonon-includes.patch || return 1
+
+	mkdir build
+	cd build
+	cmake .. -DCMAKE_BUILD_TYPE=Release \
+		 -DCMAKE_INSTALL_PREFIX=/usr \
+		 -DCMAKE_SKIP_RPATH=ON \
+		 -DCMAKE_{SHARED,MODULE,EXE}_LINKER_FLAGS='-Wl,--no-undefined -Wl,--as-needed'
+	make
+}
+
+package_qtmod-phonon()
+{
+	pkgdesc="The multimedia API for Qt 4 and KDE 4"
+	depends=("qtmod>=${_qtver}")
+	groups=("${_pkgprefix}" "${_pkgprefix}-complete" "${_pkgprefix}-uninstall")
+	provides=("phonon=${pkgver}")
+
+	splitdirs="phonon includes"
+		for i in ${splitdirs} ; do
+			cd ${srcdir}/${_origname}-${pkgver}/build/${i}
+			make DESTDIR=${pkgdir} install || return 1
+		done
+}
+
+package_qtmod-phonon-gstreamer()
+{
+	pkgdesc="The multimedia API for Qt 4 and KDE 4 - GStreamer Backend"
+	depends=("qtmod-phonon>=${pkgver}" 'gstreamer0.10' 'gstreamer0.10-base' 'gstreamer0.10-base-plugins')
+	groups=("${_pkgprefix}-complete" "${_pkgprefix}-uninstall")
+	provides=("phonon-gstreamer=${pkgver}")
+	conflicts=('phonon-gstreamer')
+	replaces=("qtmod-phonon-backend-gstreamer" "kdemod-phonon-backend-gstreamer")
+	splitdirs="gstreamer"
+		for i in ${splitdirs} ; do
+			cd ${srcdir}/${_origname}-${pkgver}/build/${i}
+			make DESTDIR=${pkgdir} install || return 1
+		done
+}
+
+package_qtmod-phonon-xine()
+{
+	pkgdesc="The multimedia API for Qt 4 and KDE 4 - Xine Backend"
+	depends=("qtmod-phonon>=${pkgver}" 'xine-lib')
+	groups=("${_pkgprefix}" "${_pkgprefix}-complete" "${_pkgprefix}-minimal" "${_pkgprefix}-uninstall")
+	provides=("phonon-xine=${pkgver}")
+	conflicts=('phonon-xine')
+	replaces=("qtmod-phonon-backend-xine" "kdemod-phonon-backend-xine")
+
+	splitdirs="xine"
+		for i in ${splitdirs} ; do
+			cd ${srcdir}/${_origname}-${pkgver}/build/${i}
+			make DESTDIR=${pkgdir} install || return 1
+		done
+}
+
+package_qtmod-phonon-mplayer()
+{
+	# this is a pure mess, the AUR package doesnt really look any better :)
+	rev=`svn log svn://websvn.kde.org:443/home/kde/trunk/playground/multimedia/phonon-backends -l 1 | grep "|" | cut -d " " -f 1 | cut -d "r" -f 2`
+	pkgver=${rev}
+
+	pkgdesc="The multimedia API for Qt 4 and KDE 4 - MPlayer Backend"
+	depends=("qtmod-phonon>=${_pkgver}" 'mplayer' 'vlc')
+	groups=("${_pkgprefix}-complete" "${_pkgprefix}-uninstall")
+	provides=("phonon-mplayer-svn=${pkgver}")
+	conflicts=('phonon-mplayer-svn')
+	replaces=("qtmod-phonon-backend-mplayer" "kdemod-phonon-backend-mplayer")
+
+	__svntrunk=svn://websvn.kde.org:443/home/kde/trunk/playground/multimedia/phonon-backends
+	__svnmod=phonon-mplayer
+
+	cd ${srcdir}
+
+	# Repository
+	msg "Connecting to Subversion server...."
+	if [ -d ${__svnmod}/.svn ]; then
+		(cd ${__svnmod} && svn up -r ${pkgver})
+	else
+		svn co ${__svntrunk} --config-dir ./ -r ${pkgver} ${__svnmod}
+	fi
+	msg "SVN checkout done or server timeout"
+	msg "Starting make..."
+
+	if [ -d ${srcdir}/${__svnmod}-build ]; then
+		rm -r ${srcdir}/${__svnmod}-build
+	fi
+
+	cp -r ${srcdir}/${__svnmod} ${srcdir}/${__svnmod}-build
+	cd ${srcdir}/${__svnmod}-build
+
+	# Config
+	#sed -i "254,256d" CMakeLists.txt
+	[ ${CARCH} = 'x86_64' ] && CXXFLAGS="$CXXFLAGS -fPIC"
+	echo "add_subdirectory(${bename})" >> CMakeLists.txt
+	#sed -i "s|macro_optional_add_subdirectory(vlc)|#macro_optional_add_subdirectory(${bename})|g" CMakeLists.txt || return 1
+
+	# Build
+	#mkdir -p _build
+	#cd _build
+	cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr . || return 1
+	cd mplayer
+	make DESTDIR=${pkgdir} install || return 1
+}
+
+package_qtmod-phonon-vlc()
+{
+	pkgdesc="The multimedia API for Qt 4 and KDE 4 - VLC Backend"
+	depends=("qtmod-phonon>=${_pkgver}" 'vlc')
+	groups=("${_pkgprefix}" "${_pkgprefix}-complete" "${_pkgprefix}-minimal" "${_pkgprefix}-uninstall")
+	provides=("phonon-vlc=${pkgver}")
+	conflicts=('phonon-vlc')
+	replaces=("qtmod-phonon-backend-vlc" "kdemod-phonon-backend-vlc")
+
+	cd ${srcdir}/phonon-mplayer-build/vlc
+
+	make DESTDIR=${pkgdir} install || return 1
+}

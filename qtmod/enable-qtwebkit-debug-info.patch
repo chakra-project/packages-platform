@@ -1,0 +1,16 @@
+--- qt-everywhere-opensource-src-4.6.0.orig/src/3rdparty/webkit/WebCore/WebCore.pro	2009-11-27 02:27:50.000000000 +0100
++++ qt-everywhere-opensource-src-4.6.0/src/3rdparty/webkit/WebCore/WebCore.pro	2009-12-05 00:41:03.000000000 +0100
+@@ -3357,13 +3357,6 @@ HEADERS += $$WEBKIT_API_HEADERS
+     }
+ }
+ 
+-CONFIG(QTDIR_build):isEqual(QT_MAJOR_VERSION, 4):greaterThan(QT_MINOR_VERSION, 4) {
+-    # start with 4.5
+-    # Remove the following 2 lines if you want debug information in WebCore
+-    CONFIG -= separate_debug_info
+-    CONFIG += no_debug_info
+-}
+-
+ !win32-g++:win32:contains(QMAKE_HOST.arch, x86_64):{
+     asm_compiler.commands = ml64 /c
+     asm_compiler.commands +=  /Fo ${QMAKE_FILE_OUT} ${QMAKE_FILE_IN}

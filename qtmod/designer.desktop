@@ -1,9 +1,11 @@
 [Desktop Entry]
+Encoding=UTF-8
 Exec=/usr/bin/designer
 Name=Qt Designer
 GenericName=Interface Designer
+X-KDE-StartupNotify=true
 MimeType=application/x-designer
-Icon=designer
+Icon=/usr/share/pixmaps/designer.png
 Terminal=false
 Type=Application
 Categories=Qt;Development;GUIDesigner
