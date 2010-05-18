@@ -35,7 +35,7 @@ sync_up()
         
         # move new packages from $ROOT/repos/$REPO/build into thr repo dir 
         title2 "adding new packages"
-        mv -v _repo/local/*.pkg.tar.gz _repo/remote/
+        mv -v _repo/local/*.pkg* _repo/remote/
 
         # sync local -> server
         title2 "upload pkgs to server"

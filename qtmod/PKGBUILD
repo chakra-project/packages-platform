@@ -1,15 +1,3 @@
-#
-# KDEmod, mod[ded|ular] KDE packages for Arch Linux, part of chakra-project.org
-#
-# maintainer (i686): Jan Mette (funkyou) <funkyou @ kdemod.ath.cx>
-# maintainer (x86_64): Martin Sandsmark (PhinnFort) <sandsmark @ kdemod.ath.cx>
-# maintainer (x86_64): Phil Miller (Amnnon82) <philm @ chakra-project.org>
-
-# include global config
-source ../_buildsystem/${current_repo}-${_arch}_cfg.conf
-
-
-
 # original name (used for the source and pkgnames)
 _origname=qt
 
@@ -23,7 +11,7 @@ pkgname=('qtmod'
          'qtmod-tools')
 
 pkgver=4.6.2
-pkgrel=2
+pkgrel=3
 
 pkgdesc="A cross-platform application and UI framework"
 arch=('i686' 'x86_64')
@@ -33,7 +21,7 @@ license=('LGPL')
 # because qt has its own "create debug files" implementation,
 # we can disable our splithdr option and create qtmod-debug directly
 # inside the PKGBUILD. This works even with the standard arch makepkg.
-options=('!libtool' 'docs' '!splitdbg' '!strip' '!splithdr')
+options=('!libtool' 'docs' '!strip')
 
 makedepends=('inputproto'
 	'postgresql-libs'
@@ -57,7 +45,7 @@ makedepends=('inputproto'
 	'libxcursor'
 	'libxinerama'
 	'libmysqlclient>=5.1.42'
-	'gconf')
+	'gconf') #	'git'
 
 _pkgfqn=${_origname}-everywhere-opensource-src-${pkgver}
 
@@ -71,27 +59,48 @@ source=("ftp://ftp.qt.nokia.com/qt/source/${_pkgfqn}.tar.gz"
 	'enable-qt3support-debug-info.patch'
 	'enable-qtwebkit-debug-info.patch'
 	'qmake-linker-flags-as-needed.patch'
-	'ca-certificates.patch')
+	'ca-certificates.patch'
 
+	'kde-qt-6dbbf15fcef976fafc3f55e048f9b4daaa4c0d19.patch'
+	'qtmod.install')
+
+md5sums=('eb651ee4b157c01696aa56777fc6e0e5
+20d333282c43f9e643cb8e91b6307dcc
+bf89ee0bdd178933f19d8bc4090173ec
+a9bfeeffab8ba103bc8153fdb31474a1
+83b2a4aece6c9d86301c53a979af0b63
+2f3bad0ad2941a0fd0ff5de5f9b828ec
+579e63488320a8d692d25502551787af
+bb99a4ad35f89b0a4f34795ba2ccc776
+9113f9964bdaeb59165b815cce503b4c
+c436732fc467271e8a3838145c122070
+d5c4cad7af93f1d736d4569a207bd739
+
+9717e204abc8f849ba1d0d99a77ef26e
+ef40176ac0210faaf2a33ec348029f60')
+
+
+
+# FIXME create kde-qt patches temp disabled
 
 build()
 {
 	#Create patches
-	msg "creating kde-qt patches"
-	local codir=$(mktemp -d)
-	mkdir -p "${codir}/kde-qt"
-	git clone git://gitorious.org/+kde-developers/qt/kde-qt.git "${codir}/kde-qt"
-	pushd "${codir}/kde-qt"
-	git checkout --track -b ${pkgver}-patched origin/${pkgver}-patched
-	local kdeqtver=$(git --no-pager show --format='%H' "${pkgver}-patched" | head -1)
-	git diff "v${pkgver}..${pkgver}-patched" > "${codir}/kde-qt-${kdeqtver}.patch"
-	popd
-	mv "${codir}/kde-qt-${kdeqtver}.patch" .
-	rm -rf "${codir}"
+#	msg "creating kde-qt patches"
+#	local codir=$(mktemp -d)
+#	mkdir -p "${codir}/kde-qt"
+#	git clone git://gitorious.org/+kde-developers/qt/kde-qt.git "${codir}/kde-qt"
+#	pushd "${codir}/kde-qt"
+#	git checkout --track -b ${pkgver}-patched origin/${pkgver}-patched
+#	local kdeqtver=$(git --no-pager show --format='%H' "${pkgver}-patched" | head -1)
+#	git diff "v${pkgver}..${pkgver}-patched" > "${codir}/kde-qt-${kdeqtver}.patch"
+#	popd
+#	mv "${codir}/kde-qt-${kdeqtver}.patch" .
+#	rm -rf "${codir}"
 
 	#editing qtmod.install
-	sed -i -e 's/^.*> Qt .*/        echo " > Qt '${pkgver}'"/' $startdir/qtmod.install
-	sed -i -e 's/^.*kde-qt .*/        echo "   kde-qt '${kdeqtver}'"/' $startdir/qtmod.install
+#	sed -i -e 's/^.*> Qt .*/        echo " > Qt '${pkgver}'"/' $startdir/qtmod.install
+#	sed -i -e 's/^.*kde-qt .*/        echo "   kde-qt '${kdeqtver}'"/' $startdir/qtmod.install
 
 	cd $srcdir/$_pkgfqn
 
@@ -102,7 +111,9 @@ build()
 
 	msg "applying kde-qt patches"
 	cd $srcdir/$_pkgfqn
-	patch -p1 -i $srcdir/kde-qt-${kdeqtver}.patch || return 1
+#	patch -p1 -i $srcdir/kde-qt-${kdeqtver}.patch || return 1
+
+	patch -p1 -i $startdir/kde-qt-6dbbf15fcef976fafc3f55e048f9b4daaa4c0d19.patch || return 1
 
 	msg "apply other patches"
 	patch -Np1 -i ${srcdir}/install-qdoc3.patch || return 1
@@ -120,7 +131,7 @@ build()
 
 	./configure -opensource \
 		-confirm-license \
-		-prefix ${_installprefix} \
+		-prefix /usr \
 		-sysconfdir /etc \
 		-plugindir /usr/lib/qt/plugins \
 		-translationdir /usr/share/qt/translations \
@@ -147,6 +158,7 @@ build()
 		-system-libmng \
 		-system-libjpeg \
 		-no-rpath \
+		-gtkstyle \
 		-opengl \
 		-glib \
 		-ptmalloc || return 1

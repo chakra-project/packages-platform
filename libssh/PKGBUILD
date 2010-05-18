@@ -11,7 +11,7 @@ url="http://www.libssh.org/"
 license=('LGPL')
 arch=('i686' 'x86_64')
 depends=('openssl')
-makedepends=('cmake' 'doxygen')
+makedepends=('cmake') #'doxygen'
 source=(http://www.libssh.org/files/$pkgname-$pkgver.tar.gz)
 md5sums=('258402bf1fabf664daeba4e5fc7a8d09')
 

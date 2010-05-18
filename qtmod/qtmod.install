@@ -1,7 +1,7 @@
 post_install() {
 		echo " "
         echo " > Qt 4.6.2"
-        echo "   kde-qt 2d3d3e55da2e1dfc479e274fa794a50b361e6f4a"
+        echo "   kde-qt 6dbbf15fcef976fafc3f55e048f9b4daaa4c0d19"
 		echo " "
 		echo "   Prefix: /usr"
 		echo " "

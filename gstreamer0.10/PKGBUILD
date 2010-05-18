@@ -9,7 +9,7 @@ arch=('i686' 'x86_64')
 license=('LGPL')
 url="http://gstreamer.freedesktop.org/"
 depends=('libxml2>=2.7.7' 'glib2>=2.24.1')
-makedepends=('intltool' 'pkgconfig' 'gtk-doc' 'gobject-introspection')
+makedepends=('intltool' 'pkgconfig' 'gobject-introspection') # 'gtk-doc'
 options=('!libtool')
 source=(${url}/src/gstreamer/gstreamer-${pkgver}.tar.bz2)
 sha256sums=('e44a737c016ccab56d646718ecf24b9393babde2c417ac7dd5bd218e5c609ef9')
@@ -17,8 +17,8 @@ sha256sums=('e44a737c016ccab56d646718ecf24b9393babde2c417ac7dd5bd218e5c609ef9')
 build() {
   cd "${srcdir}/gstreamer-${pkgver}"
   ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libexecdir=/usr/lib \
-	--with-package-name="GStreamer (Archlinux)" \
-	--with-package-origin="http://www.archlinux.org/" || return 1
+	--with-package-name="GStreamer (Chakra)" \
+	--with-package-origin="http://www.chakra-project.org/" || return 1
   make || return 1
   make DESTDIR="${pkgdir}" install || return 1
   cd "${pkgdir}/usr/bin"

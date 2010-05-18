@@ -10,7 +10,7 @@ license=('GPL2' 'custom')
 depends=('expat' 'curl' 'fftw' 'gcc-libs')
 makedepends=('pkgconfig')
 options=('!libtool')
-source=(http://www.musicip.com/dns/files/$pkgname-$pkgver.tar.gz
+source=(http://musicip-libofa.googlecode.com/files/$pkgname-$pkgver.tar.gz
 	gcc-4.patch libofa-0.9.3-gcc-4.3.patch)
 md5sums=('51507d2c4b432bd2755f48d58471696e' 'a6f78b90bd0f4354d022a71c3e58ef6c'\
          'dd57db13770b8f8d196e8a3d3a50e713')

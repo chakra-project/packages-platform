@@ -17,7 +17,7 @@ optdepends=('gtk2: xgnokii GUI'
 	    'postgresql-libs: smsd postgresql backend')
 backup=('etc/gnokiirc')
 options=('!libtool' '!makeflags')
-source=(http://www.gnokii.org/download/$pkgname/$pkgname-${pkgver}.tar.bz2
+source=(http://www.gnokii.org/download/$pkgname/0.6.x/$pkgname-${pkgver}.tar.bz2
 	'gnokii.patch')
 md5sums=('520d300f1838460d374410ea99ff9a11'
          '4d764727686ee34bc73489c8b1321c82')

@@ -1,0 +1,620 @@
+diff --git a/README.kde-qt b/README.kde-qt
+new file mode 100644
+index 0000000..cbbd970
+--- /dev/null
++++ b/README.kde-qt
+@@ -0,0 +1,269 @@
++This is a patched version of Qt.  It may include changes made by KDE
++and Qt developers that have either not been accepted for inclusion
++into Qt, or have been accepted for a later version of Qt than this
++one.
++
++1. Configuring Qt
++=================
++
++The recommended compile line is:
++
++--default-config-begin--
++
++  ./configure -qt-gif -debug -fast -no-separate-debug-info \
++     -system-libpng -system-libjpeg -system-zlib \
++     -dbus -webkit -plugin-sql-mysql \
++     -nomake examples -nomake demos -prefix <installdir>
++
++--default-config-end--
++
++It contains "-debug", which greatly improves the use for backtraces (but
++also needs a lot more disk space and makes things slower). To build in
++release mode, replace it with "-release".
++
++It also contains "-no-separate-debug-info", which disables separate .debug
++files. Instead, the debug information will be built into the libraries.
++This option is needed when you install Qt.
++
++If you don't install Qt, it can be useful to disable this option,
++thus having separate debug symbol files. With separate debug files, you can
++just move those debug files to another directory to remove Qt debug symbols.
++Moving the files back will enable Qt debug symbols again.
++This is useful if you rarely need to step into Qt functions during debugging,
++because GDB loads much faster and uses less memory without Qt debug symbols.
++In the rare case you need to step into Qt code, you can temporarily enable
++debug symbols again by moving the debug files back. You can even load the Qt
++debug symbols from within GDB on demand, using the "symbol-file" command.
++
++If you are planning to compile Qt using an Icecream cluster you have to
++pass the option -no-pch (no precompiled headers) to configure to make
++distributed compilation work.
++
++2. Compiling Qt
++===============
++
++To compile Qt on a Unix platform, run:
++
++   export MAKEFLAGS=-j2
++   make
++   make install
++
++If your computer has more than one core or processor, you may consider
++increasing the "2" above. If you've got a compile farm available, you
++should adjust the -j argument to match the number of slots in that
++farm.
++
++3. Modifying & rebuilding Qt
++============================
++
++If you make modifications to the Qt source code, you don't need to
++build everything again. Simply go to the directory containing the
++Makefile closest to the files you changed and run "make" again.
++
++For example, if you've modified src/corelib/io/qiodevice.cpp, do:
++
++   cd src/corelib
++   make
++
++If you make a change that is not temporary, you should create a Git
++commit out of it. However, you shouldn't push those changes to
++kde-qt.git. If you have a fix that benefit others, see the "Creating
++kde-qt.git modifications" section below.
++
++4. Building Qt examples and demos
++=================================
++
++The "-nomake examples -nomake demos" arguments to the configure script
++mean that those two sections will not be configured for building,
++which is unneeded for usage of the library.  If you want to compile
++the examples or demos later, just enter either directory and type:
++
++   qmake
++   make
++
++5. Build Qt tests
++=================
++
++(Official information: http://qt.gitorious.org/qt/pages/QtAutotestsEnvironment)
++
++In order to run Qt tests, you must have a "developer build" of Qt. For
++that, you need to reconfigure Qt and add the "-developer-build"
++option. That option is technically equivalent to the options:
++
++   -debug -prefix $PWD -DQT_BUILD_INTERNAL
++
++To run a test, go to its source dir in tests/auto/testname. Type
++"make" to build it, then run it (either ./tst_testname, or "make install").
++
++6. Building Qt documentation
++============================
++
++To build and install the documentation, run:
++
++   make docs
++   ./config.status
++   make install
++
++It is necessary to do this once only, even if you rebuild Qt later.
++
++7. Using Qt uninstalled
++=======================
++
++To use without having to install it, configure it as follows:
++
++   ./configure <other configure options>  -prefix $PWD
++   make sub-src
++   make sub-tools
++
++Attention: DO NOT run
++
++   make install
++
++If you do, Qt will overwrite your include/ directory with its
++installation.
++
++8. Creating kde-qt.git modifications
++====================================
++
++If you have fixed a bug in Qt or modified it in any way that may
++benefit others, please share your change in the form of a patch. Do
++not commit your changes directly to the main branch because they
++may be lost in a future update if they have not been added to the
++official Qt release.
++
++The exception to the above rule is that if the fix has been accepted
++by the Qt developers (and so will appear in the very next release of
++Qt), then it should be simply cherry-picked from the Qt development
++branch. Note that you shouldn't do this for changes that have been
++accepted into a release which is not the very next.  In this case, you
++should use the following command:
++
++   git cherry-pick -x SHA1_OF_THE_FIX
++where SHA1_OF_THE_FIX is the SHA-1 of the commit that you want to
++introduce. Then push the change to the server.
++
++In all other cases, before creating a patch, it is recommended to
++contact the Qt developers via a new task in
++http://bugreports.qt.nokia.com and explain the situation. There may be
++a solution for the problem already or a new direction that should be
++accounted for.
++
++To create a patch, do the following:
++  a) look at the listing of branches in
++  http://qt.gitorious.org/+kde-developers/qt/kde-qt/commits/HEAD and
++  select the next number.
++
++  b) create a new branch out of a clean, released version of Qt, (for
++  example, 4.5.1), using the number above and a brief description of
++  your fix. For example:
++      git checkout -b patches/0180-window-role v4.5.1
++  You can see the available released versions of Qt with:
++      git tag
++
++  c) make your changes to the Qt source code and verify that it
++  compiles, links and works (please run the respective unit tests from
++  tests/auto in the source tree).
++
++  c) commit your changes to Git, using the "git commit" command. Please
++  see http://qt.gitorious.org/qt/pages/GitIntroductionWithQt and
++  http://qt.gitorious.org/qt/pages/QtCodingStyle for information on
++  how to create commits
++
++  Note that you are allowed to create as many commits as necessary to
++  accomplish a working change that can be easily reviewed.
++
++  e) merge the change to the patch branch, for example, 4.5.1-patched:
++      git checkout 4.5.1-patched
++      git merge patches/0180-window-role
++
++  f) merge the patch branch to master:
++      git checkout master
++      git merge 4.5.1-patched
++
++  g) push the changes you made to your branch and to the main server:
++      git push git@gitorious.org:qt/kde-qt.git master 4.5.1-patched patches/0180-window-role
++  (Don't forget to list all 3 branch names)
++
++Don't forget to submit your patch to using the Qt Contribution Model,
++along with the long description of the issue found. See
++http://qt.gitorious.org/qt/pages/QtContributionGuidelines for
++information how. You can submit the branch you've just sent to the
++server.
++
++9. Troubleshooting: Re-configuring and re-compiling
++===================================================
++
++For those updating the source in a directory where Qt has already
++been compiled, you may need to run the following commands from the
++top directory of your Qt sources:
++
++	find . -name '*.moc' | xargs rm
++
++Sometimes ./configure will refuse to run.  You may need to:
++	rm .qmake.cache
++
++If you think you may have run "make install" on an install-less Qt
++(srcdir == $QTDIR), run:
++
++	rm -rf include
++	bin/syncqt
++
++10. Maintenance: updating kde-qt to a newer Qt version
++======================================================
++
++When a new version of Qt is released, do the following to update the
++repository (assuming Qt 4.6.1 is the release you're updating to):
++
++ a) rebase each of the individual patches against this new version.
++      for branch in patches/*; do
++        git checkout -b $branch origin/$branch
++        git rebase v4.6.1
++        resolve conflicts
++      done   # Note: pseudo-shell, don't try to run this
++
++    If a given branch is no longer valid (it's been applied to this Qt
++    version), then delete it on the server:
++      git push origin :$branch
++
++ b) create a new "patched" branch locally, starting on the release tag:
++      git checkout -b 4.6.1-patched v4.6.1
++
++ c) merge the patch branches and the README branch, one by one. There
++    should be no conflicts at this stage; if there are, it indicates
++    one patch conflicts with another.
++      git merge patches/0997-patch1
++      git merge patches/0998-patch2
++      git merge patches/0999-patch3
++      # etc.
++      git merge README
++
++ d) overwrite the master branch's contents with the new branch. If the
++    Git merge strategy "theirs" exist (it doesn't as of Git 1.6), use
++    it:
++      git checkout master
++      git merge -s theirs 4.6.1-patched
++
++    If it doesn't exist, do the equivalent by inverting the point of
++    view:
++      git checkout -b tmp 4.6.1-patched
++      git merge -s ours master
++      git checkout master
++      git merge tmp
++      git branch -d tmp
++
++    Also possible using Git plumbing:
++      git checkout master
++      git merge -s ours --no-commit 4.6.1-patched
++      rm .git/index
++      git read-tree 4.6.1-patched
++      git commit
++
++  e) push everything to kde-qt.git, including the new Qt. Note that
++     the individiual patch branches will require force, because they
++     have been rebased (that is, the new branch tip is no longer a
++     direct descendant of the previous tip).
++
++      # Push the individual patch branches with force
++      git push -f origin patches/0997-patch1 patches/0998-patch2 patches/0999-patch3 etc
++      # Push the tag, the new patched branch and master
++      git push v4.6.1 4.6.1-patched master
+diff --git a/bin/syncqt b/bin/syncqt
+index 1fb5304..3d5acf9 100755
+--- a/bin/syncqt
++++ b/bin/syncqt
+@@ -376,9 +376,13 @@ sub fixPaths {
+         $match_dir = $tmp;
+         $i = $slash;
+     }
++    my $cnt_ofs = 0;
++    if($match_dir =~ /^[a-zA-Z]:$/) {
++      $cnt_ofs = 1;
++    }
+     if($match_dir) {
+         my $after = substr($dir, length($match_dir));
+-        my $count = ($after =~ tr,/,,);
++        my $count = ($after =~ tr,/,,) - $cnt_ofs;
+         my $dots = "";
+         for(my $i = 0; $i < $count; $i++) {
+             $dots .= "../";
+diff --git a/configure b/configure
+index ed5891f..6222208 100755
+--- a/configure
++++ b/configure
+@@ -1029,6 +1029,11 @@ while [ "$#" -gt 0 ]; do
+             VAL=`echo $1 | sed 's,-D,,'`
+         fi
+         ;;
++    -isystem)
++        VAR="add_isystempath"
++        shift
++        VAL="$1"
++        ;;
+     -I?*|-I)
+         VAR="add_ipath"
+         if [ "$1" = "-I" ]; then
+@@ -2047,6 +2052,9 @@ while [ "$#" -gt 0 ]; do
+     add_ipath)
+         I_FLAGS="$I_FLAGS -I\"${VAL}\""
+         ;;
++    add_isystempath)
++        I_FLAGS="$I_FLAGS -isystem \"${VAL}\""
++        ;;
+     add_lpath)
+         L_FLAGS="$L_FLAGS -L\"${VAL}\""
+         ;;
+diff --git a/projects.pro b/projects.pro
+index d405a5b..7ad3b58 100644
+--- a/projects.pro
++++ b/projects.pro
+@@ -154,6 +154,9 @@ unix {
+    DEFAULT_QMAKESPEC ~= s,^.*mkspecs/,,g
+    mkspecs.commands += $(DEL_FILE) $(INSTALL_ROOT)$$mkspecs.path/default; $(SYMLINK) $$DEFAULT_QMAKESPEC $(INSTALL_ROOT)$$mkspecs.path/default
+ }
++win32 {
++   mkspecs.files += $$QT_BUILD_TREE/mkspecs/default
++}
+ INSTALLS += mkspecs
+ 
+ false:macx { #mac install location
+diff --git a/qmake/property.cpp b/qmake/property.cpp
+index 2a3351b..8f1de34 100644
+--- a/qmake/property.cpp
++++ b/qmake/property.cpp
+@@ -81,29 +81,32 @@ QMakeProperty::keyBase(bool version) const
+ QString
+ QMakeProperty::value(QString v, bool just_check)
+ {
++    QString ret;
+     if(v == "QT_INSTALL_PREFIX")
+-        return QLibraryInfo::location(QLibraryInfo::PrefixPath);
++        ret = QLibraryInfo::location(QLibraryInfo::PrefixPath);
+     else if(v == "QT_INSTALL_DATA")
+-        return QLibraryInfo::location(QLibraryInfo::DataPath);
++        ret = QLibraryInfo::location(QLibraryInfo::DataPath);
+     else if(v == "QT_INSTALL_DOCS")
+-        return QLibraryInfo::location(QLibraryInfo::DocumentationPath);
++        ret = QLibraryInfo::location(QLibraryInfo::DocumentationPath);
+     else if(v == "QT_INSTALL_HEADERS")
+-        return QLibraryInfo::location(QLibraryInfo::HeadersPath);
++        ret = QLibraryInfo::location(QLibraryInfo::HeadersPath);
+     else if(v == "QT_INSTALL_LIBS")
+-        return QLibraryInfo::location(QLibraryInfo::LibrariesPath);
++        ret = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
+     else if(v == "QT_INSTALL_BINS")
+-        return QLibraryInfo::location(QLibraryInfo::BinariesPath);
++        ret = QLibraryInfo::location(QLibraryInfo::BinariesPath);
+     else if(v == "QT_INSTALL_PLUGINS")
+-        return QLibraryInfo::location(QLibraryInfo::PluginsPath);
++        ret = QLibraryInfo::location(QLibraryInfo::PluginsPath);
+     else if(v == "QT_INSTALL_TRANSLATIONS")
+-        return QLibraryInfo::location(QLibraryInfo::TranslationsPath);
++        ret = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
+     else if(v == "QT_INSTALL_CONFIGURATION")
+-        return QLibraryInfo::location(QLibraryInfo::SettingsPath);
++        ret = QLibraryInfo::location(QLibraryInfo::SettingsPath);
+     else if(v == "QT_INSTALL_EXAMPLES")
+-        return QLibraryInfo::location(QLibraryInfo::ExamplesPath);
++        ret = QLibraryInfo::location(QLibraryInfo::ExamplesPath);
+     else if(v == "QT_INSTALL_DEMOS")
+-        return QLibraryInfo::location(QLibraryInfo::DemosPath);
+-    else if(v == "QMAKE_MKSPECS")
++        ret = QLibraryInfo::location(QLibraryInfo::DemosPath);
++    if(!ret.isEmpty())
++        return QDir::toNativeSeparators(ret);
++    if(v == "QMAKE_MKSPECS")
+         return qmake_mkspec_paths().join(Option::target_mode == Option::TARG_WIN_MODE ? ";" : ":");
+     else if(v == "QMAKE_VERSION")
+         return qmake_version();
+@@ -116,7 +119,7 @@ QMakeProperty::value(QString v, bool just_check)
+     int slash = v.lastIndexOf('/');
+     QVariant var = settings->value(keyBase(slash == -1) + v);
+     bool ok = var.isValid();
+-    QString ret = var.toString();
++    ret = var.toString();
+     if(!ok) {
+         QString version = qmake_version();
+         if(slash != -1) {
+diff --git a/src/corelib/io/qurl.cpp b/src/corelib/io/qurl.cpp
+index 88baee3..0fbab72 100644
+--- a/src/corelib/io/qurl.cpp
++++ b/src/corelib/io/qurl.cpp
+@@ -3124,10 +3124,11 @@ static void toPunycodeHelper(const QChar *s, int ucLength, QString *output)
+ 
+ 
+ static const char * const idn_whitelist[] = {
+-    "ac", "at",
+-    "br",
++    "ac", "ar", "at",
++    "biz", "br",
+     "cat", "ch", "cl", "cn",
+     "de", "dk",
++    "es",
+     "fi",
+     "gr",
+     "hu",
+@@ -3141,6 +3142,9 @@ static const char * const idn_whitelist[] = {
+     "se", "sh",
+     "th", "tm", "tw",
+     "vn",
++    "xn--mgbaam7a8h",           // UAE
++    "xn--mgberp4a5d4ar",        // Saudi Arabia
++    "xn--wgbh1c"                // Egypt
+ };
+ 
+ static QStringList *user_idn_whitelist = 0;
+@@ -3296,6 +3300,7 @@ static QString qt_ACE_do(const QString &domain, AceOperation op)
+             qt_nameprep(&result, prevLen);
+             labelLength = result.length() - prevLen;
+             register int toReserve = labelLength + 4 + 6; // "xn--" plus some extra bytes
++            aceForm.resize(0);
+             if (toReserve > aceForm.capacity())
+                 aceForm.reserve(toReserve);
+             toPunycodeHelper(result.constData() + prevLen, result.size() - prevLen, &aceForm);
+diff --git a/src/corelib/kernel/qobject.cpp b/src/corelib/kernel/qobject.cpp
+index 6957e0b..3584496 100644
+--- a/src/corelib/kernel/qobject.cpp
++++ b/src/corelib/kernel/qobject.cpp
+@@ -1124,8 +1124,16 @@ void QObject::setObjectName(const QString &name)
+ {
+     Q_D(QObject);
+     d->objectName = name;
++#if defined(Q_WS_X11)
++    d->checkWindowRole();
++#endif
+ }
+ 
++#if defined(Q_WS_X11)
++void QObjectPrivate::checkWindowRole()
++{
++}
++#endif
+ 
+ #ifdef QT3_SUPPORT
+ /*! \internal
+diff --git a/src/corelib/kernel/qobject_p.h b/src/corelib/kernel/qobject_p.h
+index 363d24c..dd9e0e1 100644
+--- a/src/corelib/kernel/qobject_p.h
++++ b/src/corelib/kernel/qobject_p.h
+@@ -83,7 +83,9 @@ void Q_CORE_EXPORT qt_register_signal_spy_callbacks(const QSignalSpyCallbackSet
+ 
+ extern QSignalSpyCallbackSet Q_CORE_EXPORT qt_signal_spy_callback_set;
+ 
+-enum { QObjectPrivateVersion = QT_VERSION };
++// add 0x1000000 to mark it as qt-copy version, with possible modifications
++// in some Q*Private class
++enum { QObjectPrivateVersion = QT_VERSION + 0x1000000 };
+ 
+ class Q_CORE_EXPORT QDeclarativeData
+ {
+@@ -157,6 +159,9 @@ public:
+     void sendPendingChildInsertedEvents();
+     void removePendingChildInsertedEvents(QObject *child);
+ #endif
++#if defined(Q_WS_X11)
++    virtual void checkWindowRole();
++#endif
+ 
+     static Sender *setCurrentSender(QObject *receiver,
+                                     Sender *sender);
+diff --git a/src/gui/kernel/qapplication.cpp b/src/gui/kernel/qapplication.cpp
+index 49713cf..af83047 100644
+--- a/src/gui/kernel/qapplication.cpp
++++ b/src/gui/kernel/qapplication.cpp
+@@ -763,6 +763,10 @@ void QApplicationPrivate::construct(
+ 
+     qt_is_gui_used = (qt_appType != QApplication::Tty);
+     process_cmdline();
++    // the environment variable has the lowest precedence of runtime graphicssystem switches
++    if (graphics_system_name.isEmpty()) {
++        graphics_system_name = QString::fromLocal8Bit(qgetenv("QT_GRAPHICSSYSTEM"));
++    }
+     // Must be called before initialize()
+     qt_init(this, qt_appType
+ #ifdef Q_WS_X11
+diff --git a/src/gui/kernel/qwidget_p.h b/src/gui/kernel/qwidget_p.h
+index 962d694..f4e4979 100644
+--- a/src/gui/kernel/qwidget_p.h
++++ b/src/gui/kernel/qwidget_p.h
+@@ -693,6 +693,7 @@ public:
+     static QWidget *keyboardGrabber;
+ 
+     void setWindowRole();
++    virtual void checkWindowRole();
+     void sendStartupMessage(const char *message) const;
+     void setNetWmWindowTypes();
+     void x11UpdateIsOpaque();
+diff --git a/src/gui/kernel/qwidget_x11.cpp b/src/gui/kernel/qwidget_x11.cpp
+index c832d1f..d84f925 100644
+--- a/src/gui/kernel/qwidget_x11.cpp
++++ b/src/gui/kernel/qwidget_x11.cpp
+@@ -763,6 +763,11 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
+         Q_ASSERT(id);
+         XChangeWindowAttributes(dpy, id, CWOverrideRedirect | CWSaveUnder,
+                                 &wsa);
++        XClassHint class_hint;
++        QByteArray appName = qAppName().toLatin1();
++        class_hint.res_name = appName.data(); // application name
++        class_hint.res_class = const_cast<char *>(QX11Info::appClass());   // application class
++        XSetWMProperties(dpy, id, 0, 0, 0, 0, 0, 0, &class_hint);
+     } else if (topLevel && !desktop) {        // top-level widget
+         if (!X11->wm_client_leader)
+             create_wm_client_leader();
+@@ -816,32 +821,40 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
+         // set EWMH window types
+         setNetWmWindowTypes();
+ 
++        // when we create a toplevel widget, the frame strut should be dirty
++        data.fstrut_dirty = 1;
++
++    } else {
++        // non-toplevel widgets don't have a frame, so no need to
++        // update the strut
++        data.fstrut_dirty = 0;
++    }
++
++    if (initializeWindow && (popup || (topLevel && !desktop))) { // properties set on all toplevel windows
+         // set _NET_WM_PID
+         long curr_pid = getpid();
+         XChangeProperty(dpy, id, ATOM(_NET_WM_PID), XA_CARDINAL, 32, PropModeReplace,
+                         (unsigned char *) &curr_pid, 1);
+ 
+-        // when we create a toplevel widget, the frame strut should be dirty
+-        data.fstrut_dirty = 1;
+ 
+         // declare the widget's window role
++        QByteArray windowRole;
+         if (QTLWExtra *topData = maybeTopData()) {
+-            if (!topData->role.isEmpty()) {
+-                QByteArray windowRole = topData->role.toUtf8();
+-                XChangeProperty(dpy, id,
+-                                ATOM(WM_WINDOW_ROLE), XA_STRING, 8, PropModeReplace,
+-                                (unsigned char *)windowRole.constData(), windowRole.length());
+-            }
++            if (!topData->role.isEmpty())
++                windowRole = topData->role.toUtf8();
++        }
++        if (windowRole.isEmpty()) // use object name as a fallback
++            windowRole = objectName.toUtf8();
++        if (!windowRole.isEmpty()) {
++            XChangeProperty(dpy, id,
++                            ATOM(WM_WINDOW_ROLE), XA_STRING, 8, PropModeReplace,
++                            (unsigned char *)windowRole.constData(), windowRole.length());
+         }
+ 
+         // set client leader property
+         XChangeProperty(dpy, id, ATOM(WM_CLIENT_LEADER),
+                         XA_WINDOW, 32, PropModeReplace,
+                         (unsigned char *)&X11->wm_client_leader, 1);
+-    } else {
+-        // non-toplevel widgets don't have a frame, so no need to
+-        // update the strut
+-        data.fstrut_dirty = 0;
+     }
+ 
+     if (initializeWindow && q->internalWinId()) {
+@@ -2919,6 +2932,17 @@ void QWidgetPrivate::setWindowRole()
+                     (unsigned char *)windowRole.constData(), windowRole.length());
+ }
+ 
++void QWidgetPrivate::checkWindowRole()
++{
++    Q_Q(QWidget);
++    if( !q->windowRole().isEmpty() || !q->internalWinId())
++        return;
++    QByteArray windowRole = objectName.toUtf8(); // use as a fallback
++    XChangeProperty(X11->display, q->internalWinId(),
++                    ATOM(WM_WINDOW_ROLE), XA_STRING, 8, PropModeReplace,
++                    (unsigned char *)windowRole.constData(), windowRole.length());
++}
++
+ Q_GLOBAL_STATIC(QX11PaintEngine, qt_widget_paintengine)
+ QPaintEngine *QWidget::paintEngine() const
+ {
+diff --git a/src/gui/widgets/qtabbar.cpp b/src/gui/widgets/qtabbar.cpp
+index 1195f95..6c47c77 100644
+--- a/src/gui/widgets/qtabbar.cpp
++++ b/src/gui/widgets/qtabbar.cpp
+@@ -678,8 +678,8 @@ void QTabBarPrivate::refresh()
+         layoutTabs();
+         makeVisible(currentIndex);
+         q->update();
+-        q->updateGeometry();
+     }
++    q->updateGeometry();
+ }
+ 
+ /*!
+diff --git a/src/tools/moc/main.cpp b/src/tools/moc/main.cpp
+index df508c4..7715feb 100644
+--- a/src/tools/moc/main.cpp
++++ b/src/tools/moc/main.cpp
+@@ -94,7 +94,13 @@ static QByteArray combinePath(const char *infile, const char *outfile)
+         inSplitted.prepend(QLatin1String(".."));
+     }
+     inSplitted.append(inFileInfo.fileName());
++#ifdef Q_WS_WIN
++    const QString rel = inSplitted.join(QLatin1String("/"));
++    const QString abs = inFileInfo.absoluteFilePath();
++    return QFile::encodeName(rel.length() < abs.length() ? rel : abs);
++#else
+     return QFile::encodeName(inSplitted.join(QLatin1String("/")));
++#endif
+ }
+ 
+ 

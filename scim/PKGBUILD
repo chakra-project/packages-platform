@@ -18,6 +18,8 @@ source=(http://downloads.sourceforge.net/sourceforge/scim/$pkgname-$pkgver.tar.g
 md5sums=('975ba34b01304ea8166ac8ea27aa9e88')
 
 build() {
+  export MAKEFLAGS="-j1"
+
   cd $srcdir/$pkgname-$pkgver
   ./configure --prefix=/usr --sysconfdir=/etc \
     --with-gnu-ld --with-x --disable-static || return 1
