@@ -4,7 +4,7 @@
 
 pkgname=scim
 pkgver=1.4.9
-pkgrel=1
+pkgrel=2
 pkgdesc="A Input Method development platform"
 arch=("i686" "x86_64")
 url="http://www.scim-im.org/projects/scim"
@@ -14,13 +14,13 @@ makedepends=('intltool')
 backup=('etc/scim/config' 'etc/scim/global')
 options=('!libtool')
 install=scim.install
-source=(http://downloads.sourceforge.net/sourceforge/scim/$pkgname-$pkgver.tar.gz)
-md5sums=('975ba34b01304ea8166ac8ea27aa9e88')
+source=(http://downloads.sourceforge.net/sourceforge/scim/$pkgname-$pkgver.tar.gz scim-1.4.9-2.patch)
+md5sums=('975ba34b01304ea8166ac8ea27aa9e88'
+         'f4913a35a890caf860896ba5ad097bac')
 
 build() {
-  export MAKEFLAGS="-j1"
-
   cd $srcdir/$pkgname-$pkgver
+  patch -Np1 -i ${startdir}/scim-1.4.9-2.patch || return 1
   ./configure --prefix=/usr --sysconfdir=/etc \
     --with-gnu-ld --with-x --disable-static || return 1
   make || return 1
