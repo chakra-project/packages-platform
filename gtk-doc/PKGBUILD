@@ -13,7 +13,7 @@ optdepends=('jade: SGML support')
 url="http://www.gtk.org/gtk-doc/"
 source=(http://ftp.gnome.org/pub/gnome/sources/${pkgname}/${pkgver}/${pkgname}-${pkgver}.tar.bz2) 
 sha256sums=('a92aa890d35ff9ac152d3a6957dc66d486046c1993538eaf2be13b4d4d089c03')
-
+options=('docs')
 build() { 
   cd "${srcdir}/${pkgname}-${pkgver}"
   ./configure --prefix=/usr || return 1

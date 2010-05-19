@@ -21,7 +21,10 @@ build() {
 	# configure
 	cd ${srcdir}/lirc-$pkgver || return 1
 
-      # Disabling lirc_gpio driver as it does no longer work Kernel 2.6.22+
+        # Fixing compiling
+        sed -i -e "s~#include <linux/autoconf.h>~#include <generated/autoconf.h>~g" drivers/lirc_dev/lirc_dev.c
+
+        # Disabling lirc_gpio driver as it does no longer work Kernel 2.6.22+
 	sed -i -e "s:lirc_gpio\.o::" drivers/lirc_gpio/Makefile.am || return 1
 
 	autoreconf || return 1
