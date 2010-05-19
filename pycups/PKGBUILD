@@ -4,17 +4,20 @@
 
 pkgname=pycups
 pkgver=1.9.49
-pkgrel=1
+pkgrel=2
 pkgdesc="Python CUPS Bindings"
 url="http://cyberelk.net/tim/software/pycups/"
 arch=('i686' 'x86_64')
 license=('GPL')
 depends=('libcups' 'python')
-source=("http://cyberelk.net/tim/data/${pkgname}/${pkgname}-${pkgver}.tar.bz2")
-md5sums=('6db9d8bc7f40315bc0b93f210737cc82')
+source=("http://cyberelk.net/tim/data/${pkgname}/${pkgname}-${pkgver}.tar.bz2" "version.patch")
+md5sums=('6db9d8bc7f40315bc0b93f210737cc82'
+         'c7e94deda362cfe785bd259d09645a33')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
+  # see http://bugs.sourcemage.org/show_bug.cgi?id=15656
+  patch -Np1 -i ${startdir}/version.patch || return 1
   make || return 1
 }
 
