@@ -6,26 +6,28 @@
 pkgbase=mysql
 pkgname=('libmysqlclient' 'mysql-clients' 'mysql')
 pkgver=5.1.46
-pkgrel=2
+pkgrel=3
 arch=('i686' 'x86_64')
 license=('GPL')
 url="http://www.mysql.com/"
 makedepends=('tcp_wrappers' 'zlib' 'perl' 'openssl' 'libtool' 'patch')
 options=('!libtool')
 source=("http://ftp.gwdg.de/pub/misc/mysql/Downloads/MySQL-5.1/${pkgbase}-${pkgver}.tar.gz"
-        'mysqld' 'my.cnf')
+        'mysqld' 'my.cnf' 'mysql-5.1-gcc45-apicheck.patch')
 md5sums=('04f7c1422199c73a88a3d408b9161b63'
          '92dac61b92253e0878f27318da1dc45f'
-         '0337741fa9afbe57939993636081a827')
+         '0337741fa9afbe57939993636081a827'
+         '1813cb70039e8be44d7264ce016fd32d')
 
 build() {
   cd ${srcdir}/${pkgbase}-${pkgver}
 
-  # fix build with gcc 4.4
+  # fix build with gcc 4.5
   # see http://bugs.archlinux.org/task/15242
   # and http://gcc.gnu.org/bugzilla/show_bug.cgi?id=38562
   CFLAGS="-fPIC ${CFLAGS} -fno-strict-aliasing"
   CXXFLAGS="-fPIC ${CXXFLAGS} -fno-strict-aliasing"
+  patch -Np1 -i ${startdir}/mysql-5.1-gcc45-apicheck.patch || return 1
 
   ./configure --prefix=/usr \
     --libexecdir=/usr/sbin \
