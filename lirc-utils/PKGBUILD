@@ -3,7 +3,7 @@
 
 pkgname=lirc-utils
 pkgver=0.8.6
-pkgrel=3
+pkgrel=4
 pkgdesc="Linux Infrared Remote Control utils"
 arch=('i686' 'x86_64')
 url="http://www.lirc.org/"
@@ -15,16 +15,15 @@ replaces=('lirc+pctv')
 backup=('etc/conf.d/lircd.conf' 'etc/conf.d/lircmd.conf' 'etc/lirc/lircd.conf')
 options=('!libtool' '!makeflags')
 source=(http://downloads.sourceforge.net/sourceforge/lirc/lirc-$pkgver.tar.bz2
-	lircd lircmd lirc.logrotate lircd.conf irexec.conf irexecd)
+	lircd lircmd lirc.logrotate lircd.conf irexec.conf irexecd kernel-2.6.33.patch)
 
 build() {
 	# configure
 	cd ${srcdir}/lirc-$pkgver || return 1
+	# see http://bugs.gentoo.org/301321
+	patch -p0 -i ../kernel-2.6.33.patch || return 1
 
-        # Fixing compiling
-        sed -i -e "s~#include <linux/autoconf.h>~#include <generated/autoconf.h>~g" drivers/lirc_dev/lirc_dev.c
-
-        # Disabling lirc_gpio driver as it does no longer work Kernel 2.6.22+
+      # Disabling lirc_gpio driver as it does no longer work Kernel 2.6.22+
 	sed -i -e "s:lirc_gpio\.o::" drivers/lirc_gpio/Makefile.am || return 1
 
 	autoreconf || return 1
@@ -76,4 +75,5 @@ md5sums=('4ca24da6f5e7c2dcea74878c27a4a3f7'
          '3deb02604b37811d41816e9b4385fcc3'
          '5b1f8c9cd788a39a6283f93302ce5c6e'
          'f0c0ac930326168035f0c8e24357ae55'
-         '618ca4f666341d6ade8c616ce59f4d1b')
+         '618ca4f666341d6ade8c616ce59f4d1b'
+         'f029698154cf32bc51e5e69879d53a12')
