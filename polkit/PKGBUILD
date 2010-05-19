@@ -9,7 +9,7 @@ arch=(i686 x86_64)
 license=('LGPL')
 url="http://www.freedesktop.org/wiki/Software/Policykit"
 depends=('eggdbus>=0.6' 'pam')
-makedepends=('intltool' 'gobject-introspection') # 'gtk-doc'
+makedepends=('intltool' 'gobject-introspection' 'gtk-doc')
 replaces=('policykit')
 options=('!libtool')
 source=(http://hal.freedesktop.org/releases/${pkgname}-${pkgver}.tar.gz
