@@ -1,5 +1,7 @@
 # Maintainer: Phil Miller <philm@chakra-project.org>
 
+# NOTE might break. restart the build
+
 pkgname=lame
 pkgver=3.98.4
 pkgrel=1
@@ -14,6 +16,8 @@ source=(http://downloads.sourceforge.net/sourceforge/${pkgname}/${pkgname}-${pkg
 md5sums=('8e9866ad6b570c6c95c8cba48060473f')
 
 build() {
+  export MAKEFLAGS="-j1"
+
   cd "${srcdir}/${pkgname}-${pkgver}"
 
   ./configure --prefix=/usr \

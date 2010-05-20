@@ -1,17 +1,23 @@
+#
+# QT Packages for Chakra, part of chakra-project.org
+#
+# maintainer (i686): Phil Miller <philm[at]chakra-project[dog]org>
+# maintainer (x86_64): Manuel Tortosa <manutortosa[at]chakra-project[dot]org>
+
 # original name (used for the source and pkgnames)
 _origname=qt
 
 
 
-pkgbase=('qtmod')
-pkgname=('qtmod'
-         'qtmod-doc'
-         'qtmod-debug'
-         'qtmod-demos'
-         'qtmod-tools')
+pkgbase=('qt')
+pkgname=('qt'
+         'qt-doc'
+         'qt-debug'
+         'qt-demos'
+         'qt-tools')
 
 pkgver=4.6.2
-pkgrel=3
+pkgrel=1
 
 pkgdesc="A cross-platform application and UI framework"
 arch=('i686' 'x86_64')
@@ -19,7 +25,7 @@ url="http://qt.nokia.com/"
 license=('LGPL')
 
 # because qt has its own "create debug files" implementation,
-# we can disable our splithdr option and create qtmod-debug directly
+# we can disable our splithdr option and create qt-debug directly
 # inside the PKGBUILD. This works even with the standard arch makepkg.
 options=('!libtool' 'docs' '!strip')
 
@@ -62,7 +68,7 @@ source=("ftp://ftp.qt.nokia.com/qt/source/${_pkgfqn}.tar.gz"
 	'ca-certificates.patch'
 
 	'kde-qt-6dbbf15fcef976fafc3f55e048f9b4daaa4c0d19.patch'
-	'qtmod.install')
+	'qt.install')
 
 md5sums=('eb651ee4b157c01696aa56777fc6e0e5
 20d333282c43f9e643cb8e91b6307dcc
@@ -77,7 +83,7 @@ c436732fc467271e8a3838145c122070
 d5c4cad7af93f1d736d4569a207bd739
 
 9717e204abc8f849ba1d0d99a77ef26e
-ef40176ac0210faaf2a33ec348029f60')
+bdf9e2baeaf9aec02ebab75e28257ef2')
 
 
 
@@ -98,9 +104,9 @@ build()
 #	mv "${codir}/kde-qt-${kdeqtver}.patch" .
 #	rm -rf "${codir}"
 
-	#editing qtmod.install
-#	sed -i -e 's/^.*> Qt .*/        echo " > Qt '${pkgver}'"/' $startdir/qtmod.install
-#	sed -i -e 's/^.*kde-qt .*/        echo "   kde-qt '${kdeqtver}'"/' $startdir/qtmod.install
+	#editing qt.install
+#	sed -i -e 's/^.*> Qt .*/        echo " > Qt '${pkgver}'"/' $startdir/qt.install
+#	sed -i -e 's/^.*kde-qt .*/        echo "   kde-qt '${kdeqtver}'"/' $startdir/qt.install
 
 	cd $srcdir/$_pkgfqn
 
@@ -170,7 +176,7 @@ build()
 	make || return 1
 } 
 
-package_qtmod()
+package_qt()
 {
 	pkgdesc="A cross-platform application and UI framework"
 	depends=('libpng>=1.4.0' 'libxi' 'mesa' 'fontconfig' 'libxrandr' 'glib2' 'libtiff>=3.9.2-2' 'libmng>=1.0.10-3' 'libjpeg>=8' 'sqlite3' 'dbus' 'libxcursor' 'libxinerama')
@@ -179,10 +185,10 @@ package_qtmod()
 	'iodbc/unixodbc  : ODBC support'
 	'gconf           : qgtkstyle theme support for GTK')
 	provides=("qt4=${pkgver}" "qt=${pkgver}") # "phonon=4.3.80"
-	replaces=('qtmod-devel')
-	conflicts=('qt4' 'qt')
-	groups=("${_pkgprefix}" "${_pkgprefix}-complete" "${_pkgprefix}-uninstall" "${_pkgprefix}-minimal")
-	install=qtmod.install
+	replaces=('qt-devel' 'qtmod')
+	conflicts=('qt4' 'qtmod')
+	groups=("kde" "kde-complete" "kde-uninstall" "kde-minimal")
+	install=qt.install
 
 	cd $srcdir/$_pkgfqn
 
@@ -210,7 +216,7 @@ package_qtmod()
 	mv $pkgdir/usr/bin/designer $srcdir/bin
 	mv $pkgdir/usr/bin/linguist $srcdir/bin
     
-	# move out debug symbols into a temp dir and put them into qtmod-debug later below
+	# move out debug symbols into a temp dir and put them into qt-debug later below
 	mkdir $srcdir/debug
 	for x in `find $pkgdir -name *.debug`
 	do
@@ -221,26 +227,26 @@ package_qtmod()
 	done
 }
 
-package_qtmod-debug()
+package_qt-debug()
 {
 	pkgdesc="A cross-platform application and UI framework - Debugging Symbols"
-	depends=("qtmod=${pkgver}")
+	depends=("qt=${pkgver}")
 	optdepends=()
-	groups=("${_pkgprefix}-debug" "${_pkgprefix}-uninstall")
+	groups=("kde-debug" "kde-uninstall")
     
 	mkdir $pkgdir/usr
 	cd $srcdir
 	cp -r debug/* $pkgdir/usr
 }
 
-package_qtmod-doc()
+package_qt-doc()
 {
 	pkgdesc="A cross-platform application and UI framework - Documentation"
-	depends=("qtmod=${pkgver}")
+	depends=("qt=${pkgver}")
 	optdepends=()
 	provides=("qt4-doc=${pkgver}" "qt-doc=${pkgver}")
-	conflicts=('qt4-doc' 'qt-doc')
-	groups=("${_pkgprefix}-complete" "${_pkgprefix}-doc" "${_pkgprefix}-uninstall")
+	conflicts=('qt4-doc' 'qtmod-doc')
+	groups=("kde-complete" "kde-doc" "kde-uninstall")
     
 	cd $srcdir/$_pkgfqn
 
@@ -248,15 +254,15 @@ package_qtmod-doc()
 	cp -r doc/* $pkgdir/usr/share/doc/qt
 }
 
-package_qtmod-demos()
+package_qt-demos()
 {
 	pkgdesc="A cross-platform application and UI framework - Demos & Examples"
-	depends=("qtmod=${pkgver}")
+	depends=("qt=${pkgver}")
 	optdepends=()
 	provides=()
-	replaces=()
+	replaces=('qtmod-demos')
 	conflicts=()
-	groups=("${_pkgprefix}-uninstall")
+	groups=("kde-uninstall")
     
 	cd $srcdir/$_pkgfqn
 
@@ -269,15 +275,15 @@ package_qtmod-demos()
 	popd
 }
 
-package_qtmod-tools()
+package_qt-tools()
 {
 	pkgdesc="A cross-platform application and UI framework - Tools (Linguist, Designer, Assistant)"
-	depends=("qtmod=${pkgver}")
+	depends=("qt=${pkgver}")
 	optdepends=()
 	provides=()
-	replaces=()
+	replaces=('qtmod-tools')
 	conflicts=()
-	groups=("${_pkgprefix}-uninstall" "${_pkgprefix}-devel")
+	groups=("kde-uninstall" "kde-devel")
 
 	cd $srcdir/$_pkgfqn
 

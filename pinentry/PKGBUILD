@@ -8,9 +8,9 @@ arch=('i686' 'x86_64')
 license=('GPL')
 url="http://www.gnupg.org/aegypten2"
 depends=('ncurses' 'libcap>=2.16')
-makedepends=('gtk2' 'qtmod')
+makedepends=('gtk2' 'qt')
 optdepends=('gtk2: for gtk2 backend'
-            'qtmod: for qt4 backend')  
+            'qt: for qt4 backend')  
 source=(ftp://ftp.gnupg.org/gcrypt/$pkgname/$pkgname-$pkgver.tar.gz)
 
 build() {
