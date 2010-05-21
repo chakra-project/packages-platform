@@ -1,0 +1,90 @@
+<div class="larchdocs">
+<h2 id="pagetitle" level="2">GUI Tab: Preparing the Medium</h2>
+
+<p>This tab presents the various possibilities for installing the
+<em>live</em> system that was built on the 'larchify' tab onto a bootable
+device, which can be in <em>iso9660</em> form (to burn to a CD/DVD), or
+a partition on a hard disk or flash storage device. A suitable bootloader
+can also be installed.
+</p>
+
+<h3>Bootloader</h3>
+<p>The choice of <em>GRUB</em> and <em>syslinux/isolinux</em> is provided.
+It is also possible to edit their configuration files. In order to
+simplify switching from one to the other, I have separated out the actual
+boot lines into a separate file, that is automatically transformed into
+the appropriate format and included in the final configuration file.
+</p>
+
+<h3>Editing cd-root</h3>
+<p>This opens a file browser on the profile's cd-root directory. For details
+of the contents see <a href="larch_profiles.html">Profiles</a>.
+</p>
+
+<h3>Build an <em>iso</em>, for CD or DVD</h3>
+<p>It is possible to customize some of the information written to the
+<em>iso</em> by <em>mkisofs</em>, the text supplied to the '-A' option
+('application ID') and to the '-publisher' option.
+One can also select the bootloader (<em>GRUB</em> or <em>isolinux</em>.
+The only option for medium detection is 'Search (for larchboot)', described
+below.
+</p>
+
+<h3>Install to partitition</h3>
+
+<p>Here one must select the partition to install to, and also select how the
+<em>live</em> initramfs is to find the correct partition. The available
+options are:
+
+<ul>
+  <li>Partition: The device will be sought on the basis of its (current)
+  device name  - such as /dev/sdb1. This is only suitable if you can be
+  sure the device will always get the same name (which - especially with
+  pluggable devices - is unlikely).</li>
+  <li>UUID: Each device normally has a unique UUID, so this is a pretty
+  reliable method. It's just that the UUIDs themselves are rather ungainly
+  and unmemorable.</li>
+  <li>LABEL: Booting on the basis of the device label can be quite reliable
+  and quite readable, so it might be a good compromise.</li>
+  <li>Search (for larchboot): The <em>live</em> initramfs tests all
+  visible devices until it finds one containing the file larch/larchboot.
+  </li>
+</ul>
+</p>
+
+<p>There is also a field to enter the device label for the selected partition.
+This normally has quite a limited maximum length (which I think may depend on
+the file-system type).
+</p>
+
+<p>The choice of bootloader will determine the file-system with which the
+partition is formatted - for <em>syslinux</em> DOS is used, for <em>GRUB</em>
+ext2. No other file-system types are supported at present. There is also an
+option to install the <em>live</em> system without first formatting the
+partition. This might be useful in certain very special cases but it is
+generally <strong>not</strong> recommended.
+</p>
+
+<p>With the button 'Enable session saving', you can determine whether the
+medium gets a file 'larch/save', which is needed to enable the session
+saving feature.
+</p>
+
+<p>I'm not sure how useful the option 'Bootable via search' is.
+It is set automatically when the 'Search (for larchboot)' medium detection
+method is selected, but perhaps it is also useful in combination with the
+other methods.
+</p>
+
+<p>Finally, there is the possibility of generating a boot CD for the
+<em>live</em> medium - this is to cover cases where a machine cannot
+boot from USB devices, but can boot from a CD. Just the kernel,
+<em>initramfs</em> and bootloader are put in the boot <em>iso</em>. The
+<em>live</em> system's <em>initramfs</em> will (hopefully) then be able
+to find the live medium. Note that the USB device for which the CD is to
+be generated must be plugged in (not mounted) and selected in the
+device chooser.
+</p>
+
+</div>
+

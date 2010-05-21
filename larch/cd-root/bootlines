@@ -1,0 +1,20 @@
+# The information here will be adapted for the bootloader and inserted into its configuration
+# file at the place marked '###LARCH'
+# This header will be removed. 
+# Each block must have an empty line before and after it.
+# There may be no empty lines within a block.
+
+comment:
+title: Default: no swap, no copy-to-ram
+options:
+
+comment: I probably don't want this bootline 
+comment: ... because copy-to-ram is mostly not so useful.
+title: larch copy-to-ram (also activates swap)
+options: c2r
+
+comment:
+title: larch with swap
+options: swap
+
+# END OF FILE

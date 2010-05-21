@@ -1,0 +1,15 @@
+install ()
+{
+    MODULES="squashfs"
+    BINARIES="/usr/bin/lzop /bin/tar"
+    FILES=""
+    SCRIPT="larch3"
+}
+
+help ()
+{
+cat<<HELPEOF
+  This hook deals with booting a larch live CD. It is the last larch hook,
+setting up the tmpfs root file system.
+HELPEOF
+}

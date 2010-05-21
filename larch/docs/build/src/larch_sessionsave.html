@@ -1,0 +1,124 @@
+<div class="larchdocs">
+<h2 id="pagetitle" level="1">Saving a session back to the boot device (or even somewhere else)</h2>
+
+<p>An easy way to create a customized <em>live</em> system is to start from an
+existing one, make whatever changes you like, and then save the result back to
+the boot device. Of course, for this you need a writeable boot device, e.g.
+a USB-stick.
+</p>
+
+<h3><a name="overlays"></a>Overlay archives</h3>
+
+<p>In <em>larch</em> the uppermost layer in the union file-system is in
+<em>tmpfs</em> and can (optionally) be saved at shutdown to the boot medium.
+It is <em>compressed</em> using <em>tar</em> and <em>lzop</em> to the file
+'overlay.tar.lzo'. When the system next boots this file will then be
+unpacked into the initially empty top layer.
+</p>
+
+<p>This is handled primarily by the 'shutdown2' script, supplied in the
+'larch-live' package. It is called from a hook function in 'etc/rc.shutdown'.
+If the medium is writeable and contains a file 'larch/save', the user is
+offered the possibility of saving this overlay archive, thus saving the
+current state.
+</p>
+
+<p>When this archive grows too large it will reduce the amount of available
+memory, perhaps to an unacceptable extent.
+It will also lengthen boot and shutdown times.
+To counter this, it is possible to merge the
+overlay archive with the middle (<em>squashfs</em>) <em>union</em> layer,
+<strong>mods.sqf</strong> (which is normally not copied to memory),
+thus restoring the rapid load and save times for <strong>overlay.tar.lzo</strong>,
+and maximizing the available memory. I call this process
+'overlay merging', and it is offered as a shutdown option. The script
+'merge_overlay' (in the 'larch-live' package) provides this facility.
+It takes longer to execute than a normal session save, so it should probably
+not be used for every session saving operation, but just when the top overlay
+gets too big. Note that use of the overlay merging feature creates an
+additional layer in the <em>union</em>, 'filter.sqf'. This contains only
+'whiteout' files to cover up overwritten data in the underlying 'system.sqf'.
+Unlike in previous <em>larch</em> versions the 'mods.sqf' archive contains
+no 'whiteouts'. It is hoped that this new structure will cure the
+problems experienced in these earlier versions.
+</p>
+
+<h3><a name="var_files"></a>Special places in /var</h3>
+
+<p>It was considered undesirable to include some things in the '/var' directory
+in the session saves, primarily because of the space they occupy. Firstly,
+the standard <em>pacman</em> package cache, '/var/cache/pacman/pkg' - if you
+do want to save your cache, you should either handle this manually or set
+up another location using 'CacheDir' in /etc/pacman.conf'. Also the log files
+(in '/var/log') and '/var/tmp' (temporary files, like '/tmp') are not saved.
+</p>
+
+<h3><a name="upd_packages"></a>Updating packages</h3>
+
+<p>It is possible to perform package addition and removal in the <em>live</em>
+system, but one should be aware that packages in the base system are not actually
+replaced, just (effectively) hidden, so that the space usage might become a
+consideration. Also the handling of kernel updates must be handled in a special
+way, because it is stored outside the root file-system, on the boot medium
+and needs a separate mechanism to save it at shutdown. It should be fairly
+transparent to the user, but under certain circumstances it might be necessary
+to bear this in mind.
+</p>
+
+<p>At some point, after extensive updating, it might be desirable to completely
+rebuild the system, so that also 'system.sqf' is recreated. This will require
+quite a bit of space, but should otherwise pose no great problems
+***+ except that it is not yet implemented -***.
+</p>
+
+<h3><a name="de-Act"></a>Activating and deactivating the session-saving feature</h3>
+
+<p>As mentioned above, for this feature to be available, there must be a
+file with the name 'save' in the boot medium's 'larch' directory. This
+will be generated automatically if installing to a partition (i.e. if not
+building an <em>iso</em>) and if there is no 'nosave' file in the profile
+***+ This sounds a bit perverse, and it may indeed be so, but it seemed like
+a good idea at the time -***. The gui provides a button to create and
+delete this 'nosave' file, thus disabling or enabling session saving on
+the created medium.
+</p>
+
+<h3><a name="custom"></a>Customizing the behaviour using scripts</h3>
+
+<p>Some aspects of the session saving can be customized by writing scripts to
+override the default behaviour. These scripts are (in general) kept on the boot
+medium, in the 'larch' directory. As these are shell scripts and their use requires
+some knowledge of the inner workings of the <em>larch live </em>system, it will
+almost certainly be necessary to read the existing <em>larch</em> scripts where the
+custom scripts are 'sourced' if you want to
+write your own scripts to change the behaviour of the <em>live</em> system in
+this respect. All these scripts are found in the 'larch-live' package.
+</p>
+<ul>
+  <li><strong>session-save0</strong>
+    <p>Used in <strong>session-save/shutdown2</strong> (in function 'checkse').
+    This script can be used to customize the creation of the new overlay
+    archive, e.g. by specifying a new location. The default is
+    'overlay.tar.lzo' on the boot medium.
+    </p>
+  </li>
+  <li><strong>save-menu</strong>
+    <p>Used in <strong>session-save/shutdown2</strong> (in function
+    'session-save'). This script can be used to further customize the creation
+    of the new overlay archive, e.g. by providing an alternative session save
+    menu. Note that if the <strong>session-save0</strong> script specified
+    an alternative device path for saving the overlay, this script will be
+    sought in the 'larch' directory on that path.
+    </p>
+  </li>
+  <li><a name="boot-init"></a><strong>boot-init</strong>
+    <p>In initramfs hook <strong>larch3</strong>. This script allows adjustment of
+    the overlay handling during the boot process, e.g. getting them from another
+    path.
+    Note that the shell environment here is that of the initramfs and thus
+    very limited.
+    </p>
+  </li>
+</ul>
+
+</div>

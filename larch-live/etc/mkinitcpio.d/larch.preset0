@@ -1,0 +1,17 @@
+# mkinitcpio preset file for kernel26 in larch system
+
+########################################
+# DO NOT EDIT THIS LINE:
+source /etc/mkinitcpio.d/___.kver
+########################################
+#ALL_config="/etc/mkinitcpio.conf"
+
+PRESETS=('larch')
+
+larch_config="/etc/mkinitcpio.conf.larch"
+larch_image="/boot/larchnew.img"
+#larch_options=""
+
+#fallback_config="/etc/mkinitcpio.conf"
+#fallback_image="/boot/kernel26-fallback.img"
+#fallback_options="-S autodetect"

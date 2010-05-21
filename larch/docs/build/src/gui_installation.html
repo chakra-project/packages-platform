@@ -1,0 +1,84 @@
+<div class="larchdocs">
+<h2 id="pagetitle" level="2">GUI Tab: Installation</h2>
+
+<h3>Package selection</h3>
+
+<p>There are two main areas in this tab, one concerning packages to be
+installed (a feature of the profile) and one concerning the location of
+the package repositories - where the packages are to be fetched from
+(which is a project feature).
+</p>
+
+<p>The profile files 'addedpacks' and to a lesser extent 'vetopacks'
+determine which packages will be installed. The 'base' group of packages
+will always be installed automatically, unless there are entries in
+'vetopacks' to veto certain of these (this will have no effect if a vetoed
+package is required by one selected for installation). 'addedpacks' is
+simply a list of additional packages to install, their dependencies
+will be installed automatically.
+Both these files are simply one package name per line, empty lines and
+lines starting with '#' being ignored.
+</p>
+
+<h3>'pacman.conf' and 'mirrorlist'</h3>
+
+<p>The <em>larch</em> repository must be available for building the
+<em>live</em> system, i.e. it must be included in the 'pacman.conf' used
+for the installation process. To ease the incorporation of updates to the
+structure of the file 'pacman.conf' a split version is used. The header
+part is extracted from the default pacman.conf (distributed with the
+'larch' package) and the repository list is kept separately. Both parts
+can be edited separately, by clicking on the corresponding button,
+and altered versions are then stored within the profile.
+</p>
+
+<p>The repository-list file is called 'pacman.conf.larch'. It is supplied
+in the <em>larch</em> packages 'data' directory, and when it is edited the
+new file is saved in the working directory (normally
+~/.config/larch/working_dir).
+</p>
+
+<p>If there are 'Include' lines in the repository list in 'pacman.conf', the
+corresponding 'mirrorlist' file must be present and suitably configured.
+By default the host's /etc/pacman.d/mirrorlist will be used, but it is also
+possible to use an edited version - which is not stored within the profile,
+but in <em>larch's</em> working directory.
+</p>
+
+<h3>Package 'mirrors' and cache</h3>
+
+<p>Adjustments to the repository addresses and cache location are treated
+as 'advanced' options, because in many cases the defaults will be perfectly
+adequate.
+</p>
+
+<h4>Using different mirrors/repositories for the installation</h4>
+
+<p>In order to use an alternative mirror-list (for installation only!), the
+'Include' entries in pacman.conf.larch must be set to their default,
+'/etc/pacman.d/mirrorlist'. When the 'Edit mirrorlist' button is clicked
+the file 'mirrorlist' file in the working directory is opened in the
+editor. If this file does not yet exist it is copied from
+/etc/pacman.d/mirrorlist (on the host) - if this file doesn't exist
+(presumably only on non-<em>Arch</em> hosts, the version supplied in the
+'data' directory of the <em>larch</em> package is used.
+</p>
+
+<p>An alternative is to specify a complete path to a mirror ('Use special
+mirror for installation'), which must then include all needed repositories.
+Note that this substitution is just for the installation - the resulting
+<em>live</em> system will use the pacman.conf and mirrorlist as set in
+the profile. The path entered for this build mirror can contain the
+variables "*platform*" and "*repo*", these being substituted automatically
+by <em>larch</em>.
+</p>
+
+<h4>Package cache</h4>
+
+<p>Normally the host's standard package cache will be used for the
+installation, but it is possible to use a non-standard location. I guess,
+however, that this will not normally be necessary.
+</p>
+
+</div>
+

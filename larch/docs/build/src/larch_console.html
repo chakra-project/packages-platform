@@ -1,0 +1,304 @@
+<div class="larchdocs">
+<h2 id="pagetitle" level="1">Command-Line Interface</h2>
+
+<p>Basically the same actions as can be performed from the gui are available
+via the command-line. The larch program must be started with '-c'
+as the first option, the commands will be taken from the rest of the command
+line. There are a couple of options, selected by appending letters directly
+to the '-c': 'x' will cause the program to skip interactive prompts (just
+ploughing on through your system without asking if that's ok), 'l' will
+suppress logging to the console (a log file will always be written to
+the working directory). Note that the configuration files will be looked
+for in ~/.config/larch, so start it as the user which has (or should have)
+these files. You will be prompted for the root password if necessary.
+[If you need to run without such prompts, you must start the program as root
+and ensure that the environment variable '$HOME' is set appropriately.
+If you then issue commands which write to the configuration area, you
+will probably find that the ownerships are wrong, so be warned.]
+</p>
+
+<p>The actual commands follow. It is possible to pass a sequence of commands,
+where each command is a single argument to the 'larch' program - which means that
+commands must be enclosed in quotes (unless they consist of single words).
+Each command has a long form and a short form, some need an argument, some
+not. Some just give information, others change the stored configuration, still others
+perform the actual operations which are needed to produce a <em>live</em>
+system. A simple, probably rather useful example would be the 'show_project_info'
+command, which outputs the main stored configuration information. Using the
+short form it could be entered thus:
+</p>
+<pre style="margin-left: 80px;">larch -c i?</pre>
+
+<h3><a name="command-list"></a>The complete list of commands</h3>
+
+<table>
+  <tr>
+    <th>Command</th>
+    <th>Alias</th>
+    <th>Arguments</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>show_project_info</td>
+    <td>i?</td>
+    <td></td>
+    <td>Output the main stored configuration information</td>
+  </tr>
+  <tr>
+    <td>show_projects</td>
+    <td>P?</td>
+    <td></td>
+    <td>List the configured projects</td>
+  </tr>
+  <tr>
+    <td>show_profiles</td>
+    <td>p?</td>
+    <td></td>
+    <td>List the configured profiles</td>
+  </tr>
+  <tr>
+    <td>show_example_profiles</td>
+    <td>e?</td>
+    <td></td>
+    <td>List the example profiles supplied with <em>larch</em></td>
+  </tr>
+  <tr>
+    <td>show_partitions</td>
+    <td>d?</td>
+    <td></td>
+    <td>List the partitions to which the <em>live</em> system might be installed</td>
+  </tr>
+  <tr class="empty"><td colspan="4" />
+  </tr>
+  <tr>
+    <td>install</td>
+    <td>i</td>
+    <td></td>
+    <td>Run the installation step</td>
+  </tr>
+  <tr>
+    <td>larchify</td>
+    <td>l</td>
+    <td>"[s][r]"</td>
+    <td>Prepare the <em>live</em> system (<em>squash</em> the system,
+    prepare the overlay, initramfs, etc.)</td>
+  </tr>
+  <tr>
+    <td>create_iso</td>
+    <td>ci</td>
+    <td></td>
+    <td>Build an <em>iso</em> image for burning to CD/DVD</td>
+  </tr>
+  <tr>
+    <td>write_partition</td>
+    <td>cp</td>
+    <td>device "[n][l]"</td>
+    <td>Write the <em>larch</em> system to a partition</td>
+  </tr>
+  <tr>
+    <td>create_bootiso</td>
+    <td>cb</td>
+    <td></td>
+    <td>Make a boot <em>iso</em> image for computers that can't boot from USB devices</td>
+  </tr>
+  <tr class="empty"><td colspan="4" />
+  </tr>
+  <tr>
+    <td>set_project</td>
+    <td>P:</td>
+    <td>name</td>
+    <td>Select one of the already configured projects</td>
+  </tr>
+  <tr>
+    <td>new_project</td>
+    <td>P+</td>
+    <td>name</td>
+    <td>Start a new project</td>
+  </tr>
+  <tr>
+    <td>del_project</td>
+    <td>P-</td>
+    <td>name</td>
+    <td>Remove a project</td>
+  </tr>
+  <tr>
+    <td>set_profile</td>
+    <td>p:</td>
+    <td>name</td>
+    <td>Select one of the already configured profiles</td>
+  </tr>
+  <tr>
+    <td>rename_profile</td>
+    <td>p!</td>
+    <td>name</td>
+    <td>Rename the current profile</td>
+  </tr>
+  <tr>
+    <td>new_profile</td>
+    <td>p+</td>
+    <td>path [name]</td>
+    <td>Copy a profile from the given path, optionally renaming it</td>
+  </tr>
+  <tr>
+    <td>del_profile</td>
+    <td>p-</td>
+    <td>name</td>
+    <td>Remove a profile</td>
+  </tr>
+  <tr>
+    <td>set_ipath</td>
+    <td>ip:</td>
+    <td>path</td>
+    <td>Set the installation path</td>
+  </tr>
+  <tr>
+    <td>set_platform</td>
+    <td>arch:</td>
+    <td>i686(/x86_64)</td>
+    <td>Set the platform (only relevant on x86_64 host)</td>
+  </tr>
+  <tr class="empty"><td colspan="4" />
+  </tr>
+  <tr>
+    <td>set_buildmirror</td>
+    <td>m:</td>
+    <td>URL</td>
+    <td>Set the URL of a custom repository to be used for installation</td>
+  </tr>
+  <tr>
+    <td>use_build_mirror</td>
+    <td>um:</td>
+    <td>y/n</td>
+    <td>Use the custom repository set by "set_buildmirror"</td>
+  </tr>
+  <tr>
+    <td>use_project_mirrorlist</td>
+    <td>upm:</td>
+    <td>y/n</td>
+    <td>If not using a custom installation repository
+    use the project's custom mirrorlist file for installation</td>
+  </tr>
+  <tr>
+    <td>set_pacman_cache</td>
+    <td>cache:</td>
+    <td>path</td>
+    <td>Set the (host) path to the package cache</td>
+  </tr>
+  <tr class="empty"><td colspan="4" />
+  </tr>
+  <tr>
+    <td>set_bootloader</td>
+    <td>bl:</td>
+    <td>grub/syslinux/isolinux/none</td>
+    <td>Select the bootloader to use in the <em>live</em> system</td>
+  </tr>
+  <tr>
+    <td>set_medium_detection</td>
+    <td>md:</td>
+    <td>search/uuid/label/device</td>
+    <td>Set how to detect the <em>live</em> partition (for <em>iso</em>
+    this is always "search")</td>
+  </tr>
+  <tr>
+    <td>set_label</td>
+    <td>lab:</td>
+    <td>name</td>
+    <td>Set the label of the <em>live</em> partition</td>
+  </tr>
+  <tr>
+    <td>set_isoa</td>
+    <td>isoa:</td>
+    <td>name</td>
+    <td>Set the application label of the <em>iso</em></td>
+  </tr>
+  <tr>
+    <td>set_isop</td>
+    <td>isop:</td>
+    <td>name</td>
+    <td>Set the publisher info of the <em>iso</em></td>
+  </tr>
+  <tr class="empty"><td colspan="4" />
+  </tr>
+  <tr>
+    <td>pacman_s</td>
+    <td>ps:</td>
+    <td>package names</td>
+    <td>Install/update packages by name (pacman -S)</td>
+  </tr>
+  <tr>
+    <td>pacman_r</td>
+    <td>pr:</td>
+    <td>package names</td>
+    <td>Remove packages (pacman -Rs)</td>
+  </tr>
+  <tr>
+    <td>pacman_u</td>
+    <td>pu:</td>
+    <td>file-paths</td>
+    <td>Add/update packages from package files</td>
+  </tr>
+  <tr>
+    <td>pacman_sy</td>
+    <td>psy</td>
+    <td></td>
+    <td>Synchronize pacman database</td>
+  </tr>
+
+</table>
+
+<h3><a name="arguments"></a>Arguments</h3>
+
+<p>Arguments listed in square brackets are optional. When single letters are listed
+as optional arguments and more than one of these is specified they may not be
+separated by spaces (e.g. to specify option "s" and option "r" I must pass "sr" as the
+argument). A slash ("/") indicates a choice.
+</p>
+
+<pre style="margin-left: 20px;">
+larchify:
+                [ s: don't generate sshkeys ]
+                [ r: use old system.sqf ]
+    Example: larch -c 'larchify sr'
+
+write_partition:
+                device (e.g. /dev/sdb1)
+                [ n: don't format the partition ]
+                [ l: with larchboot file even if not using 'search' \
+                        discovery method ]
+    Example: larch -c 'cp /dev/sdb1 l'
+
+set_project:
+                name
+    Example: larch -c 'P: project1'
+
+del_project:
+                name
+    Example: larch -c 'P- MyOldProject'
+
+set_buildmirror:
+                URL
+    Example: larch -c 'm: file:///home/myrepos/*platform*/*repo*'
+
+set_bootloader:
+                grub/syslinux/isolinux/none
+    Example: larch -c 'bl: grub'
+
+pacman_s:
+                package names
+    Example: larch -c 'ps: gimp abiword'
+
+pacman_u:
+                file-paths
+    Example: larch -c 'pu: pkgs/dlarch-theme-gdm-1.2-2-any.pkg.tar.gz \
+                                pkgs/xkmap-3.0-5-any.pkg.tar.gz'
+</pre>
+
+<p>A more complicated command might perform an installation, prepare the <em>live</em>
+system and write it to a USB partition, all without prompting the user. I assume that the
+configuration work has already been done:
+</p>
+ <pre style="margin-left: 20px;">
+larch -cx i l 'cp /dev/sdb1'
+</pre>
+
+</div>

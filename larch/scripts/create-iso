@@ -1,0 +1,138 @@
+#!/bin/bash
+
+# create-iso
+
+# To build a bootable (isolinux) CD from a larch USB-stick with
+# syslinux or grub boot. This creates the ISO-file.
+
+# $1 is the USB-stick's mount-point (default = /.livesys/medium).
+
+# Author: Michael Towers (larch42 at googlemail dot com)
+#
+# This file is part of the larch project.
+#
+#    larch is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    larch is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with larch; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#
+#----------------------------------------------------------------------------
+# 2009.09.15
+
+# You might need to adjust this
+ISOLINUXBIN=/usr/lib/syslinux/isolinux.bin
+
+#=================================================
+
+APP="$( basename $0 )"
+# Get path to this script
+FULLPATH="$( readlink -f $0 )"
+SCRIPTDIR="$( dirname ${FULLPATH} )"
+
+# Default: the currently running system is a larch live system
+MP="/.livesys/medium"
+
+echo
+echo "   ${APP} [larch system mount-point]"
+echo
+echo "Build an isolinux CD image (larch.iso) from the larch (syslinux only)"
+echo "system mounted at the given mount point. The default mount-point is"
+echo "${MP}, so that this script can be run easily from a running"
+echo "larch system."
+echo
+echo "The image, and the temporary working files will be created in"
+echo "the current directory. A LOT of space will be needed - about twice"
+echo "the size of the CD image, so make sure this space is available"
+echo "before running this program."
+echo
+
+if [ -n "$1" ]; then
+    MP="$( readlink -f $1 )"
+fi
+if ! [ -d ${MP}/syslinux ]; then
+    echo "ERROR: ${MP} is not a larch syslinux system" 1>&2
+    exit 1
+fi
+
+# test if the script is started by root user. If not, exit
+if [ $UID -ne 0 ]; then
+    echo "Only root can run this program"; exit 1
+fi
+
+read -p "  Continue? [y|N]: " ans
+if [ -z "$( echo ${ans} | grep '^ *[yY]' )" ]; then exit 0; fi
+
+mkiso ()
+{
+    mkisofs -r -l $1 \
+        -no-emul-boot -boot-load-size 4 -boot-info-table \
+        -input-charset=UTF-8 \
+        -publisher "designed by gradgrind, licence: GPL" \
+        -A "larch-7" \
+        -o "larch.iso" "${CDDATA}"
+
+    if [ $? -eq 0 ]; then
+        echo "// Your ISO has been created as larch.iso"
+    else
+        echo "ERROR: iso build failed" 1>&2
+        return 1
+    fi
+}
+
+
+if ! [ -f ${ISOLINUXBIN} ]; then
+    echo "ERROR: Couldn't find isolinux.bin"
+    exit 1
+fi
+
+CDDATA=$( pwd )/bootcd
+rm -rf ${CDDATA}
+mkdir -p ${CDDATA}/larch
+if [ -d ${MP}/syslinux ]; then
+    cp -r ${MP}/syslinux ${CDDATA}/isolinux
+    mv ${CDDATA}/isolinux/syslinux.cfg ${CDDATA}/isolinux/isolinux.cfg
+    isoarg="-b isolinux/isolinux.bin -c isolinux/isolinux.boot"
+    cp ${ISOLINUXBIN} ${CDDATA}/isolinux
+    # CDs are only bootable using the search method
+    sed "s|\(initrd=larch.img .*\) uuid=[^ ]*|\1|g" -i ${CDDATA}/isolinux/isolinux.cfg
+    sed "s|\(initrd=larch.img .*\) label=[^ ]*|\1|g" -i ${CDDATA}/isolinux/isolinux.cfg
+    sed "s|\(initrd=larch.img .*\) root=[^ ]*|\1|g" -i ${CDDATA}/isolinux/isolinux.cfg
+elif [ -d ${MP}/boot ]; then
+    cp -r ${MP}/boot ${CDDATA}
+    isoarg="-b boot/grub/stage2_eltorito"
+    # CDs are only bootable using the search method
+    sed "s|\(larch.kernel .*\) uuid=[^ ]*|\1|g" -i ${CDDATA}/boot/grub/menu.lst
+    sed "s|\(larch.kernel .*\) label=[^ ]*|\1|g" -i ${CDDATA}/boot/grub/menu.lst
+    sed "s|\(larch.kernel .*\) root=[^ ]*|\1|g" -i ${CDDATA}/boot/grub/menu.lst
+else
+    echo "ERROR: No syslinux or boot directory"
+    exit 1
+fi
+
+for f in $( ls ${MP}/larch | grep -v "\.sqf" ); do
+    cp -r ${f} ${CDDATA}/larch
+done
+cp ${CDDATA}/larch/system.sqf ${CDDATA}/larch
+# Use the updated overlay(s) ('_' suffix) if they are present.
+for f in mods filter; do
+    if [ -f ${MP}/larch/${f}.sqf_ ]; then
+        cp ${MP}/larch/${f}.sqf_ ${CDDATA}/larch/${f}.sqf
+    else
+        cp ${MP}/larch/${f}.sqf ${CDDATA}/larch
+    fi
+fi
+done
+
+# Session saving stuff is irrelevant on a CD
+rm -f ${CDDATA}/larch/save
+
+mkiso "${isoarg}"

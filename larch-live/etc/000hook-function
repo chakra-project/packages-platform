@@ -1,0 +1,21 @@
+#### TEMPORARY PATCH
+# This file should be deleted as soon as the new initscripts
+# package which implements this feature is released.
+# 'Hooks' are optional code snippets supplied in files in
+# directory /etc/rc.d/functions.d.
+
+declare -A hook_funcs
+
+add_hook() {
+    [ -z "$1" -o -z "$2" ] && return 1
+    hook_funcs["$1"]="${hook_funcs["$1"]} $2"
+}
+
+run_hook() {
+    local func
+
+    [ -z "$1" ] && return 1
+    for func in ${hook_funcs["$1"]}; do
+        ${func}
+    done
+}

@@ -1,0 +1,94 @@
+# larch handlers for rc. script hooks
+# 2010.02.19
+
+
+sysinit_premount_larch() {
+    status "larch sysinit_premount hook"
+    # Rebuild /etc/mtab
+    grep "^aufs */ " /proc/mounts               >/etc/mtab.new
+    grep "^unionfs */ " /proc/mounts            >>/etc/mtab.new
+    grep "^tmpfs */.livesys " /proc/mounts      >>/etc/mtab.new
+    if [ -d /.livesys/medium/larch ]; then
+        grep " /.livesys/medium " /proc/mounts  >>/etc/mtab.new
+    fi
+    grep -v "^rootfs " /etc/mtab                >>/etc/mtab.new
+    mv /etc/mtab.new /etc/mtab
+
+    # Add disk partitions to /etc/fstab
+    x10d_fstab
+}
+add_hook sysinit_premount sysinit_premount_larch
+
+
+sysinit_end_larch() {
+    # Allow setting up of xorg.conf before xorg is started
+    status "larch sysinit_end hook"
+    [ -x /etc/X11/xinit/xorg.conf.set ] && /etc/X11/xinit/xorg.conf.set
+}
+add_hook sysinit_end sysinit_end_larch
+
+
+shutdown_postkillall_larch() {
+    status "larch shutdown_postkillall hook"
+    if ! [ -f /.livesys/saveclock ]; then
+        # This will prevent the hardware clock from being set
+        HARDWARECLOCK='LIVE'
+    fi
+}
+add_hook shutdown_postkillall shutdown_postkillall_larch
+
+
+shutdown_poweroff_larch() {
+    status "larch shutdown_poweroff hook"
+    # larch session saving
+    dosessionsave
+
+    # Eject CD/DVD
+    doeject
+}
+add_hook shutdown_poweroff shutdown_poweroff_larch
+
+#--------------------------------------
+# Functions for session saving
+
+dosessionsave ()
+{
+    ############################# Include session saving functions
+    . /opt/larch/session-save/shutdown2
+    if [ -f /tmp/checkse ]; then
+        . /tmp/checkse
+    else
+        checkse
+    fi
+
+    if [ -n "${saving}" ] && ! session_save; then
+        echo
+        echo "If you know what you are doing, you may be able to recover"
+        echo "something from this unpleasant situation."
+        echo
+        echo "You may use the command line to investigate further ..."
+        echo
+        echo "When finished please enter 'exit', the shutdown process will"
+        echo "then continue."
+        sh -i
+    fi
+}
+
+doeject ()
+{
+    if [ -n "${ejectdev}" ]; then
+        echo "Ejecting live CD"
+        mount -n -o remount,rw /
+        # Remove the boot medium from /etc/mtab so that eject works
+        sed "/ \/.livesys\/medium / d" -i /etc/mtab
+        eject ${ejectdev}
+        mount -n -o remount,ro /
+        echo "========================================"
+        echo "It's safe to switch the computer off now"
+        echo -ne "Press Enter to continue"
+        read junk
+    fi
+
+    # This shouldn't be needed, but better safe than sorry?
+    sync
+}

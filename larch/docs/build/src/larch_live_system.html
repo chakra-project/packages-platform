@@ -1,0 +1,130 @@
+<div class="larchdocs">
+<h2 id="pagetitle" level="1">Structure of a <em>larch live</em> system</h2>
+
+<p>The vast majority of the code that runs in a <em>live</em> CD/USB system
+is exactly the same as in a normal system running from hard disk.
+The main differences arise through the <em>live</em> system being based on
+a read-only root file-system, so various adjustments are necessary to
+make the areas that must be writeable appear to be so. I say 'appear to be'
+because in general any changes will be lost when the system shuts down,
+the actual changes being made only in a RAM-based filesystem (but see
+<a href="larch_sessionsave.html">"Session saving"</a>).
+</p>
+
+<h3><a name="Squashfs_and_Unionfs"></a>squashfs and aufs</h3>
+
+<p>In <em>larch</em>, as in many other <em>live</em> systems, the
+ability to (apparently) write to a read-only file-system is provided by
+<em>aufs</em> (originally derived from <em>unionfs</em>).
+The file-system is also compressed, using <em>squashfs</em>, so as to fit
+more data onto the storage device. A custom <em>Arch Linux</em> installation
+(you can choose which packages are installed) is compressed into a
+<em>squashfs</em> file-system in the file <strong>system.sqf</strong>,
+which is placed in the 'larch' directory of the boot device.
+</p>
+
+<p>For use in a <em>live</em> system a few changes must be made to some files
+in the installation. In <em>larch</em> this is (at first) not done directly,
+the installed system is left in a 'clean' state. Instead of that, an additional
+<em>union</em> layer is created, in the archive <strong>mods.sqf</strong>,
+containing all the modified files. The user is free to include (pretty well)
+any customizations (s)he wants in this overlay file, which is also placed
+in the 'larch' directory of the boot device.
+</p>
+
+<p>These system archives are combined when the <em>live</em> system
+boots. They are mounted as branches of a <em>union</em> (<em>aufs</em>)
+file-system with the overlay above the 'standard' system, so that files in
+the overlay have priority over the original ones. A further, <em>tmpfs</em>,
+layer is placed on top of these, which effectively makes the whole system
+writeable. As the changes are only stored in RAM, they will, however, be lost
+when the system shuts down (unless using the
+<a href="larch_sessionsave.html">session saving</a> feature).
+</p>
+
+<h3><a name="initramfs"></a><em>initramfs</em> and <em>mkinitcpio</em></h3>
+
+<p>It is, in general, not possible to boot directly into a live CD/USB system.
+Some form of 'initrd' or 'initramfs' is required, in order to find the boot
+device, prepare the union file-system and prepare it for running.
+Many modern <em>GNU/Linux</em> systems use initrd/initramfs (the former
+being now deprecated) as a matter of course, for loading the necessary kernel
+modules, and <em>Arch Linux</em> is no exception, a modular initramfs system
+(<em>mkinitcpio</em>) being the standard way to boot <em>Arch Linux</em>,
+and <em>larch</em> also takes advantage of it, although some additions need
+to be made to boot <em>live</em> systems.
+</p>
+
+<p><em>larch</em> adds several hooks to the <em>Arch Linux mkinitcpio</em>
+system (they are in the 'larch-live' package). The first, 'larch1' is
+concerned with finding the boot device. It can select a device on the basis
+of UUID, partition label, partition name ('/dev/sdb1', etc.) or else it can
+search all available devices for the file '/larch/larchboot'. A simple
+validity check is made by testing the existence of the '/larch/system.sqf'
+archive.
+</p>
+
+<p>The second hook comes in two flavours - one for <em>aufs</em> and one
+for <em>unionfs</em> - it just sets some variables according to which
+unioning file-system is being used ***+ (at the moment only <em>aufs</em>
+is properly supported) -***
+</p>
+
+<p>The third hook, 'larch3', performs the actual preparation of the
+<em>larch</em> root file-system, combining the system and overlay archives
+with a <em>tmpfs</em> upper layer in a union and carrying out various
+other initializations.
+</p>
+
+<p>In order to generate the special <em>initramfs</em> a customized
+'/etc/mkinitcpio.conf' is used, prepared during the build process from the
+template '/etc/mkinitcpio.conf.larch0' and saved as
+'/etc/mkinitcpio.conf.larch'. If you want to customize this, you need to
+edit '/etc/mkinitcpio.conf.larch0' in 'rootoverlay' in the profile (the
+gui has a button for this).
+</p>
+
+<p>There is also a customized <em>mkinitcpio</em> preset in '/etc/mkinitcpio.d',
+also working with a template - 'larch.preset0' is used to produce 'larch.preset'
+during the build operation. In addition this preset replaces the standard
+preset belonging to the kernel, so that subsequent kernel updates (etc.)
+will regenerate a correct <em>initramfs</em> for the <em>larch</em> system.
+If you want to revert to the normal <em>Arch Linux mkinitcpio</em> behaviour
+(for example, if you are installing the system) you will need to replace
+the preset by the original, which gets saved with '.larchsave' appended.
+</p>
+
+
+<h3><a name="rc_files"></a>/etc/rc.sysinit and /etc/rc.shutdown</h3>
+
+<p>The initial boot script and the shutdown script must be customized for use
+in a <em>larch live</em> environment. This is achieved by using hooks in the
+standard /etc/rc.sysinit and /etc/rc.shutdown scripts. The file
+'etc/rc.d/functions.d/larch-hooks', in the 'larch-live' package, defines these.
+During startup the main tweaks are to the content of /etc/mtab and /etc/fstab.
+During shutdown we probably want to disable writing to the hardware clock, but
+the main addition is the session saving code. If booting from CD/DVD we will
+want to eject this just before shutting down.
+</p>
+
+<h3><a name="fstab"></a>/etc/fstab</h3>
+
+<p>If the file '/etc/fstab.larch' exists this will be used as a persistent
+'/etc/fstab', being copied there during the boot process (in the 'larch3'
+hook in the initramfs system). Otherwise a very minimal '/etc/fstab' will
+be generated at each boot. It includes entries for any existing swap
+partitions, but these are commented out unless the 'swap' boot parameter
+is specified (the default <em>larch</em> behaviour is to mount nothing
+automatically).
+</p>
+
+<p>The 'x10d_fstab' script in the 'larch-live' package allows the very basic
+/etc/fstab generated by the initramfs system ('larch3' hook) to be extended
+automatically, but '/etc/fstab' will only be changed if '/etc/fstab.larch'
+doesn't exist.
+This script adds entries for the partitions it detects, and also mount points
+in '/mnt' for them. The entries are such that the partitions are not mounted
+automatically.
+</p>
+
+</div>

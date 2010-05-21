@@ -1,0 +1,110 @@
+<div class="larchdocs">
+<h2 id="pagetitle" level="2">GUI Tab: Larchify</h2>
+
+<p>You can repeat the 'larchify' command as often as you like,
+to test various configurations or to build differently configured
+<em>live</em> systems with the same underlying packages. This works
+because the 'larchify' process itself does not change anything within the
+installation - all the files it generates are placed in the 'overlay',
+which (thanks to <em>aufs</em>) will just cover up any old versions of
+the added files in the underlying installation. At present <em>larch</em>
+does not support the 'deletion' of installation files, they can only be
+overlayed by replacements.
+</p>
+
+<h3>User accounts</h3>
+<p>You can enter or edit user accounts to be added during the creation of
+the <em>live</em> system. Any of the columns except the first (the login
+name) may be empty.
+</p>
+<p>A password can be set for the new user by entering this (plain text -
+I'm guessing this is alright in this situation ...). An empty password
+field will allow passwordless logins (at least on the console).
+</p>
+<p>The primary group of a new user can be set in the 'Group' column.
+When this is empty, it takes the <em>useradd</em> default, which is
+defined by settings in '/etc/login.defs' and '/etc/default/useradd'. Note
+that the default in <em>Arch Linux</em> is a group with the same name as
+the user, this is set by 'USERGROUPS_ENAB yes' in 'etc/login.defs'. You can
+override this by adding an 'expert' option, or by placing a modified version
+of this file in the profile's 'rootoverlay' directory.
+</p>
+<p>By default the UID number will be chosen automatically, but a specific
+number may be entered here. In <em>Arch Linux</em> the UIDs normally start
+at 1000.
+</p>
+<p>The 'skel'-directory column determines how the user's home
+directory will be initialized. The default (empty cell) is to copy the
+contents from '/etc/skel'. The editor popup shows a list of the available
+alternatives (folders within the profile beginning with 'skel_').
+</p>
+<p>The additional groups to which this user should belong can also be
+specified. Entries in this column are initialized to some default value
+which should be adequate for normal use, but may well need tweaking.
+This is a comma separated list <strong>without spaces</strong>.
+</p>
+<p>The final column allows you to pass further options to the system
+'useradd' command used to add the new user. Do not use double-quotes in this
+option string. Read 'man useradd' for more information about the available
+options.
+</p>
+
+<h4>Editing the table</h4>
+<p>Click on a cell in the selected row to cause an editor popup to appear.
+Clicking on an unselected row selects that row.
+</p>
+
+<h3>Locales</h3>
+<p>You can select the (glibc) locales supported by the <em>live</em>
+system by editing the /etc/locale.gen file in the overlay. If there is
+no such file initially it will be copied from the new installation's
+(not the host's!) version. See (for example) the <em>Arch Wiki</em> for
+more information about locales. Note that <em>larch</em> tries to leave
+the locale files in the installation itself unchanged, new files are
+placed in the overlay.
+</p>
+
+<h3>/etc/rc.conf</h3>
+<p>This is the central configuration file for an <em>Arch Linux</em>
+system. You can edit it here (see for example the <em>Arch Wiki</em> for
+more information about this file).
+</p>
+
+<h3>Advanced options - the defaults are normally fine</h3>
+
+<h4>mkinitcpio.conf</h4>
+<p>Here you can edit the mkinitcpio.conf used for building the <em>initramfs</em>
+for the <em>live</em> system. N.B. The details of mkinitcpio handling in
+<em>larch</em> are a bit complicated, so if you change something here
+please be careful - you are not editing /etc/mkinitcpio.conf, but rather
+etc/mkinitcpio.conf.larch0 in the 'rootoverlay' of the profile. Also, don't
+change the <em>larch</em> hooks.
+</p>
+
+<h4>overlay</h4>
+<p>Apart from the few customization options offered by the GUI directly, it
+is possible to include any files in the <em>live</em> system by adding them
+at the appropriate path within the overlay directory ('rootoverlay') of
+the profile. This button opens a file browser on the 'rootoverlay' directory
+of the current profile.
+</p>
+
+<h4>ssh-keys</h4>
+<p>See <a href="larch_ssh.html#ssh_hostkeys">ssh host keys</a>. The default
+is to generate these keys (if the <em>openssh</em> package is installed).
+</p>
+
+<h4>Reuse existing system.sqf</h4>
+
+<p>After 'larchify' has been run, the base installation will have been
+'squashed' into a compressed archive. Setting this option will prevent
+the repetition of this compression (which is quite a lengthy process) on
+the next run of 'larchify'. This should only be enabled if no changes
+have been made to the base installation (otherwise these changes will
+not be picked up). This is a very useful option, also for non-'advanced'
+users, but I have put it in the 'advanced' section because you really
+need to consider whether you have changed anything in the installation
+before using it.
+</p>
+</div>
+

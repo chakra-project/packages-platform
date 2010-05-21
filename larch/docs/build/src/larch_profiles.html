@@ -1,0 +1,233 @@
+<div class="larchdocs">
+<h2 id="pagetitle" level="1">Profiles</h2>
+
+<p>This feature of the <em>larch</em> build system allows bundling
+all the configuration information for a particular live CD 'design' into
+a single directory. That includes the list of packages to be installed, locale
+information and the particular tweaks and additions needed to customize the CD,
+in particular a subdirectory containing the 'overlay' files - those files
+which have been changed from their initial fresh state after installation
+and those which have simply been added.
+</p>
+
+<p>A profile is a directory, the name of the profile is the directory's
+name. The simplest feature is perhaps the 'rootoverlay' subdirectory:
+everything in this directory is copied directly to the <em>live</em>
+system's overlay, so that the a file 'a/b/c' within this directory will
+appear at '/a/b/c' in the <em>live</em> system, regardless of whether this
+file previously existed. Note however that all ownerships are changed to
+'root:root'.
+</p>
+
+<p>If you would like to have a look at a profile, look in the 'profiles'
+directory in the distribution. Each of its subdirectories is a profile.
+If you want to make your own profile, it is probably easiest to start with
+one of the examples. The <em>larch</em> gui allows you to copy one of these
+into your working directory, and rename it.
+</p>
+
+<p>The main files within a profile are described below:
+</p>
+<ul>
+  <li><strong>addedpacks</strong> - a simple list of packages (just package
+  name as supplied to 'pacman -S', e.g. 'syslinux', not the file name), one
+  per line, comment lines start with '#'.
+  This is the primary place for configuring which packages are installed.
+  Also package groups may occur here (e.g. 'xorg'), and if these are
+  preceded by a '*' their constituent packages will be filtered by the
+  veto list in <em>vetopacks</em>.
+  </li>
+
+  <li><strong>vetopacks</strong> - This file is optional. It provides a list of
+  packages (one package per line) to be ignored when installing from package
+  groups (e.g. 'base' or 'xorg'). Note that only packages which are not
+  required by others can actually be prevented from being installed, and that
+  only packages in 'base' and in those groups in <em>addedpacks</em> which
+  are preceded by a '*' will be omitted from the installation list.
+  </li>
+
+  <li><strong>bootlines</strong> - This file contains bootloader independent
+  boot lines, so that the same file can be used for grub and isolinux/syslinux.
+  The gui provides a button to edit this file.
+  To get an idea of what should be in here look at the default version (in
+  the 'larch' package, 'cd-root' directory), or just click on the button.
+  </li>
+
+  <li><strong>rootoverlay</strong> (directory) - The files in this directory
+  are effectively copied on top of the original system - as an overlay.
+  They (potentially) form the bulk of the customization for the live system.
+  This directory is optional, but editing any of the files mentioned below
+  via the gui will create it automatically.
+  </li>
+
+  <li><strong>rootoverlay/etc/rc.conf</strong> - As a major point of
+  configuration in an <em>Arch</em> system this is important enough
+  to get a button in the <em>larch</em> gui to edit it.
+  </li>
+
+  <li><strong>rootoverlay/etc/locale.gen</strong> - For convenience, the
+  <em>larch</em> gui provides a button to edit this file, which determines
+  which glibc locales are supported in the <em>live</em> system.
+  </li>
+
+  <li><strong>rootoverlay/etc/mkinitcpio.conf.larch0</strong> - Again for
+  convenience, the <em>larch</em> gui provides a button to edit this file,
+  which allows you to tweak the initramfs. This is a special version of
+  '/etc/mkinitcpio.conf' which is used to generate the initramfs for the
+  <em>larch live</em> system. The default version is supplied as
+  '/etc/mkinitcpio.conf.larch0' in the 'larch-live' package. Whatever else
+  you change, don't change the larch hooks.
+  </li>
+
+  <li><strong>rootoverlay/etc/inittab.larch</strong> - If this file is
+  present it will cause the original /etc/inittab to be saved with a
+  '.larchsave' suffix, and this new version will be used for the
+  <em>live</em> 'inittab'. This allows a special version of this file to
+  be used just for the <em>live</em> system, an installer
+  can replace it by the original during the installation process.
+  </li>
+
+  <li><strong>cd-root</strong> (directory) - This directory contains files
+  that will be (more or less) directly copied to the <em>larch</em> medium,
+  partly dependent on the chosen bootloader.
+  </li>
+
+  <li><strong>cd-root/isolinux0</strong> (directory) - The contents of this
+  directory will be copied to the isolinux (syslinux) directory of the medium
+  if the isolinux (syslinux) bootloader is chosen. If this directory doesn't
+  exist, the default version from the 'larch' package, 'cd-root' directory,
+  will be taken.
+  </li>
+
+  <li><strong>cd-root/isolinux</strong> (directory) - The contents of this
+  directory will be copied to the isolinux (syslinux) directory of the medium
+  if the isolinux (syslinux) bootloader is chosen. It can be used to overwrite
+  or add to the files in the previously copied 'isolinux0' directory.
+  </li>
+
+  <li><strong>cd-root/grub0</strong> (directory) - The contents of this
+  directory will be copied to the boot directory of the medium
+  if the grub bootloader is chosen. If this directory doesn't
+  exist, the default version from the 'larch' package, 'cd-root' directory,
+  will be taken.
+  </li>
+
+  <li><strong>cd-root/grub</strong> (directory) - The contents of this
+  directory will be copied to the boot directory of the medium
+  if the grub bootloader is chosen. It can be used to overwrite
+  or add to the files in the previously copied 'grub0' directory.
+  </li>
+
+  <li><strong>cd-root/boot0</strong> (directory) - The contents of this
+  directory will be copied to the isolinux/syslinux/boot directory of the
+  medium after the bootloader specific stuff is copied. If this directory
+  doesn't exist, the default version from the 'larch' package, 'cd-root'
+  directory, will be taken.
+  </li>
+
+  <li><strong>cd-root/boot</strong> (directory) - The contents of this
+  directory will be copied to the isolinux/syslinux/boot directory of the
+  medium after the bootloader specific stuff is copied. It can be used to
+  overwrite or add to the files in the previously copied
+  'grub0'/'isolinux0'/'boot' directory.
+  </li>
+
+  <li><strong>cd-root/larch/copy</strong> (directory) - The contents of this
+  directory will appear in '/larch/copy' on the medium and during booting
+  the <em>larch live</em> system will copy the contents of this directory
+  to the <em>tmpfs</em> base directory ('/.livesys').
+  </li>
+
+  <li><strong>cd-root/larch/extra</strong> (directory) - The contents of this
+  directory will appear in '/larch/extra' on the medium but are otherwise
+  unconnected with any <em>larch</em>  functionality.
+  </li>
+
+</ul>
+
+<p>Further files which may be found within a profile are described below:
+</p>
+<ul>
+  <li><strong>users</strong> - It is possible to add user accounts to the
+  system during building. See below.
+  </li>
+
+  <li><strong>skel_*</strong> (directory) - Customized '/etc/skel' substitutes
+  for use at build time only. See below.
+  </li>
+
+  <li><strong>vetodirs</strong> - Do not use this unless you really know what
+  you are doing. Each directory listed in this file (one entry per line,
+  comment lines start with '#') will be excluded from the live system. The
+  directories are relative to the installation root.
+  </li>
+
+  <li><strong>build-tweak</strong> - Do not use this unless you really know
+  what you are doing. It is a program (script) - so it must be executable -
+  to customize the construction of the overlay (to a certain extent). It gets
+  two arguments on the command line: the path to the installation being
+  larchified, and the (full) path to the directory in which the overlay is
+  being constructed. It is called just before 'mods.sqf' is squashed, but
+  also before users are added.
+  </li>
+
+</ul>
+
+<h3>Adding user accounts</h3>
+
+<p>
+The construction details should be provided in the 'users' file in the
+profile directory. It is an 'ini'-style configuration file, the sections
+being the user names. Here is an example:
+<pre>[DEFAULT]
+pw =
+expert =
+skel =
+maingroup =
+uid =
+xgroups = video,audio,optical,storage,scanner,power,camera
+
+[u1]
+uid = 999
+skel =
+
+[u2]
+pw = p1
+expert =
+skel =
+maingroup =
+uid =
+xgroups = video,audio,optical,storage
+</pre>
+The 'DEFAULT' section is not necessary, but is generated automatically
+by the gui user-table editor. Only entries which differ from the default
+values need be present.
+</p>
+<p>The default primary group is defined by settings in '/etc/login.defs'
+and '/etc/default/useradd' ('USERGROUPS_ENAB yes' in 'etc/login.defs'
+causes this to be a group with the same name as the user). You can
+override this by adding an 'expert' option, or by placing modified versions
+of these files in the profile's 'rootoverlay' directory.
+</p>
+<p>The additional groups should be comma-separated and without spaces.
+</p>
+<p>If no 'skel'-file is specified, the default ('/etc/skel') is used, including
+anything in the overlay. To use a custom 'skel'-file, place the directory
+in the profile, giving it a name starting with 'skel_', and place the rest of
+the name (the part after '_') in the configuration line.
+</p>
+<p>A password can be set for the new user by entering this (plain text -
+I'm guessing this is alright in this situation ...). An empty password
+field will allow passwordless logins (at least on the console).
+</p>
+<p>By default the UID number will be chosen automatically, but a specific
+number may be entered here. In <em>Arch Linux</em> the UIDs normally start
+at 1000.
+</p>
+<p>Users are added by means of 'useradd', so anything placed in the 'expert'
+field should be a valid option to that command. If a user-name already exists
+in the system to be larchified, it will be ignored (it does not count as
+an error).
+</p>
+
+</div>

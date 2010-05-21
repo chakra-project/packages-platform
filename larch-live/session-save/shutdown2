@@ -1,0 +1,228 @@
+# shutdown2   - functions to save the overlay to a compressed archive
+#
+# Author: Michael Towers (larch42 at googlemail dot com)
+#
+# This file is part of the larch project.
+#
+#    larch is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    larch is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with larch; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#
+#----------------------------------------------------------------------------
+# 2009.09.22
+
+
+# This function can be called before the proper shutdown, in order to
+# gather information concerning the session saving. In that case, also
+# 'autocheckse' should/could be called to save it in condensed form so
+# that the actual shutdown script doesn't need to repeat the 'checkse' call.
+checkse ()
+{
+    ############################# Deal with ejecting
+    # See if boot device still mounted and ejectable (CD/DVD)
+    bootdev=$( cat /.livesys/bootdevice )
+    ejectdev=''
+    savedev=${bootdev}
+    if [ -f /proc/sys/dev/cdrom/info ]; then
+        cdroms=$( cat /proc/sys/dev/cdrom/info | { while read a b c; do
+                if [ "${a}" = "drive" -a "${b}" = "name:" ]; then
+                    echo "${c}"
+                    break
+                fi
+            done
+        } )
+        for d in ${cdroms}; do
+            if [ "/dev/${d}" = "${bootdev}" ]; then
+                # booted from CD/DVD, by default no session-save possible
+                savedev=''
+                if grep "^${bootdev} " /proc/mounts &>/dev/null; then
+                    # it needs to be ejected
+                    ejectdev=${bootdev}
+                fi
+                break
+            fi
+        done
+    fi
+    ############################# Deal with session saving
+    savepath=/.livesys/medium
+    savemount="${savepath}"
+
+    dontask=""
+    merge=""
+
+    if [ -f ${savepath}/larch/session-save0 ]; then
+        . ${savepath}/larch/session-save0
+    fi
+
+    if [ -n "${savedev}" ] && [ -f "${savepath}/larch/save" ]; then
+        saving="yes"
+    else
+        saving=""
+    fi
+}
+
+# Create a file with all the information for guiding session-saving and
+# device ejection at shutdown
+autocheckse ()
+{
+    xfile=/tmp/checkse
+    :>${xfile}
+    echo "bootdev=\"${bootdev}\"" >>${xfile}
+    echo "ejectdev=\"${ejectdev}\"" >>${xfile}
+    echo "savedev=\"${savedev}\"" >>${xfile}
+    echo "savemount=\"${savemount}\"" >>${xfile}
+    echo "savepath=\"${savepath}\"" >>${xfile}
+    echo "dontask=\"${dontask}\"" >>${xfile}
+    echo "merge=\"${merge}\"" >>${xfile}
+    echo "saving=\"${saving}\"" >>${xfile}
+}
+
+
+# This is the entry point for steering the session saving.
+# It determines what sort of session saving is to be done and calls
+# 'dosaving' to perform the actual saving operation.
+session_save ()
+{
+    overlaypath=${savepath}/larch
+    if [ -f ${overlaypath}/save-menu ]; then
+        . ${overlaypath}/save-menu
+
+    elif [ -f /tmp/xlogout ]; then
+        if grep "-" /tmp/xlogout &>/dev/null; then
+            savedev=""
+        elif grep "M" /tmp/xlogout &>/dev/null; then
+            merge="yes"
+        fi
+
+    elif [ -z "${dontask}" ]; then
+        echo
+        echo "============= Session Saving ============="
+        echo
+        echo "Please select:"
+        echo "--------------"
+        echo
+        echo "    <Enter>: Save overlay"
+        echo "  1 <Enter>: Merge overlays"
+        echo "  2 <Enter>: No session saving"
+        read -p "Choice? :" choice
+        case ${choice} in
+            1 ) merge="yes" ;;
+            2 ) savedev="" ;;
+            * ) ;;
+        esac
+    fi
+
+    if [ -n "${savedev}" ]; then
+        dosaving
+        res=$?
+        ${unmount}
+        return ${res}
+    fi
+}
+
+# Perform the session saving, handling simple recompression by calling
+# 'saveovl' (function), and calling 'merge_overlay' (script) to handle
+# overlay merging.
+dosaving()
+{
+    # Check whether initramfs and/or kernel have been updated, and
+    # write to medium if necessary.
+    if [ -f /boot/larchnew.img ]; then
+        if ! mount -n -o remount,rw /.livesys/medium; then
+            echo "ERROR: New initramfs - couldn't mount boot device rw"
+            return 1
+        fi
+        if [ -f /.livesys/medium/syslinux/larch.kernel ]; then
+            sdir=/.livesys/medium/syslinux
+        else
+            sdir=/.livesys/medium/boot
+        fi
+        mount -n -o remount,rw /
+        mv /boot/larchnew.img ${sdir}/larch.img
+        vmlinuz="$( cat /.livesys/medium/larch/kernelname )"
+        [ -f /boot/${vmlinuz} ] && mv /boot/${vmlinuz} ${sdir}/larch.kernel
+        mount -n -o remount,ro /.livesys/medium
+        mount -n -o remount,ro /
+    fi
+
+    if cat /proc/mounts | \
+            grep "^${savedev} ${savemount} " &>/dev/null; then
+        mount -n -o remount,rw ${savemount}
+        unmount="mount -n -o remount,ro ${savemount}"
+    else
+        mount -n ${savedev} ${savemount}
+        unmount="umount -n ${savemount}"
+    fi
+
+    # Save autologin user
+    mkdir -p ${overlaypath}/copy
+    if [ -f /tmp/newuser ]; then
+        cat /tmp/newuser >${overlaypath}/copy/autologin
+    else
+        :> ${overlaypath}/copy/autologin
+    fi
+    if [ $? -ne 0 ]; then
+        echo "ERROR: Couldn't save autologin user"
+        return 1
+    fi
+
+    rm -f ${overlaypath}/overlay.ovl~
+
+    if [ -n "${merge}" ]; then
+        rm -f ${overlaypath}/mods.sqf~
+        if /opt/larch/session-save/merge_overlay ${overlaypath}; then
+            echo "Renaming mods.tmp to mods.sqf_"
+            mv "${overlaypath}/mods.tmp" "${overlaypath}/mods.sqf_"
+            echo "Renaming filter.tmp to filter.sqf_"
+            mv "${overlaypath}/filter.tmp" "${overlaypath}/filter.sqf_"
+            if [ -f "${overlaypath}/overlay.tar.lzo" ]; then
+                echo "Backing up overlay file, ${overlaypath}/overlay.tar.lzo"
+                mv "${overlaypath}/overlay.tar.lzo" "${overlaypath}/overlay.tar.lzo~"
+            fi
+            return 0
+        fi
+        # If we land here, merging failed
+        echo "Trying to recover by just saving overlay"
+    fi
+    saveovl
+}
+
+
+saveovl ()
+{
+    utype="$( cat /.livesys/utype )"
+    if [ "${utype}" = "aufs" ]; then
+        # flush pseudo-links (which keep track of changed hard linked files)
+        auplink / flush
+    fi
+
+    savedirs=''
+    for d in bin boot etc home lib mnt opt root sbin srv usr var; do
+        if [ -d /.livesys/overlay/${d} ]; then
+            savedirs="${savedirs} overlay/${d}"
+        fi
+    done
+
+    excludes="--exclude=/var/log --exclude=/var/tmp"
+    excludes="${excludes} --exclude=/var/cache/pacman/pkg"
+
+    echo "Recompressing overlay"
+    tar -cf - ${excludes} -C /.livesys ${savedirs} | \
+            lzop > ${overlaypath}/overlay.tar.lzo_
+    if [ $? -ne 0 ]; then
+        echo "ERROR: couldn't save overlay"
+        rm -f ${overlaypath}/overlay.tar.lzo_
+        return 1
+    fi
+    mv -b "${overlaypath}/overlay.tar.lzo_" "${overlaypath}/overlay.tar.lzo"
+}

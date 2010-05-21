@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# rc.larch.sysinit
+
+# This replaces rc.sysinit in inittab
+# 2009.08.30
+
+# Create sysinit script dynamically from normal rc.sysinit.
+# (until such as a time as the needed hooks are included in rc.sysinit upstream)
+
+if grep "^run_hook()" /etc/rc.d/functions &>/dev/null; then
+    sed -i "s|^\.|#.|" /etc/rc.d/functions.d/000addhooks
+    exec /etc/rc.sysinit
+else
+    sed -i "s|^#\.|.|" /etc/rc.d/functions.d/000addhooks
+fi
+
+# Build a modified version of rc.shutdown dynamically
+newfile=/.livesys/sysinit
+cp -f /etc/rc.sysinit ${newfile}
+
+# Insert before mounting local file systems (after proc,sys,dev)
+sed '/mount.*$NETFS/ i\
+run_hook sysinit_premount
+' -i ${newfile}
+
+# Append to file
+echo "run_hook sysinit_end" >> ${newfile}
+
+# Run the script
+. ${newfile}

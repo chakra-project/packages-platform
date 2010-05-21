@@ -1,0 +1,83 @@
+<div class="larchdocs">
+<h2 id="pagetitle" level="2">GUI Tab: Project Settings</h2>
+
+<h3>Projects</h3>
+
+<p><em>larch-7</em> uses 'projects' to gather together a few configuration
+options concerning the build environment. Examples are the location of the
+<em>Arch</em> installation to be 'larchified' (converted to a <em>live</em>
+system), pacman options such as package
+repository locations, which 'profile' (see below) to build with, which boot
+loader to use, and so on. These are all options which don't directly affect
+the essential design of the <em>live</em> system to be built. Most of the
+remaining configuration options do concern the design and are specified in
+the profile.
+</p>
+
+<p>All project information is kept in the simply structured configuration
+file '~/.config/larch/larch-config'.
+</p>
+
+<p>A new named project can be created in the advanced options on the
+Project-Settings tab of the GUI. For many purposes this will be unnecessary
+and one can use the default project, 'larch0' (this is why it is among the
+advanced options). It is also possible to delete projects which are no longer
+needed, and to set the path of the installation to be larchified.
+</p>
+
+<h4>Installation Path</h4>
+
+<p>The installation that <em>larch</em> turns into a <em>live</em> system
+need not be on a separate partition, it can be placed anywhere convenient.
+The default installation directory ('/home/larchbuild') should normally be
+acceptable, so long as there is enough free space on that partition.
+Note that lots of space is necessary, nearly 4GB for a 700MB CD, for example.
+The <em>live</em> system is built in the '.larch' sub-directory; it must be
+within the installation to be converted because some of the construction work
+is done using <em>chroot</em>.
+</p>
+
+<p>The installation of the <em>Arch Linux</em> system to be larchified is
+handled on the <a href="gui_installation.html">'Installation'</a> tab of
+the GUI, but an already existing <em>Arch Linux</em> installation can also
+be larchified: see <a href="larch_overview.html#existingSystem">
+Making a live CD from an existing Arch installation</a>
+</p>
+
+<h3>Profiles</h3>
+
+<p>A profile contains the information needed to build a particular flavour
+of <em>(live) Arch Linux</em> - which packages to install, which locales,
+system configuration in '/etc/rc.conf', boot entries, and so on. Apart
+from a few basic configuration details (mainly those concerned specifically
+with the special needs of a <em>live</em> system) for which <em>larch</em>
+provides a special mechanism, all desired changes from the freshly
+installed state should be placed in the directory 'rootoverlay' within
+the profile directory. This allows easy rebuilding of a particularly
+configured system, and it also allows various (differently configured)
+<em>live</em> systems to be built from the same underlying installation,
+without touching the installation itself.
+</p>
+
+<p>Profiles may be added, renamed and deleted at will, but be careful
+when renaming or deleting if other projects are using them. The profiles
+are shared by all projects, so if you delete or rename one that was
+being used by another project, that project will no longer be able to
+use its profile (*** it might be best to make profiles unique to projects?)
+A new profile can be created by copying (probably renaming) and editing
+an existing one. A special directory browser dialog makes it easy to
+do this - you can select the profile directory you want to copy and
+enter the new name in the same dialog.
+</p>
+
+<p>All profile information is kept in the correspondingly named directory
+within the directory '~/.config/larch/working_dir/MyProfiles'.
+</p>
+
+<h3>Processor architecture</h3>
+<p>I think it should be possible to build an i686 system while running an
+x86_64 one, but I haven't tried this, so it probably won't work!
+</p>
+
+</div>
+

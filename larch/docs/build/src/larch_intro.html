@@ -1,0 +1,112 @@
+<div class="larchdocs">
+<h2 id="pagetitle" level="1">Introduction</h2>
+
+<p><em>larch</em> is a collection of scripts designed around the creation and
+use of <em>live</em> CD/DVD/USB-stick versions of <em>Arch Linux</em>. New in
+version 7 is a graphical user interface (using <em>pyqt</em>), which hopefully
+presents the main options in a clear way. A command-line interface is still
+available, for example for use in scripts, but in general one should use the
+gui if possible. You must have <em>python</em> installed as this is
+now the primary language in <em>larch</em>.
+</p>
+
+<p>One design aim was easy customization, so that even relatively inexperienced
+users could build personalized <em>live</em> CDs (etc.), containing whatever
+packages they wanted and with their own personal configurations. The resulting
+medium should also be usable for installation purposes, so that one has a
+customized <em>Arch Linux</em> installation/rescue medium. As the content can
+be chosen freely, a comfortable working environment is possible - in contrast
+to the rather Spartan standard <em>Arch</em> installation CD. However, note
+that it is also possible, using the officially supported <em>archiso</em>, to
+produce a customized <em>Arch Linux</em> installation/rescue medium (see the
+corresponding <em>Arch wiki</em> page). The approach taken by the two projects
+is somewhat different so do have a look at both. Note that at the latest since
+version 7, <em>larch</em> makes no pretence of a 'KISS' approach. The code is,
+I'm afraid, rather complicated. The resulting <em>live</em> system should,
+however, be very close to a normal non-<em>live Arch Linux</em> system (as
+far as the <em>squashfs + aufs</em> basis allows).
+</p>
+
+<p><em>larch</em> also offers a flexible approach to building your
+<em>live</em> media. You can use 'profiles' to determine what gets installed,
+and how it is configured. The advantage of this method is that all your
+specifications are kept together in a folder which can be used to rebuild the
+same or a similar system at a later date. Alternatively you can do a normal
+<em>Arch Linux</em> installation (if there is such a thing!) and then make a
+<em>live</em> medium from this. You can even 'livify' your existing
+installation (though it might be worth tidying it up a bit first ...).
+</p>
+
+<p>The use of <em>squashfs</em> in the resulting system means that the space
+occupied will be significantly less than in the 'raw' state, normally about a
+third of the original. As a result of this design, it is not possible to write
+directly to the system - which would seem to be quite a drawback, though in
+some situations it can even be an advantage. The use of <em>aufs</em> (a
+'unification' file-system, originally based on <em>unionfs</em>) allows the
+resulting system to appear writeable in spite of its actual read-only nature,
+by using a writeable 'overlay' in <em>tmpfs</em> (a memory-based file-system).
+</p>
+
+<p>Normally any changes made to the system while running would be lost on
+shutdown, but by saving the overlay to the boot medium (which is of course
+only possible on devices which are actually writeable, such as USB sticks),
+data persistence can be achieved even though the basic system is actually
+not writeable. In spite of the different file-system structure of the
+<em>live</em> system, it should behave almost identically to a normal Arch
+installation in most respects. You can, for example, perform package
+management as usual, but the changes are saved in the overlay, rather than
+in the underlying system. Of course as the number of changes grows, so
+does the size of the overlay, and at some point this will become
+problematical. How <em>larch</em> manages this is explained in the
+<a href="larch_sessionsave.html">session saving</a> section.
+</p>
+
+<p>Hardware detection is provided by the same <em>udev</em> approach as is
+used in a standard <em>Arch Linux</em> system.
+</p>
+
+<p>The <em>larch</em> project comprises several components. The scripts for
+building a <em>larch live</em> medium are in the <em>larch</em> package, which
+need not itself be installed in the <em>live</em> system, though it may be
+useful. Scripts and data for the <em>live</em> environment are provided in the
+<em>larch-live</em> package, which must be installed in the <em>live</em>
+system. There is also an optional installer (<em>larchin</em>) which can
+install the <em>live</em> system to hard disk, providing a convenient way
+to install a ready-configured <em>Arch Linux</em> system.
+***+ Unfortunately this has not yet been updated for larch-7 -*** .
+</p>
+
+<p>I have tried to maintain the distribution-independence of the
+<em>larch</em> scripts, so that they can be used on other <em>GNU/Linux</em>
+systems - you shouldn't need an <em>Arch Linux</em> installation in order
+to build a <em>larch live</em> medium, the few dependencies should be
+available on pretty well any <em>GNU/Linux</em> system - apart from
+<em>pacman</em>, the <em>Arch Linux</em> package manager (a compressed
+archive containing the binary, together with its library dependencies
+should be available from the <em>larch</em> site). You will in any
+case need <em>python</em> with the <em>pexpect</em> module (package
+'python-pexpect' in <em>Arch</em>) and <em>pyqt</em>.
+</p>
+
+<p>As with most stuff around <em>Arch Linux</em> it's not really designed
+for beginners - you should know your way around a <em>GNU/Linux</em> system
+(preferably <em>Arch</em>!), and be aware of the dangers of running such
+programs, such as corrupting your whole system. In any case, I hope that the
+documentation will be clear enough to help anyone who wants to exploit
+<em>larch</em> to the full (feedback is welcome!).</p>
+
+<p><b>Requirement:</b>
+You need quite a lot of space to create a <em>live Arch Linux</em> system.
+Bear in mind that a complete <em>Arch Linux</em> system is installed, then,
+additionally, a compressed ('squashed') version is made, and then perhaps
+even a CD image (<em>iso</em>).
+Building for a USB-stick requires slightly less space, as the iso-image is
+not built. If building a <em>live</em> version of the currently running
+<em>Arch Linux</em> system, much less space is required as no new
+system must be installed - but there are additional problems with this
+approach which make it generally not the best way (see
+<a href="larch_overview.html#existingSystem">the section dealing
+with this</a>).
+</p>
+
+</div>

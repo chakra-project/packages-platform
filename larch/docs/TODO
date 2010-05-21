@@ -1,0 +1,67 @@
+
+Check larch2hdd is still functional.
+
+Make a script to build a 64-bit repo? At present all packages are 'any'
+architecture, so there would be no need for a separate repo. Actually,
+pacman-allin should be in the repo, too, and that would be architecture
+dependent.
+
+
+medium page
+-----------
+
+iso burn to CD/DVD?
+open browser on cd-root(?) folder
+
+I am doing the device formatting on the host machine.
+These functions could be run chroot, but you would
+need at least /dev bind-mounted.
+
+Only ext2 and vfat are supported for larch partitions.
+
+
+
+
+
+
+
+NOTES
+=====
+
+Looking at the now rather extensive and complicated python code one might
+well ask what the point of it was, it certainly has nothing to do with
+Arch's "KISS" idea. Well, I admit it. The initial aim was to make larch
+(even) easier to use and tidy up one or two aspects of the code which could
+be a bit problematic for inexperienced users. I hoped that by providing a
+gui the user would not need such detailed documentation, which (let's face
+it) generally doesn't get read anyway.
+
+The number of options offered by larch can be a bit bewildering and I hope
+that a graphical presentation will help to give a better overview of these.
+For what it's worth, choosing python as the implementation language to
+(largely) replace bash makes internationalization relatively easy. Of course
+a simple internationalized command line python program would have been
+possible, too.
+
+
+Quitting / Cancelling
+---------------------
+
+If I cancel an operation (Cancel or Quit) I need to check that all mounted
+stuff (including dev,proc,sys) gets unmounted. Ta asiist here, a record is
+kept of everything that I have mounted.
+
+
+Cancelling:
+As threads in python cannot be killed (they must be exited), it is a bit
+tricky to break a long command (e.g. install, squash) without killing the
+whole program.
+I use exceptions to terminate 'supershell' commands, but I'm not sure that
+the interrupted commands won't have adverse effects on their callers. I've
+tried cancelling the installation stage a couple of times and it seemed to be
+successful, but further tests are necessary.
+
+The Quit command uses the same principle, but goes on to kill the logger,
+the gui and the backend. Interrupted commands should not be a problem in this
+case.
+

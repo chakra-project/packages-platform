@@ -1,0 +1,63 @@
+#!/bin/bash
+#
+# larch-mbr-grub - Set up a grub boot
+#
+#2009.08.12
+
+
+# $1: path to system to be larchified ("/" if running system)
+# $2: larch partition
+
+INSTLDIR="$1"
+if [ "${INSTLDIR}" = "/" ]; then
+    INSTLDIR=""
+fi
+DEVICE="$2"
+
+dev=${DEVICE:0:8}
+part=${DEVICE:8}
+
+# Convert the device and partion to grub syntax
+grubdevice ()
+{
+    ## The contents of DEVICE.map look something like this:
+    #(fd0)   /dev/fd0
+    #(hd0)   /dev/hda
+    #(hd1)   /dev/sda
+    gdev="$( cat ${INSTLDIR}${dmap} | grep "${dev}" | cut -f1  | tr -d "()" )"
+    gpart=$(( ${part} - 1 ))
+    echo "#Installing GRUB to (${gdev}), root (${gdev},${gpart})"
+}
+
+dmap=/tmp/DEVICE.map
+rm -f ${INSTLDIR}${dmap}
+if [ -n "${INSTLDIR}" ]; then
+    # First try to get a device mapping
+    mount --bind /dev ${INSTLDIR}/dev
+    echo "quit" | chroot ${INSTLDIR} grub --no-floppy --device-map=${dmap} --batch
+    grubdevice
+    # Now actually install grub
+    # As far as I can tell, the extra options to grub are not needed here
+    chroot ${INSTLDIR} grub --batch <<EOT
+root (${gdev},${gpart})
+setup (${gdev})
+quit
+EOT
+    umount ${INSTLDIR}/dev
+else
+    # First try to get a device mapping
+    echo "quit" | grub --no-floppy --device-map=${dmap} --batch
+    grubdevice
+    # Now actually install grub
+    # As far as I can tell, the extra options to grub are not needed here
+    grub --batch <<EOT
+root (${gdev},${gpart})
+setup (${gdev})
+quit
+EOT
+fi
+rm -f ${INSTLDIR}${dmap}
+
+
+
+

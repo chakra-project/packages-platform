@@ -1,0 +1,228 @@
+#!/bin/sh
+
+# merge_overlay   - rebuild the overlays (clearing the top layer)
+
+# Author: Michael Towers (larch42 at googlemail dot com)
+#
+# This file is part of the larch project.
+#
+#    larch is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    larch is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with larch; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#
+#----------------------------------------------------------------------------
+# 2009.08.23
+
+
+# test if the script is started by root user. If not, exit
+if [ $UID -ne 0 ]; then
+    echo "Only root can run ${APP}"; exit 1
+fi
+
+# Underlying system:        /.livesys/system
+# 'filter' layer:           /.livesys/filter
+# 'mods' layer:             /.livesys/mods
+# Overlay:                  /.livesys/overlay
+
+domerge ()
+{
+    # Make a directory for a merged union
+    merge_union=/.livesys/merge_union
+    rm -rf ${merge_union}
+    mkdir -p ${merge_union}
+
+    echo "Mounting merge union"
+    layers="/.livesys/overlay=${ovlmnt}:/.livesys/mods=${sqfmnt}"
+    mount -n -t ${utype} -o ro,${bropt}${layers} ${utype} ${merge_union}
+    if [ $? -ne 0 ]; then
+        echo "** Couldn't mount merge union."
+        return 1
+    fi
+
+    newmods ${merge_union}
+    res=$?
+
+    # Discard merge union
+    umount -n ${merge_union}
+    rm -r ${merge_union}
+
+    return ${res}
+}
+
+dofilter()
+{
+    # Make a directory for a new filter
+    filter_new=/.livesys/filter_new
+    rm -rf ${filter_new}
+    mkdir -p ${filter_new}
+
+    # Make a directory for a new union
+    filter_union=/.livesys/filter_union
+    rm -rf ${filter_union}
+    mkdir -p ${filter_union}
+
+    echo "Mounting filter union"
+    layers="/.livesys/filter_new=${ovlwmnt}:/.livesys/system=${sqfmnt}"
+    mount -n -t ${utype} -o ${bropt}${layers} ${utype} ${filter_union}
+    if [ $? -ne 0 ]; then
+        echo "** Couldn't mount filter union."
+        return 1
+    fi
+
+    newfilter ${filter_union}
+
+    # Discard filter union
+    umount -n ${filter_union}
+    rm -r ${filter_union}
+
+    mksquashfs ${filter_new} "${overlaypath}/filter.tmp"
+    res=$?
+
+    # Discard filter build directory
+    rm -r ${filter_new}
+
+    if [ ${res} -ne 0 ]; then
+        echo "ERROR: Couldn't create ${overlaypath}/filter.tmp"
+        return 1
+    fi
+    return 0
+}
+
+
+newmods ()
+{
+    olaydir=$1
+    echo "Building new 'mods' overlay to ${overlaypath}/mods.tmp"
+    # Recreate the desired layout in a new directory, using mount --bind
+    # ( this is probably over-complicated, but I got annoying warnings about
+    #   conflicting permissions on the mount point when I didn't use a single
+    #   source for squashfs - for some reason the squashfs root was set to
+    #   mode 0777.)
+
+    # The other version was:
+
+    ## root directories which are included in mods.sqf
+    #includedirs=""
+    #for d in bin boot etc home lib mnt opt root sbin srv usr var; do
+    #    if [ -d ${olaydir}/${d} ]; then
+    #        includedirs="${includedirs} ${olaydir}/${d}"
+    #    fi
+    #done
+    ## non-included /var directories
+    #vardirs="${olaydir}/var/log ${olaydir}/var/tmp ${olaydir}/var/cache/pacman/pkg"
+    #mksquashfs ${includedirs} "${overlaypath}/mods.tmp" -e ${vardirs}
+    #res=$?
+    #+++
+    mods2=/.livesys/mods2
+    rm -rf ${mods2}
+    mkdir -p ${mods2}
+    # root directories which are included in mods.sqf
+    includedirs=""
+    for d in bin boot etc home lib mnt opt root sbin srv usr var; do
+        if [ -d ${olaydir}/${d} ]; then
+            includedirs="${includedirs} ${d}"
+            mkdir ${mods2}/${d}
+            mount -n --bind ${olaydir}/${d} ${mods2}/${d}
+        fi
+    done
+
+    # non-included /var directories
+    vardirs="var/log var/tmp var/cache/pacman/pkg"
+    mksquashfs ${mods2} "${overlaypath}/mods.tmp" -e ${vardirs}
+    res=$?
+    for d in ${includedirs}; do
+        umount -n ${mods2}/${d}
+    done
+    rm -r ${mods2}
+
+    if [ ${res} -ne 0 ]; then
+        echo "ERROR: Couldn't create ${overlaypath}/mods.tmp"
+        return 1
+    fi
+    return 0
+}
+
+
+newfilter()
+{
+    olaydir=$1
+    echo "Building new 'filter' overlay to ${overlaypath}/filter.tmp"
+    # 'Copy' existing filter
+    if [ -d /.livesys/filter ]; then
+        cd /.livesys/filter
+        find . -name .wh.\* | { cd "${olaydir}"
+            while read n; do
+                b="${n##*/}"
+                rm -rf "${n%/*}/${b:4}" &>/dev/null
+            done
+        }
+    fi
+    # Add relevant whiteouts from overlay
+    cd /.livesys/overlay
+    find . -name .wh.\* | { cd "${olaydir}"
+        while read n; do
+            b="${n##*/}"
+            d="${n%/*}"
+            if [ "${b}" = "${opq}" ]; then
+                rm -rf "${d}"
+            else
+                rm -rf "${d}/${b:4}" &>/dev/null
+            fi
+        done
+    }
+}
+
+# The overlay device (where the archives will be saved)
+echo "Rebuild squashfs overlay"
+if [ -d "$1" ]; then
+    overlaypath="$1"
+else
+    echo "ERROR: invalid directory ($1)"
+    exit 1
+fi
+
+utype="$( cat /.livesys/utype )"
+if [ "${utype}" = "aufs" ]; then
+    sqfmnt="rr"
+    ovlmnt="ro+wh"
+    ovlwmnt="rw"
+    bropt="br:"
+    opq=".wh..wh..opq"
+
+    # flush pseudo-links (which keep track of changed hard linked files)
+    auplink / flush
+
+elif [ "${utype}" = "unionfs" ]; then
+
+# It might well be that unionfs requires a writeable top layer, so the
+# present code would need modifying ...
+
+    sqfmnt="ro"
+    ovlmnt="ro"
+    ovlwmnt="rw"
+    bropt="dirs="
+    opq=".wh.__dir_opaque"
+
+else
+    echo "ERROR: Couldn't determine type of unification file-system"
+    exit 1
+fi
+
+if domerge && dofilter; then
+    echo "Merge successful"
+else
+    rm -f "${overlaypath}/mods.tmp"
+    rm -f "${overlaypath}/filter.tmp"
+    exit 1
+fi
+

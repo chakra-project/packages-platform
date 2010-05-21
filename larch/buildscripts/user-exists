@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# user-exists - Test for the existence of a user
+#
+#2010.03.09
+
+
+# $1: path to system to be larchified ("/" if running system)
+# $2: username to test for
+
+grep "^$2:" $1/etc/passwd &>/dev/null

@@ -1,0 +1,144 @@
+<div class="larchdocs">
+<h2 id="pagetitle" level="1">Running a <em>larch live</em> system</h2>
+
+<p>Of course the details depend on what you have installed and how you have
+configured it. For example, the 'mini2' example profile builds a console-only system,
+the 'xmaxi' profile boots to <em>xfce</em>.
+</p>
+
+<p>One thing worth noting is that these supplied profiles automatically login
+to the root account, which - potentially - allows all sorts of 'dangerous' actions,
+like reformatting your disks or making a mess of your file-systems in other ways.
+This is because one of the main <em>raisons d'être</em> for <em>larch</em> is its use
+as an <em>Arch</em>-installation-and-rescue medium. For this, you need root access.
+However, if you want to use the system in other ways, e.g. for text or image editing,
+or for internet browsing or e-mail writing, it might be safer to do this as an
+unprivileged user. Such a user is easily created with the 'adduser' command, or
+with some other utility (e.g. the graphical 'luser.py' script in the <em>larch</em>
+'<em>luser</em>' package). If you have a writeable boot medium, such changes can be
+'remembered' by saving the session when you shut the system down (the possibility
+will normally be offered automatically).
+</p>
+
+<h3><a name="bootparm"></a>Boot parameters</h3>
+
+<p>As the <em>larch</em> build system is highly configurable, the available
+boot parameters can also vary, but by default 'swap' and 'c2r' are provided.
+'swap' indicates that an existing swap partition should be used (the default
+is not to use it). 'c2r' means 'copy to RAM', i.e. the system data is copied
+to main memory before the system is initialized. This allow the system to run
+very fast and frees up the boot device (e.g. the boot CD can be ejected and the
+drive used for another CD), but it does require a lot of memory (significantly
+more than the size of the boot medium), and the boot process is rather slow
+because so much data must be copied. Because of the high memory usage, I have
+arranged it so that 'c2r' also implies 'swap'. With A USB-stick as boot medium,
+the 'c2r' parameter should generally not really be needed, performance is normally
+pretty good and it doesn't occupy the CD-drive (if an extra boot CD is needed, on
+a machine that can't boot directly from USB, that can be removed after
+booting even without 'c2r').
+</p>
+<p>There are also boot options connected with the boot device. The 'nocd' boot
+option, if present, prevents booting from CD. This might be useful if you use a
+boot CD but want to boot a <em>larch</em> system on another device (normally
+a CD will be detected before other devices). This only works if the kernel is
+compatible of course.
+</p>
+<p>The 'root=' option allows explicit specification of the device containing the
+<em>larch</em> system. It is also possible to choose the boot device on the basis
+of UUID ('uuid=') or label ('label='). The default maximum waiting time (to
+allow USB devices to be recognized) is 12 seconds (if a device is recognized
+earlier the pause will automatically be shorter), which should be adequate, but
+if you want to change this you can do it using the 'usbdelay=' option.
+</p>
+
+<h3><a name="config"></a>Configuration</h3>
+
+<p>The supplied profiles are not intended to be complete, though I hope they
+work reasonably well. They should be seen as examples, perhaps as starting points
+for your own configurations.
+If you are running a profile with X11, you may find that you
+need to configure it before it will run, though nowadays much hardware will work
+to at least some extent without any tweaking (even without an 'xorg.conf').
+Minimal starting-point 'xorg.conf' files are offered in the <em>xfce</em> examples.
+</p>
+
+<p>The 'xmini' and 'xmaxi' profiles use a slightly more elaborate login approach on
+the first terminal, with a simple menu as well as automatic login. There is also
+a logout gui for <em>xfce</em>, which together with the login script can
+trigger session saving directly, bypassing the console prompt.
+</p>
+
+<p>If you are stuck with the console, there is still hope. It's not as pretty or
+newbie friendly as an X11 desktop, but still quite capable. I always like to have
+<em>mc</em> available, it's a real godsend for non-geeks (you should also install
+<em>lynx</em> so that HTML files can be displayed on the console - at a
+pinch you can also surf with it, but it is painful).
+</p>
+
+<p>If your console keyboard map is
+wrong, try running <i>km</i> (I stole this from the
+standard <em>Arch</em> install CD and modified it a bit to work in <em>larch</em>).
+It also modifies '/etc/rc.conf', so the change can be retained for subsequent
+runs by performing a 'session-save'.
+</p>
+
+<p>If you have a DHCP server on your network, you might well find that
+the network interface is configured automatically (assuming your <em>rc.conf</em>
+is configured appropriately). Otherwise you can use any method to set up
+the network available in <em>Arch Linux</em> - see the appropriate
+<em>Arch Linux</em> documentation (primarily the wiki, I guess) for details.
+</p>
+
+<p>Of course the exact details of what you can do depends on what
+software you installed, so I won't rabbit on endlessly about it here.
+Nearly all configuration details should be just the same as in a normal,
+hard-disk based installation.
+</p>
+
+<h3><a name="install"></a>Installation to hard disk</h3>
+
+<p>The <em>larch</em> hard-disk installer <em>larchin</em> may be used to install
+<em>Arch Linux</em> to hard disk (or similar). ***+ Or, at least it will be
+possible to use it when I have updated (rewritten?) it for <em>larch</em>-7. -***
+<em>larchin</em> deals with partitioning and formatting of hard drives, placing
+<em>Arch Linux</em> (primarily a copy of the live system on which it is running)
+on the newly formatted partitions, and installation of the GRUB bootloader.
+</p>
+
+<p>As mentioned above the main approach to <em>Arch</em> installation covered by
+<em>larchin</em> is to copy the contents of the live system to a hard drive. Those
+(few) bits peculiar to the needs of a live system are removed and the result is a
+completely normal <em>Arch Linux</em> installation. I should perhaps mention
+the file 'larch0' in the '/.livesys' directory (copied there from the 'larch/copy'
+directory on the boot medium). This script is run at the end of the installation
+(if it exists) and allows custom installation actions to be performed.
+</p>
+
+<h3><a name="install-live"></a>'Live' installation to hard disk</h3>
+<p>This is sometimes called a 'frugal' install and means that the system as it is
+(compressed, running in a <em>union</em> file system) on
+the USB-stick or CD is installed as a 'live' system to a hard-drive partition.
+This might be useful if you want to run from a flash device, for example, as it
+minimizes write operations to the device (normal access is read only).
+</p>
+<p>The <strong>larch2hdd</strong> script (in the <em>larch-live</em> package)
+performs such an installation. The partition for the installation should exist
+before calling this script, which will format it as <em>ext2</em>. The script
+will also install GRUB, either to the same partition or else to the MBR.
+</p>
+
+<h3><a name="create-iso"></a>Create a CD from a USB-stick live system</h3>
+<p>After you have created and customized a live system on a USB-stick you might
+like to 'fixate' it onto a CD. This can be done by the <strong>create-iso</strong>
+script in the <em>larch</em> package. It can be done from the running USB-stick
+session, so long as there is enough space in the current directory to build the
+<em>iso</em> (about twice the system size is needed). If there is not enough
+memory you could mount a disk partition and use that. Note that it is not the
+current state of the system that will be saved but the state after the last
+shutdown.
+</p>
+<p>The <em>iso</em> can also be created on another Linux system by passing the
+mount point of the USB-stick to the script as argument.
+</p>
+
+</div>

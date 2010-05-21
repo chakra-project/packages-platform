@@ -1,0 +1,29 @@
+#!/bin/bash
+#
+# larch-mbr-syslinux - Set up a syslinux boot
+#
+#2009.08.12
+
+
+# $1: path to system to be larchified ("/" if running system)
+# $2: larch partition
+
+INSTLDIR="$1"
+if [ "${INSTLDIR}" = "/" ]; then
+    INSTLDIR=""
+fi
+DEVICE="$2"
+
+mbr=${DEVICE:0:8}
+# Write the MBR
+dd if=${INSTLDIR}/usr/lib/syslinux/mbr.bin of=${mbr}
+
+if [ -n "${INSTLDIR}" ]; then
+    mount --bind /dev ${INSTLDIR}/dev
+    mount --bind /proc ${INSTLDIR}/proc
+    chroot ${INSTLDIR} syslinux ${DEVICE}
+    umount ${INSTLDIR}/dev
+    umount ${INSTLDIR}/proc
+else
+    syslinux ${DEVICE}
+fi

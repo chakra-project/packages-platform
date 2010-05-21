@@ -1,0 +1,88 @@
+<div class="larchdocs">
+<h2 id="pagetitle" level="1">Changes from <em>larch</em>-5</h2>
+
+<p>The most obvious change is that there is a graphical user interface. I am not
+really sure myself whether this is a good idea or not, but it's there and I had an
+interesting time producing the mountain of code behind it. I suppose it's all rather
+anti-KISS in the end (don't ask me how many different threads and processes it
+starts!), but there are some advantages ...
+</p>
+<ul>
+   <li>Most of the main options are immediately visible, you don't need to search
+   for obscure command line parameters.
+   </li>
+   <li>The use of python rather than bash for the bulk of the code means
+   that internationalization, using <em>gettext</em> is relatively easy.
+   A rough German translation is in place as an example, but that's the
+   limit of my linguistic flexibility!
+   </li>
+   <li>The front end code can run as a normal user. I don't think this significantly
+   reduces the risk of your system being destroyed, but it does mean that it is easy
+   to keep the configuration files with normal user ownership, while the installation
+   is handled with root privileges, and not get things mixed up.
+   </li>
+</ul>
+
+<p>Most of the other changes are concerned with providing new features.
+***+ The extent of the changes means that it will probably take a while
+until the bugs get ironed out and everything works. I am calling the
+present state <strong>alpha</strong>, while a few implementation details
+are still under review. I will call it <em>beta</em> and give it release
+numbers starting with 7.1 when most of that is cleared up. -***
+</p>
+
+<ul>
+   <li>Selection of the boot partition is now possible via UUID or label, as well as the
+   previously available methods of partition (/dev/sdb1, etc.) and search for 'larchboot'
+   file.
+   </li>
+   <li><em>larch</em> now manages all configuration files and project information
+   internally. The relevant files are of course still accessible from outside of the
+   <em>larch</em> program, but the need for this should be reduced. I hope this
+   will help users (me!) keep their projects tidy. ***+ This is an experimental
+   feature that will probably need some tweaking. -***
+   </li>
+   <li>Kernel update using the normal pacman commands is now supported.
+   </li>
+   <li>The boot entries can be provided in a bootloader neutral form, so that
+   one can use the same entries with GRUB or syslinux/isolinus without having
+   to keep copies for each.
+   </li>
+   <li>Installation to partitions, irrespective of whether they are USB-sticks or hard
+   disks, is easily possible, with or without installation of a bootloader.
+   </li>
+   <li>I have tried to minimize the extent to which the underlying <em>Arch</em>
+   system must be modified to work as a <em>live</em> system. The introduction
+   of 'hooks' in the <em>Arch</em> initscripts should ease the situation quite a bit.
+   </li>
+   <li>Many changes to the handling of configuration files, see the relevant sections.
+   </li>
+   <li>The overlay structure is slightly different, an extra layer (filter.sqf) has been
+   added between system.sqf and mods.sqf, with the result that mods.sqf no longer
+   contains whiteouts. This approach means that overlay merging doesn't require a
+   specially configured <em>aufs</em> and I hope it will turn out to be less buggy.
+   </li>
+   <li>Another change to the overlay structure is that initially, and after an overlay
+   merge, there is no memory overlay file (now called 'overlay.tar.lzo') at all. This
+   should allow easy reversion to an earlier state - deleting the overlay file will
+   return the system to just after the last merge. Also previous mods.sqf and
+   filter.sqf pairs could be saved to preserve still earlier states. (It is unfortunately
+   not quite so simple if a kernel update has taken place, though.)
+   </li>
+   <li>The gui aids simple modifications to the installed <em>Arch</em> system
+   via <em>pacman</em> (resynchronization, package addition and removal). This
+   is not recommended as a normal procedure (the packages would no longer
+   correspond to those in the profile's 'addedpacks' file), but it could be useful
+   for experimentation and quick fixes.
+   </li>
+   <li>The 'larch-rebuild' script (in the 'larch-live' package) allows the
+   overlays to be merged back into the base ('system.sqf') archive, if enough
+   storage space is available. This would allow a <em>live</em> system
+   which had become bloated with overlay files to be 'rejuvenated'. It
+   itself is not a complete solution because it only rebuilds 'system.sqf'
+   and 'mods.sqf', it can't replace the old system, but it can form the
+   basis of such a scheme.
+   </li>
+</ul>
+
+</div>

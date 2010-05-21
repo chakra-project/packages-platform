@@ -1,0 +1,246 @@
+# larch3 -  live 'hook' for mkinitcpio:
+#                 deal with c2r,
+#                 mount base system,
+#                 load overlays,
+#                 set up unioned root filesystem.
+#
+# Author: Michael Towers (larch42 at googlemail dot com)
+#
+# This file is part of the larch project.
+#
+#    larch is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    larch is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with larch; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#
+#----------------------------------------------------------------------------
+# 2010.04.04
+
+mvbackup()
+{
+    /bin/mv ${1} ${1}~
+    /bin/mv ${1}_ ${1}
+}
+
+
+do_c2r()
+{
+    modpath=/tfs/modsqfs
+    /bin/mkdir ${modpath}
+    msg ":: Copying base system to RAM, this will take a while ..."
+    /bin/cat ${sysSqf} > /tfs/system.sqf
+    if [ $? -ne 0 ]; then return 1; fi
+    sysSqf=/tfs/system.sqf
+
+    if [ -f ${filterSqf} ]; then
+        msg ":: Copying base system filter to RAM"
+        /bin/cat ${filterSqf} > ${modpath}/filter.sqf
+        if [ $? -ne 0 ]; then return 1; fi
+    fi
+    filterSqf=${modpath}/filter.sqf
+
+    msg ":: Copying mods archive to RAM, this might take a while ..."
+    /bin/cat ${modsSqf} > ${modpath}/mods.sqf
+    if [ $? -ne 0 ]; then return 1; fi
+    modsSqf=${modpath}/mods.sqf
+}
+
+
+run_hook ()
+{
+    [ "x${LDEV}" = "x" ] && return
+
+    # Path to compressed base system
+    sysSqf=${cdmount}/larch/system.sqf
+
+    ovlpath=${cdmount}/larch
+    modpath=${ovlpath}
+
+    # A possibility to use alternative files:
+    if [ -f ${cdmount}/larch/boot-init ]; then
+        . ${cdmount}/larch/boot-init
+    fi
+
+    # 'filter' file (contains only whiteouts)
+    filterSqf=${ovlpath}/filter.sqf
+    # Squashed overlay (mods) file
+    modsSqf=${ovlpath}/mods.sqf
+    # Overlay file and directory:
+    overlay=${ovlpath}/overlay.tar.lzo
+
+    # Deal with new mods archive
+    if [ -f ${modsSqf}_ ] || [ -f ${filterSqf}_ ]; then
+        msg ":: Updating overlay archives"
+        /bin/mount -o remount,rw ${LDEV} ${cdmount}
+        [ -f ${modsSqf}_ ] && mvbackup ${modsSqf}
+        [ -f ${filterSqf}_ ] && mvbackup ${filterSqf}
+        /bin/mount -o remount,ro ${LDEV} ${cdmount}
+    fi
+
+    # Boot option copy-to-ram (c2r)
+    if [ "${c2r}" = "y" ]; then
+        if ! do_c2r; then
+            err "Sorry, not enough RAM"
+            break="y"
+            return
+        fi
+
+        # force use of swap (if available)
+        swap="y"
+    fi
+
+    msg_v ":: Mounting squashed system image"
+    /bin/mkdir /tfs/system
+    # sometimes it takes udev a while to create device nodes
+    while [ ! -e "/dev/loop0" ]; do
+        sleep 1
+    done
+    /bin/mount -r -o loop -t squashfs ${sysSqf} /tfs/system
+
+    # Begin preparing union mount command
+    layers="/tfs/system=${sqfmnt}"
+
+    if [ -f ${filterSqf} ]; then
+        msg_v ":: Adding squashed base system filter (filter.sqf)"
+        /bin/mkdir /tfs/filter
+        /bin/mount -r -o loop -t squashfs ${filterSqf} /tfs/filter
+        layers="/tfs/filter=${ovlmnt}:${layers}"
+    fi
+
+    msg_v ":: Adding initial squashed overlay (mods.sqf)"
+    /bin/mkdir /tfs/mods
+    /bin/mount -r -o loop -t squashfs ${modsSqf} /tfs/mods
+    layers="/tfs/mods=${sqfmnt}:${layers}"
+
+    # Unpack the overlay (/tfs/overlay)
+    msg ":: Initializing writable layer for union (overlay)"
+    if [ -f ${overlay} ]; then
+        lzop -d < ${overlay} | tar -x -f - -C /tfs
+    else
+        /bin/mkdir /tfs/overlay
+    fi
+
+    msg ":: Setting up union file system"
+
+    # Make union root
+    /bin/mkdir /union
+    layers="/tfs/overlay=rw:${layers}"
+    /bin/mount -t ${utype} -o ${bropt}${layers} ${utype} /union
+
+    echo "${utype}" > /tfs/utype
+
+    # Make the tmpfs stuff accessible within the union
+    /bin/mkdir /union/.livesys
+    /bin/mount -o bind /tfs /union/.livesys
+    /bin/mount -o bind /tfs/system /union/.livesys/system
+    [ -d /tfs/filter ] && /bin/mount -o bind /tfs/filter /union/.livesys/filter
+    /bin/mount -o bind /tfs/mods /union/.livesys/mods
+    /bin/mount -o bind /tfs/overlay /union/.livesys/overlay
+
+    # Copy the installation tidy-up script (for removing custom live-only stuff),
+    # and any other files in 'larch/copy' directory
+    if [ -d ${ovlpath}/copy ]; then
+        cd ${ovlpath}/copy
+        for f in *; do
+            cat ${f} >/union/.livesys/${f}
+        done
+    fi
+    cd /
+
+    # Make special directories
+    /bin/mkdir -m 1777 /tfs/tmp
+    /bin/ln -s .livesys/tmp /union/tmp
+    /bin/mkdir /union/media
+    /bin/mkdir /union/sys
+    /bin/mkdir /union/proc
+    /bin/mkdir /union/dev
+    # Minimal device nodes needed before udev does its work (now done in rc.sysinit?)
+    /bin/mknod /union/dev/console c 5 1
+    #/bin/mknod /union/dev/null c 1 3
+    #/bin/mknod /union/dev/zero c 1 5
+
+
+    # Remember the boot device
+    echo "${LDEV}" > /tfs/bootdevice
+
+    if [ "${c2r}" = "y" ]; then
+        # Set flag to inform system of copy-to-ram
+        :> /tfs/c2r
+        # Unmount boot device
+        /bin/umount -l ${cdmount}
+    else
+        /bin/mkdir /union/.livesys/medium
+        /bin/mount -o move ${cdmount} /union/.livesys/medium
+    fi
+
+    # fstab
+    # /etc/fstab.larch will be used if it exists, else generate a basic one
+    if [ -f /union/etc/fstab.larch ]; then
+        cat /union/etc/fstab.larch >/union/etc/fstab
+    else
+        cat >/union/etc/fstab <<EOT
+# fstab generated by larch initcpio
+#<file system>   <dir>         <type>      <options>    <dump> <pass>
+none            /dev/pts      devpts      defaults        0     0
+none            /dev/shm      tmpfs       defaults        0     0
+EOT
+        if [ "${swap}" = "y" ]; then
+            swap=""
+        else
+            swap="#"
+        fi
+        for s in $( cat /proc/swaps | while read a b; do [ "x${a%%/*}" = "x" ] && echo $a; done ); do
+            echo "${swap}${s} swap       swap   defaults        0     0" >>/union/etc/fstab
+        done
+        # Any further entries can be added at a later point in the boot process
+    fi
+
+    # Only needed to suppress an error message from /etc/rc.sysinit
+    echo "rootfs / rootfs rw 0 0" >/union/etc/mtab
+
+    # Handle special features of /var
+    /bin/mkdir -p -m 1777 /union/var/tmp
+    /bin/mkdir -p -m 1777 /union/var/lock
+    /bin/mkdir -p /union/var/log
+    :>/union/var/log/wtmp
+    :>/union/var/log/utmp
+    :>/union/var/log/btmp
+    /tfs/system/bin/chmod 0600 /union/var/log/btmp
+    :>/union/var/log/lastlog
+
+    msg ":: End of live system set-up"
+
+    # This is in archiso ... why?
+    #if [ -d /proc/sys/dev/cdrom ]; then
+    #    echo 0 > /proc/sys/dev/cdrom/lock
+    #    echo 0 > /proc/sys/dev/cdrom/autoeject
+    #fi
+
+    if [ "${break}" = "y" ]; then
+        echo ":: Break requested, type 'exit' to resume operation"
+        launch_interactive_shell
+    fi
+
+    #Special handling if udev is running
+    udevpid=$(/bin/pidof udevd)
+    if [ -n "${udevpid}" ]; then
+        # Settle pending uevents, then kill udev
+        /sbin/udevadm settle
+        /bin/kill -9 ${udevpid} > /dev/null 2>&1
+        /bin/sleep 0.01
+    fi
+
+    umount /proc
+    umount /sys
+    [ -z "${init}" ] && init="/sbin/init"
+    exec /sbin/switch_root -c /dev/console /union ${init} ${CMDLINE}
+}

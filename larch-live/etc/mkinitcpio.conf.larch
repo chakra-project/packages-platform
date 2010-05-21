@@ -1,0 +1,5 @@
+# THIS IS A DUMMY FILE - it will be automatically regenerated
+# during the larch build.
+
+# It is included in this package to ease removal when the live
+# system is installed as a normal Arch system.

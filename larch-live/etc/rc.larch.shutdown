@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# rc.larch.shutdown
+
+# This replaces rc.shutdown in inittab
+# 2009.08.30
+
+# Create shutdown script dynamically from normal rc.shutdown.
+# (until such as a time as the needed hooks are included in rc.shutdown upstream)
+
+if grep "^run_hook()" /etc/rc.d/functions &>/dev/null; then
+    sed -i "s|^\.|#.|" /etc/rc.d/functions.d/000addhooks
+    exec /etc/rc.shutdown
+else
+    sed -i "s|^#\.|.|" /etc/rc.d/functions.d/000addhooks
+fi
+
+# Build a modified version of rc.shutdown dynamically
+newfile=/.livesys/shutdown
+cp -f /etc/rc.shutdown ${newfile}
+
+# Insert before 'Saving Random Seed'
+sed '/Random/ i\
+run_hook shutdown_postkillall
+' -i ${newfile}
+
+# Insert before line '# Power off or reboot'
+sed '/Power/ i\
+run_hook shutdown_poweroff
+' -i ${newfile}
+
+# Run the script
+. ${newfile}

@@ -1,0 +1,41 @@
+# Maintainer: Michael Towers <larch42 (at) googlemail (dot) com>
+# 2010.03.23
+pkgname=larch
+pkgver=7.1.6
+pkgrel=1.chakra.2010.04.11
+
+pkgdesc="Design your own 'live' Archlinux CDs and USB-sticks (etc.)"
+url="http://larch.berlios.de"
+depends=(uipi python-pexpect)
+optdepends=('larch-profiles: for example build profiles')
+arch=(any)
+license=('GPL')
+install=larch.install
+
+build() {
+  _destdir=opt/apps/larch
+  cd ${pkgdir}
+  mkdir -p usr/bin
+  mkdir -p usr/share/{pixmaps,applications}
+  mkdir -p ${_destdir}
+
+  rm -f ${startdir}/modules/*.pyc
+  for d in buildscripts cd-root data docs i18n images modules profiles scripts; do
+    cp -dr ${startdir}/${d} ${_destdir}
+  done
+
+  # Build documentation
+  mv ${_destdir}/docs/build ${srcdir}
+  python ${srcdir}/build/builddocs.py
+  cp -r ${srcdir}/build/html ${_destdir}/docs
+
+  cp ${startdir}/larch.py ${_destdir}
+  ln -s /${_destdir}/larch.py usr/bin/larch
+
+  #ln -s /${_destdir}/images/larch.png usr/share/pixmaps/larch.png
+  #cp ${startdir}/larch.desktop usr/share/applications
+
+  #remove nasty .svn folders
+  cd ${startdir}/pkg
+  rm -rfv `find . -type d -name .svn`
+}

@@ -1,0 +1,14 @@
+timeout 300
+default 0
+color light-blue/blue black/light-grey
+splashimage=/boot/splash.xpm.gz
+
+title << Back to Main Menu
+configfile /boot/grub/menu.lst
+
+title    Run memtest (Memory Testing)
+kernel /boot/memtest
+
+title    Install GRUB to hd0 MBR
+root  (hd0,0)
+setup (hd0)

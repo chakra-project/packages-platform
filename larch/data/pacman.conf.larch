@@ -1,0 +1,28 @@
+# Edit this file to specify which package repositories to use in your larch
+# live system.
+
+# Configuration options will be taken from the default (or profile) pacman.conf
+
+# You can add your own custom repositories (anywhere) in the normal way.
+# DO NOT PUT EMPTY LINES in the sections.
+# DO PUT AN EMPTY LINE between sections.
+# The first line of an active section should be the [repo] line, not a comment,
+# to make automatic recognition of sections easy.
+
+[larch]
+# The larch repository should come first in case it needs to provide
+# replacements for standard packages (though it is hoped that this
+# will not be necessary).
+Server = ftp://ftp.berlios.de/pub/larch/larch7/*platform*
+
+#[testing]
+#Include = /etc/pacman.d/mirrorlist
+
+[core]
+Include = /etc/pacman.d/mirrorlist
+
+[extra]
+Include = /etc/pacman.d/mirrorlist
+
+[community]
+Include = /etc/pacman.d/mirrorlist

@@ -1,0 +1,43 @@
+#!/bin/bash
+#
+# larch-format - Format a partition for a larch live system
+#
+#2009.08.31
+
+
+# $1: name of partition to be formatted (e.g. /dev/sdb2)
+# $2: file-system type ("ext2", "vfat")
+# $3: label (empty => no label)
+
+DEVICE="$1"
+FSTYPE="$2"
+LABEL="$3"
+
+dev=${DEVICE:0:8}
+part=${DEVICE:8}
+
+if [ "${FSTYPE}" = "vfat" ]; then
+    sfdisk --no-reread ${dev} -N${part} <<EOF
+,,0c,*
+EOF
+
+    dd if=/dev/zero of=${DEVICE} bs=512 count=1
+
+else
+    sfdisk --no-reread ${dev} -N${part} <<EOF
+,,L,*
+EOF
+
+fi
+[ $? -ne 0 ] && exit 1
+
+if [ -n "${LABEL}" ]; then
+    if [ "${FSTYPE}" = "vfat" ]; then
+        LABEL="-n ${LABEL}"
+    else
+        LABEL="-L ${LABEL}"
+    fi
+fi
+
+echo "mkfs.${FSTYPE} ${LABEL} ${DEVICE}"
+mkfs.${FSTYPE} ${LABEL} ${DEVICE}

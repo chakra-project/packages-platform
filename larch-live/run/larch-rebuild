@@ -1,0 +1,172 @@
+#!/bin/sh
+
+# larch-rebuild   - rebuild the live system (by merging in the overlays)
+
+# Author: Michael Towers (larch42 at googlemail dot com)
+#
+# This file is part of the larch project.
+#
+#    larch is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    larch is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with larch; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#
+#----------------------------------------------------------------------------
+# 2009.09.14
+
+# This script doesn't produce a complete merged live system, it just
+# rebuilds system.sqf and mods.sqf so that basically the whole system is
+# in system.sqf, a tiny bit (/boot and /mnt) in mods.sqf. filter.sqf
+# and overlay.tar.lzo are then not (initially) needed.
+
+# $1 - the path to the folder where system.sqf and mods.sqf are to be placed
+
+APP=$( basename $0 )
+# test if the script is started by root user. If not, exit
+if [ $UID -ne 0 ]; then
+    echo "Only root can run ${APP}"; exit 1
+fi
+
+# Underlying system:        /.livesys/system
+# 'filter' layer:           /.livesys/filter
+# 'mods' layer:             /.livesys/mods
+# Overlay:                  /.livesys/overlay2
+
+domerge ()
+{
+    # Make a directory for a merged union
+    merge_union=/.livesys/merge_union
+    rm -rf ${merge_union}
+    mkdir -p ${merge_union}
+
+    # Unpack the overlay from the boot medium
+    overlay=/.livesys/medium/larch/overlay.tar.lzo
+    rm -rf /.livesys/{overlay2,overlay2x}
+    if [ -f ${overlay} ]; then
+        mkdir /.livesys/overlay2x
+        /tfs/system/usr/bin/lzop -d < ${overlay} | \
+                /tfs/system/bin/tar -C /.livesys/overlay2x -xf -
+        mv /.livesys/overlay2x/overlay /.livesys/overlay2
+        rm -r /.livesys/overlay2x
+    else
+        mkdir /.livesys/overlay2
+    fi
+
+    echo "Mounting merge union"
+    layers="/.livesys/overlay2=${ovlmnt}:/.livesys/mods=${sqfmnt}"
+    if [ -d /.livesys/filter ]; then
+        layers="${layers}:/.livesys/filter=${sqfomnt}"
+    fi
+    layers="${layers}:/.livesys/system=${sqfmnt}"
+    mount -n -t ${utype} -o ro,${bropt}${layers} ${utype} ${merge_union}
+    if [ $? -ne 0 ]; then
+        echo "** Couldn't mount merge union."
+        return 1
+    fi
+
+    newsys ${merge_union}
+    res=$?
+
+    # Discard merge union
+    umount -n ${merge_union}
+    rm -r ${merge_union}
+
+    # Discard overlay2
+    rm -rf /.livesys/overlay2
+
+    return ${res}
+}
+
+
+newsys ()
+{
+    union=$1
+    echo "Building new 'system.sqf'"
+
+    # root directories which are ignored in system.sqf
+    ignoredirs="boot dev mnt media proc sys tmp .livesys .larch"
+    # /var stuff
+    ignoredirs="${ignoredirs} var/log var/tmp var/lock var/cache/pacman/pkg"
+    mksquashfs ${union} "${sqfpath}/system.sqf" -e ${ignoredirs}
+    if [ $? -ne 0 ]; then
+        echo "ERROR: Couldn't create ${sqfpath}/system.sqf"
+        return 1
+    fi
+    chmod oga-x "${sqfpath}/system.sqf"
+
+    echo "Building new 'mods.sqf'"
+    # mods.sqf just has the boot and mnt directories
+    ignoredirs=""
+    for f in $( ls -A ${union} ); do
+        if [ "${f}" != "boot" ] && [ "${f}" != "mnt" ]; then
+            ignoredirs="${ignoredirs} ${f}"
+        fi
+    done
+    mksquashfs ${union} "${sqfpath}/mods.sqf" -e ${ignoredirs}
+    if [ $? -ne 0 ]; then
+        echo "ERROR: Couldn't create ${sqfpath}/mods.sqf"
+        return 1
+    fi
+    chmod oga-x "${sqfpath}/mods.sqf"
+
+    return 0
+}
+
+
+rebuild()
+{
+    utype="$( cat /.livesys/utype )"
+    if [ "${utype}" = "aufs" ]; then
+        sqfmnt="rr"
+        sqfomnt="rr+wh"
+        ovlmnt="ro+wh"
+        ovlwmnt="rw"
+        bropt="br:"
+        opq=".wh..wh..opq"
+
+    elif [ "${utype}" = "unionfs" ]; then
+
+    # It might well be that unionfs requires a writeable top layer, so the
+    # present code would need modifying ...
+
+        sqfmnt="ro"
+        sqfomnt="ro"
+        ovlmnt="ro"
+        ovlwmnt="rw"
+        bropt="dirs="
+        opq=".wh.__dir_opaque"
+
+    else
+        echo "ERROR: Couldn't determine type of unification file-system"
+        return 1
+    fi
+
+    if domerge; then
+        echo "Merge successful"
+    else
+        rm -f "${sqfpath}/system.sqf"
+        rm -f "${sqfpath}/mods.sqf"
+        return 1
+    fi
+}
+
+
+# The folder (path) where the archives will be saved
+sqfpath="$1"
+
+if [ -d "${sqfpath}" ]; then
+    echo "Rebuild squashfs archives to ${sqfpath}"
+    rebuild
+else
+    echo "ERROR: invalid directory (${sqfpath})"
+    exit 1
+fi

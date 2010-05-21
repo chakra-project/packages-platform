@@ -1,0 +1,1357 @@
+# German translations for larch package.
+# Copyright (C) 2009-2010 Michael Towers
+# Automatically generated, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: larch 7\n"
+"POT-Creation-Date: 2010-03-23 07:07+CET\n"
+"PO-Revision-Date: 2009-08-04 22:10+CEST\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: mt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: larch.py:204
+msgid "Please enter root password"
+msgstr "Bitte 'root'-Passwort eingeben"
+
+#: larch.py:216
+msgid "Incorrect root password"
+msgstr "Falsches 'root'-Passwort"
+
+#: larch.py:219
+msgid "No root password, cancelling operation"
+msgstr "Kein 'root'-Passwort, Vorgang wird abgebrochen"
+
+#: larch.py:235
+msgid "Supershell couldn't be started"
+msgstr "'Supershell' konnte nicht starten"
+
+#: larch.py:323
+msgid "Enter '%s' application ('$' for path argument):"
+msgstr "'%s'-Anwendung eingeben ('$' für Pfad-Parameter):"
+
+#: larch.py:431
+msgid "Editing '%s'"
+msgstr "Editiere '%s'"
+
+#: larch.py:465
+msgid "Platform error, installed system is %s"
+msgstr "Prozessortyp-Fehler, das installierte System ist %s"
+
+#: larch.py:470
+msgid "No installed system found"
+msgstr "Kein installiertes System gefunden"
+
+#: larch.py:520
+msgid "Couldn't read file '%s'"
+msgstr "Konnte Datei '%s' nicht lesen"
+
+#: larch.py:529
+msgid "Couldn't save file '%s'"
+msgstr "Konnte Datei '%s' nicht speichern"
+
+#: larch.py:533
+msgid "CONFIG ERROR"
+msgstr "KONFIGURATIONSFEHLER"
+
+#: larch.py:537
+msgid "BUILD ERROR"
+msgstr "BAUFEHLER"
+
+#: larch.py:541
+msgid "FATAL ERROR"
+msgstr "FEHLER"
+
+#: larch.py:549
+msgid "This error could not be handled"
+msgstr "Konnte diesen Fehler nicht verdauen"
+
+#: larch.py:625
+msgid ""
+"   Please see '%s/%s'\n"
+"   for usage information.\n"
+msgstr ""
+"   Siehe bitte '%s/%s'\n"
+"   für Gebrauchsanweisungen.\n"
+
+#: larch.py:643
+msgid "ERROR: Unsupported option - '%s'\n"
+msgstr "FEHLER: Option nicht zulässig - '%s'\n"
+
+#: larch.py:644
+msgid "Start without arguments or with '--pyqt' to start pyqt gui.\n"
+msgstr ""
+"Starte ohne Parameter oder mit '--pyqt', um pyqt-Oberfläche zu starten.\n"
+
+#: larch.py:645
+msgid "The command line interface is started with '-c':\n"
+msgstr "Verwende '-c', um im Befehlszeilenmodus zu starten:\n"
+
+#: modules/base.py:89
+msgid "No pacman executable found"
+msgstr "Ausführbare Datei 'pacman' nicht gefunden"
+
+#: modules/base.py:117
+msgid "Unknown platform: '%s'"
+msgstr "Unbekannte Prozessor-Klasse: '%s'"
+
+#: modules/base.py:156
+msgid "Unknown configuration option: %s\n"
+msgstr "Unbekannte Konfigurationsoption: %s\n"
+
+#: modules/base.py:216
+msgid "No name for new profile"
+msgstr "Kein Name für neues Profil"
+
+#: modules/base.py:220
+msgid "Profile '%s' already exists"
+msgstr "Profil '%s' existiert schon"
+
+#: modules/base.py:234
+msgid "Profile '%s' exists already."
+msgstr "Profil '%s' existiert schon"
+
+#: modules/build.py:64
+msgid ""
+"Building a larch live medium from the running system is\n"
+"an error prone process. Changes to the running system\n"
+"made while running this function may be only partially\n"
+"incorporated into the compressed system images.\n"
+"\n"
+"Do you wish to continue?"
+msgstr ""
+"Die Konstruktion eines larch-live-Mediums vom laufenden System kann\n"
+"zu Fehlern führen. Änderungen am laufenden System, die während\n"
+"der Ausführung dieser Funktion auftreten, werden vielleicht nur\n"
+"teilweise in die komprimierten Systemabbildungen übernommen.\n"
+"\n"
+"Fortfahren?"
+
+#: modules/build.py:131
+msgid "Squashing system.sqf failed"
+msgstr "Komprimierung der system.sqf-Datei ist fehlgeschlagen"
+
+#: modules/build.py:208
+msgid "Build customization script failed"
+msgstr "Skript zur Anpassung der Konstruktion schlug fehl"
+
+#: modules/build.py:218
+msgid "Squashing mods.sqf failed"
+msgstr "Komprimierung der mods.sqf-Datei ist fehlgeschlagen"
+
+#: modules/build.py:240
+msgid "Invalid 'users' file"
+msgstr "Ungültige 'users'-Datei"
+
+#: modules/build.py:259
+msgid "Couldn't add user '%s'"
+msgstr "Konnte Benutzer '%s' nicht einrichten"
+
+#: modules/build.py:267
+msgid "Couldn't remove user '%s'"
+msgstr "Konnte Benutzer '%s' nicht entfernen"
+
+#: modules/build.py:282
+msgid "Couldn't save 'users' file"
+msgstr "Konnte 'users'-Datei nicht speichern"
+
+#: modules/build.py:370
+msgid "User creation (%s) failed"
+msgstr "Konnte neuen Benutzer (%s) nicht erstellen"
+
+#: modules/build.py:394
+msgid "No squashfs module found\n"
+msgstr "Kein squashfs-Modul wurde gefunden\n"
+
+#: modules/build.py:404
+msgid "No aufs or unionfs module found\n"
+msgstr "Kein aufs- oder unionfs-Modul wurde gefunden\n"
+
+#: modules/build.py:408
+msgid "Package '%s' is needed by larch systems\n"
+msgstr "larch-Systeme brauchen das Paket '%s'\n"
+
+#: modules/build.py:411
+msgid ""
+"Without package 'syslinux' you will not be able\n"
+"to create syslinux or isolinux booting media\n"
+msgstr ""
+"Das Paket 'syslinux' ist für die Herstellung\n"
+"syslinux und isolinux Boot-Medien notwendig\n"
+
+#: modules/build.py:415
+msgid ""
+"Without package 'cdrkit' (or 'cdrtools') you will\n"
+"not be able to create CD/DVD media\n"
+msgstr ""
+"Das Paket 'cdrkit' (oder 'cdrtools') ist für die\n"
+"Herstellung CD/DVD-Medien notwendig\n"
+
+#: modules/build.py:419
+msgid ""
+"Without package 'eject' you will have problems\n"
+"using CD/DVD media\n"
+msgstr ""
+"Das Paket 'eject' ist beim Einsatz CD/DVD-Boot-Medien\n"
+"sehr sinnvoll\n"
+
+#: modules/build.py:423
+msgid ""
+"WARNING:\n"
+"%s\n"
+"    Continue building?"
+msgstr ""
+"WARNUNG:\n"
+"%s\n"
+"    Verfahren fortsetzen?"
+
+#: modules/build.py:429
+msgid ""
+"ERROR:\n"
+"%s"
+msgstr ""
+"FEHLER:\n"
+"%s"
+
+#: modules/build.py:456
+msgid ""
+"Problem running %s:\n"
+"  %s"
+msgstr ""
+"Problem beim Ausführen von %s:\n"
+"  %s"
+
+#: modules/build.py:461
+msgid ""
+"More than one kernel found:\n"
+"  %s"
+msgstr ""
+"Mehr als ein Kernel gefunden:\n"
+"  %s"
+
+#: modules/build.py:465
+msgid "No kernel found"
+msgstr "Kein Kernel gefunden"
+
+#: modules/build.py:473
+msgid "More than one set of kernel modules in %s"
+msgstr "Module von mehr als einem Kernel in %s gefunden"
+
+#: modules/build.py:499
+msgid ""
+"WARNING:\n"
+"  You seem to have installed a package containing modules\n"
+"which aren't compatible with your kernel (see log).\n"
+"Please check that this won't cause problems.\n"
+"Maybe you need the corresponding package for your kernel?\n"
+"\n"
+"    Continue building?"
+msgstr ""
+"WARNUNG:\n"
+"  Es ist anscheinend ein Paket installiert worden, das Kernel-Module\n"
+"enthält, die mit dem installierten Kernel nicht kompatibel sind\n"
+"(siehe Protokoll).\n"
+"Bitte überprüfen, ob dadurch Probleme entstehen.\n"
+"Vielleicht müsste das entsprechende Paket für den vorhandenen Kernel\n"
+"installiert werden?\n"
+"\n"
+"    Verfahren fortsetzen?"
+
+#: modules/build.py:508
+msgid "Couldn't find kernel modules"
+msgstr "Kernel-Module nicht gefunden"
+
+#: modules/build.py:528
+msgid "Couldn't find usable mkinitcpio preset: %s"
+msgstr "Brauchbare mkinitcpio-preset-Datei nicht gefunden: %s"
+
+#: modules/buildpage.py:51
+msgid "The system to be compressed must be installed and ready."
+msgstr "Das System zum Komprimieren muss schon installiert und fertig sein."
+
+#: modules/buildpage.py:52
+msgid "Edit supported locales"
+msgstr "Unterstützte Lokale editieren"
+
+#: modules/buildpage.py:53
+msgid "Edit the /etc/locale.gen file to select supported glibc locales"
+msgstr "/etc/locale.gen editieren, um unterstützte glibc-locales festzulegen"
+
+#: modules/buildpage.py:54
+msgid "Edit Arch configuration file (/etc/rc.conf)"
+msgstr "Arch-Konfigurationsdatei (/etc/rc.conf) editieren"
+
+#: modules/buildpage.py:55
+msgid "Edit the /etc/rc.conf file to configure the live system"
+msgstr "/etc/rc.conf editieren, um das Live-System zu konfigurieren"
+
+#: modules/buildpage.py:57 modules/installpage.py:60 modules/projectpage.py:68
+msgid "Advanced Options"
+msgstr "Optionen für Fortgeschrittene"
+
+#: modules/buildpage.py:58
+msgid "Edit mkinitcpio.conf"
+msgstr "mkinitcpio.conf editieren"
+
+#: modules/buildpage.py:59
+msgid "Edit the configuration file for generating the initramfs via mkinitcpio"
+msgstr ""
+"Die Konfigurationsdatei für initramfs-Erzeugung mittels mkinitcpio editieren"
+
+#: modules/buildpage.py:60
+msgid "Edit overlay (open in file browser)"
+msgstr "Überlagerungsordner editieren (im Datei-Browser öffnen)"
+
+#: modules/buildpage.py:61
+msgid "Open a file browser on the profile's 'rootoverlay'"
+msgstr "'rootoverlay'-Ordner vom Profil im Datei-Browser öffnen"
+
+#: modules/buildpage.py:62
+msgid "Generate ssh keys"
+msgstr "ssh-Schlüssel erzeugen"
+
+#: modules/buildpage.py:63
+msgid "Enables pre-generation of ssh keys"
+msgstr "Vor-Erzeugung von ssh-Schlüsseln einstellen"
+
+#: modules/buildpage.py:64
+msgid "Reuse existing system.sqf"
+msgstr "Vorhandenes system.sqf verwenden"
+
+#: modules/buildpage.py:65
+msgid ""
+"Reuse existing system.sqf, to save time if the base system hasn't changed"
+msgstr ""
+"Schon vorhandenes system.sqf wiederverwenden, um Zeit zu sparen, falls das "
+"Basis-System unverändert ist."
+
+#: modules/buildpage.py:66 modules/gui.py:65
+msgid "Larchify"
+msgstr "Larchifizieren"
+
+#: modules/buildpage.py:67
+msgid "Build the main components of the larch system"
+msgstr "Die Hauptkomponenten des larch-Systems erzeugen"
+
+#: modules/buildpage.py:69
+msgid "User accounts"
+msgstr "Benutzer"
+
+#: modules/buildpage.py:71
+msgid "Click on a row to select, click on a selected cell to edit"
+msgstr ""
+"Klicke auf eine Zeile um sie zu selektieren,Klicke auf eine selektierte "
+"Zelle um sie zu editieren"
+
+#: modules/buildpage.py:72
+msgid "Add user"
+msgstr "Neuen Benutzer"
+
+#: modules/buildpage.py:73
+msgid "Create a new user-name"
+msgstr "Einen neuen Benutzernamen erstellen"
+
+#: modules/buildpage.py:74
+msgid "Delete user"
+msgstr "Benutzer löschen"
+
+#: modules/buildpage.py:75
+msgid "Remove the selected user-name"
+msgstr "Entferne den selektierten Benutzernamen"
+
+#: modules/buildpage.py:86
+msgid "Group"
+msgstr "Gruppe"
+
+#: modules/buildpage.py:86
+msgid "Password"
+msgstr "Passwort"
+
+#: modules/buildpage.py:86
+msgid "User-Name"
+msgstr "Benutzername"
+
+#: modules/buildpage.py:87
+msgid "'skel' directory"
+msgstr "'skel'-Ordner"
+
+#: modules/buildpage.py:87
+msgid "Additional Groups"
+msgstr "Zusätzliche Gruppen"
+
+#: modules/buildpage.py:88
+msgid "Expert options"
+msgstr "Optionen für Experten"
+
+#: modules/buildpage.py:102
+msgid "No Arch installation at %s"
+msgstr "Keine Arch-Installation in %s"
+
+#: modules/buildpage.py:164
+msgid "Couldn't adjust user definition"
+msgstr "Konnte Benutzer-Information nicht ändern"
+
+#: modules/buildpage.py:172
+msgid "Default (/etc/skel)"
+msgstr "Standard (/etc/skel)"
+
+#: modules/buildpage.py:180
+msgid "Choose 'skel' Folder"
+msgstr "'skel'-Ordner auswählen"
+
+#: modules/buildpage.py:181
+msgid ""
+"This folder will be copied\n"
+"to build the user's home folder:"
+msgstr ""
+"Dieser Ordner wird kopiert\n"
+"um den Home-Ordner des neuen\n"
+"Benutzers zu erstellen:"
+
+#: modules/buildpage.py:189
+msgid "Enter login-name for new user:"
+msgstr "Neuen Anmeldenamen eingeben:"
+
+#: modules/console.py:91
+msgid "Information"
+msgstr "Information"
+
+#: modules/console.py:94
+msgid "Press <Enter> to continue"
+msgstr "Die <Eingabe>-Taste drücken um fortzufahren"
+
+#: modules/console.py:100
+msgid "Confirmation"
+msgstr "Bestätigung"
+
+#: modules/console.py:105 modules/console.py:204
+msgid "Yes"
+msgstr "Ja"
+
+#: modules/console.py:105 modules/console.py:205
+msgid "No"
+msgstr "Nein"
+
+#: modules/console.py:113
+msgid "Input Required"
+msgstr "Eingabe Erforderlich"
+
+#: modules/console.py:135
+msgid "ERROR"
+msgstr "FEHLER"
+
+#: modules/console.py:148
+msgid "Unknown command: %s"
+msgstr "Unbekannter Befehl: %s"
+
+#: modules/console.py:206
+msgid "Project Name:"
+msgstr "ProjektName"
+
+#: modules/console.py:207
+msgid "Profile:"
+msgstr "Profil:"
+
+#: modules/console.py:208 modules/projectpage.py:79
+msgid "Installation Path:"
+msgstr "Installationspfad:"
+
+#: modules/console.py:209
+msgid "Working Directory:"
+msgstr "Arbeitsverzeichnis:"
+
+#: modules/console.py:210
+msgid "Platform:"
+msgstr "Prozessor-Klasse:"
+
+#: modules/console.py:211
+msgid "Installation Mirror:"
+msgstr "Paketspiegel für die Installation:"
+
+#: modules/console.py:212
+msgid "--- use mirror:"
+msgstr "--- Spiegel verwenden:"
+
+#: modules/console.py:213
+msgid "Use Project Mirrorlist:"
+msgstr "Projekt-Spiegelliste verwenden:"
+
+#: modules/console.py:214
+msgid "Bootloader:"
+msgstr "Bootlader:"
+
+#: modules/console.py:215
+msgid "Medium Detection:"
+msgstr "Entdeckung des Mediums"
+
+#: modules/console.py:216
+msgid "Medium Label:"
+msgstr "Medium-'Label'"
+
+#: modules/console.py:217
+msgid "iso 'application ID':"
+msgstr "iso-Anwendungsname:"
+
+#: modules/console.py:218
+msgid "iso 'publisher':"
+msgstr "iso-Hersteller:"
+
+#: modules/console.py:219 modules/installpage.py:75
+msgid "Package Cache:"
+msgstr "Paket-Cache"
+
+#: modules/console.py:222
+msgid "Projects:\n"
+msgstr "Projekte:\n"
+
+#: modules/console.py:227
+msgid "Profiles (in %s):\n"
+msgstr "Profile (in %s):\n"
+
+#: modules/console.py:232
+msgid "Example Profiles (in %s):\n"
+msgstr "Beispiel-Profile (in %s):\n"
+
+#: modules/console.py:237
+msgid "Available Partitions:\n"
+msgstr "Zur Verfügung stehende Partitionen:\n"
+
+#: modules/console.py:247 modules/console.py:256
+msgid "Unknown project name: '%s'"
+msgstr "Unbekannter Projektname: %s"
+
+#: modules/console.py:264 modules/console.py:276
+msgid "Unknown profile name: '%s'"
+msgstr "Unbekannter Profilname: %s"
+
+#: modules/console.py:288
+msgid "Available platforms: %s"
+msgstr "Mögliche Prozessorklassen: %s"
+
+#: modules/console.py:314
+msgid "Invalid bootloader: %s"
+msgstr "Ungültiger 'bootloader': %s"
+
+#: modules/gui.py:49
+msgid "<em>larch</em> Live Arch Linux Construction Kit"
+msgstr "<em>larch</em> Live-Arch-Linux-Baukasten"
+
+#: modules/gui.py:50
+msgid "View Log"
+msgstr "Protokoll Zeigen"
+
+#: modules/gui.py:51
+msgid "This button switches to the log viewer"
+msgstr "Dieser Knopf wechselt zum Protokoll-Anzeige"
+
+#: modules/gui.py:52
+msgid "Help"
+msgstr "Hilfe"
+
+#: modules/gui.py:53
+msgid "This button switches to the documentation viewer"
+msgstr "Dieser Knopf wechselt zur Dokumentationsanzeige"
+
+#: modules/gui.py:54
+msgid "Quit"
+msgstr "Schließen"
+
+#: modules/gui.py:55
+msgid "Stop the current action and quit the program"
+msgstr "Aktuellen Vorgang anhalten und Anwendung schließen"
+
+#: modules/gui.py:63
+msgid "Project Settings"
+msgstr "Projekteinstellungen"
+
+#: modules/gui.py:64
+msgid "Installation"
+msgstr "Installation"
+
+#: modules/gui.py:66
+msgid "Prepare Medium"
+msgstr "Medium Vorbereiten"
+
+#: modules/gui.py:67
+msgid "Installation Tweaks"
+msgstr "Installation-Feinkontrolle"
+
+#: modules/gui.py:117
+msgid "Processing ..."
+msgstr "Prozess läuft ..."
+
+#: modules/gui.py:118 modules/gui.py:166
+msgid "Here you can follow the detailed, low-level progress of the commands."
+msgstr "Hier kann man die einzelnen Schritte detailliert verfolgen"
+
+#: modules/gui.py:122
+msgid "An indication of the progress of the current operation, if possible"
+msgstr "Zeigt den Fortschritt der aktuellen Operation, insoweit möglich"
+
+#: modules/gui.py:123 modules/gui.py:258
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: modules/gui.py:124
+msgid "Stop the current action"
+msgstr "Aktuellen Vorgang anhalten"
+
+#: modules/gui.py:125
+msgid "Done"
+msgstr "Fertig"
+
+#: modules/gui.py:165
+msgid "Low-level Command Logging"
+msgstr "Protokoll der einzelnen Befehle"
+
+#: modules/gui.py:169
+msgid "Clear"
+msgstr "Löschen"
+
+#: modules/gui.py:170 modules/gui.py:200
+msgid "Hide"
+msgstr "Schließen"
+
+#: modules/gui.py:171 modules/gui.py:201
+msgid "Go back to the larch controls"
+msgstr "Zurückkehren zu den larch-Kontrollen"
+
+#: modules/gui.py:198
+msgid "Documentation"
+msgstr "Dokumentation"
+
+#: modules/gui.py:203
+msgid "Go back in the viewing history"
+msgstr "Zurück in der Browser-Geschichte"
+
+#: modules/gui.py:205
+msgid "Go forward in the viewing history"
+msgstr "Nach vorne in der Browser-Seitengeschichte"
+
+#: modules/gui.py:207
+msgid "Reload the documentation for the current larch tab"
+msgstr "Die Dokumentation für die aktuelle larch-Seite anzeigen"
+
+#: modules/gui.py:209
+msgid "Go to the general larch documentation index"
+msgstr "Das allgemeine larch-Inhaltsverzeichnis anzeigen"
+
+#: modules/gui.py:254
+msgid "Editor"
+msgstr "Editor"
+
+#: modules/gui.py:257
+msgid "OK"
+msgstr "Annehmen"
+
+#: modules/gui.py:259
+msgid "Revert"
+msgstr "Zurücksetzen"
+
+#: modules/gui.py:260
+msgid "Restore the text to its initial state"
+msgstr "Text zum ursprünglichen Zustand zurücksetzen"
+
+#: modules/gui.py:261
+msgid "Copy"
+msgstr "Kopieren"
+
+#: modules/gui.py:262
+msgid "Cut"
+msgstr "Ausschneiden"
+
+#: modules/gui.py:263
+msgid "Paste"
+msgstr "Einfügen"
+
+#: modules/gui.py:264
+msgid "Undo"
+msgstr "Rückgängig"
+
+#: modules/gui.py:265
+msgid "Redo"
+msgstr "Wieder ausführen"
+
+#: modules/gui.py:338
+msgid "Choose an item"
+msgstr "Eintreg wählen"
+
+#: modules/gui.py:339
+msgid "Select one of the following items:"
+msgstr "Wähle einen der folgenden Einträge:"
+
+#: modules/installation.py:111 modules/installpage.py:136
+msgid "No 'mirrorlist' file found"
+msgstr "Keine 'mirrorlist'-Datei gefunden"
+
+#: modules/installation.py:156
+msgid "Couldn't write to the installation path (%s)."
+msgstr "Konnte nicht im Installationsordner (%s) abspeichern."
+
+#: modules/installation.py:160
+msgid "The installation path (%s) is mounted 'nodev'."
+msgstr "Installationspfad (%s) 'nodev' gemountet"
+
+#: modules/installation.py:168
+msgid "The installation path (%s) is mounted 'noexec'."
+msgstr "Installationspfad (%s) 'noexec' gemountet"
+
+#: modules/installation.py:211
+msgid "Package installation failed"
+msgstr "Paket-Installation fehlgeschlagen"
+
+#: modules/installation.py:256
+msgid "Couldn't synchronize pacman database (pacman -Sy)"
+msgstr "pacman-Datenbank konnte nicht aktualisiert werden (pacman -Sy)"
+
+#: modules/installpage.py:50
+msgid "Edit Profile"
+msgstr "Profil editieren"
+
+#: modules/installpage.py:51
+msgid "Edit 'addedpacks'"
+msgstr "'addedpacks' editieren"
+
+#: modules/installpage.py:52
+msgid "Edit the list of packages to be installed"
+msgstr "Zu installierende Pakete ändern"
+
+#: modules/installpage.py:53
+msgid "Edit 'vetopacks'"
+msgstr "'vetopacks' editieren"
+
+#: modules/installpage.py:54
+msgid "Edit the list of group member packages NOT to install"
+msgstr "Liste der zu blockierenden Gruppenmitgliedspakete editieren"
+
+#: modules/installpage.py:55
+msgid "Edit pacman.conf options"
+msgstr "pacman.conf-Optionen editieren"
+
+#: modules/installpage.py:56
+msgid "Edit pacman.conf options - not the repositories"
+msgstr "pacman.conf-Optionen editieren - nicht die Quellen"
+
+#: modules/installpage.py:57
+msgid "Edit pacman.conf repositories"
+msgstr "pacman.conf-Quellen editieren"
+
+#: modules/installpage.py:58
+msgid "Edit the repository entries for pacman.conf"
+msgstr "pacman.conf-Quellen editieren"
+
+#: modules/installpage.py:62
+msgid "Use project mirrorlist"
+msgstr "Projekt-Spiegelliste verwenden"
+
+#: modules/installpage.py:63
+msgid ""
+"Enables use of the mirrorlist file saved in the working directory, for "
+"installation only"
+msgstr ""
+"Aktiviert die 'mirrorlist'-Datei im Arbeitsverzeichnis, nur für die "
+"Installation"
+
+#: modules/installpage.py:64
+msgid "Edit project mirrorlist"
+msgstr "Projekt-Spiegelliste editieren"
+
+#: modules/installpage.py:65
+msgid "Edit mirrorlist in working directory"
+msgstr "'mirrorlist'-Datei im Arbeitsverzeichnis editieren"
+
+#: modules/installpage.py:67
+msgid "Use special mirror for installation"
+msgstr "Installation-Spiegel verwenden"
+
+#: modules/installpage.py:68
+msgid ""
+"Allows a specific (e.g. local) mirror to be used just for the installation"
+msgstr ""
+"Ermöglicht die Verwendung einer besonderen Paket-Quelle für die Installation "
+"allein"
+
+#: modules/installpage.py:69
+msgid "URL:"
+msgstr "URL:"
+
+#: modules/installpage.py:71
+msgid "The url of the installation mirror"
+msgstr "URL der Paket-Quelle für die Installation"
+
+#: modules/installpage.py:72 modules/installpage.py:78
+#: modules/mediumpage.py:75 modules/mediumpage.py:81 modules/mediumpage.py:106
+#: modules/projectpage.py:82
+msgid "Change"
+msgstr "Ändern"
+
+#: modules/installpage.py:73
+msgid "Change the installation mirror path"
+msgstr "Installationsquelle ändern"
+
+#: modules/installpage.py:77
+msgid "The path to the (host's) package cache"
+msgstr "Paketencache-Pfad (im 'Host'-Dateisystem)"
+
+#: modules/installpage.py:79
+msgid "Change the package cache path"
+msgstr "Paketencache-Pfad ändern"
+
+#: modules/installpage.py:81
+msgid "Install"
+msgstr "Installieren"
+
+#: modules/installpage.py:82
+msgid "This will start the installation to the set path"
+msgstr "Zum Starten der Installation zum eingestellen Pfad"
+
+#: modules/installpage.py:120
+msgid "Editing pacman.conf options only"
+msgstr "Editiere nur die Optionen von pacman.conf"
+
+#: modules/installpage.py:126
+msgid "Editing pacman.conf repositories only"
+msgstr "Editirernur di Paket-Quellen von pacman.conf"
+
+#: modules/installpage.py:138
+msgid "Editing mirrorlist: Uncomment ONE entry"
+msgstr "Editiere 'mirrorlist': EIN Eintrag soll nicht auskommentiert sein"
+
+#: modules/installpage.py:154
+msgid "Enter new local mirror path:"
+msgstr "Neuen Paket-Quelle-Pfad eingeben:"
+
+#: modules/installpage.py:160
+msgid "You must specify a URL, with protocol, e.g. 'file:///a/b/c'"
+msgstr "Ein URL mit Protokoll muss eingegeben werden, z.B. 'file:///a/b/c'"
+
+#: modules/installpage.py:174
+msgid "Enter new package cache path:"
+msgstr "Neuen Paket-cache-Pfad eingeben:"
+
+#: modules/medium.py:82
+msgid "Can't boot to label - no label supplied"
+msgstr "Booten zu 'label' nicht möglich, kein 'label' angegeben"
+
+#: modules/medium.py:208
+msgid "Couldn't format %s"
+msgstr "Konnte %s nicht formatieren"
+
+#: modules/medium.py:265
+msgid "GRUB is at present only supported on extN"
+msgstr "GRUB steht zur Zeit nur auf extN zur Verfügung"
+
+#: modules/medium.py:271
+msgid "syslinux is only supported on vfat"
+msgstr "syslinux steht nur auf vfat zur Verfügung"
+
+#: modules/medium.py:287 modules/medium.py:320
+msgid "Couldn't mount larch partition, %s"
+msgstr "larch-Partition, %s, konnte nicht gemountet werden"
+
+#: modules/medium.py:341
+msgid "'syslinux' must be installed."
+msgstr "'syslinux' muss installiert sein."
+
+#: modules/medium.py:345
+msgid "Device has neither a /boot nor a /syslinux directory"
+msgstr "'Device' hat weder einen /boot- noch einen /syslinux-Ordner"
+
+#: modules/medium.py:359
+msgid ""
+"%s not found -\n"
+"   'syslinux' must be installed on live system"
+msgstr ""
+"%s nicht gefunden -\n"
+"   'syslinux' muss im Live-System installiert sein"
+
+#: modules/medium.py:375
+msgid "Your larch iso, %s, was successfully created"
+msgstr "Dein larch-iso, %s, wurde erfolgreich hergestellt"
+
+#: modules/mediumpage.py:67
+msgid "Partition (disk / USB-stick)"
+msgstr "Partition (Festplatte / USB-stick)"
+
+#: modules/mediumpage.py:69
+msgid ""
+"You can choose installation to iso (for CD/DVD) or a partition (e.g. USB-"
+"stick)"
+msgstr ""
+"Installation zu 'iso' (für CD/DVD) oder auf eine Partition (z.B: USB-stick)"
+
+#: modules/mediumpage.py:72
+msgid "Application ID:"
+msgstr "Anwendungsname:"
+
+#: modules/mediumpage.py:74
+msgid "The text passed to mkisofs with the -A option"
+msgstr "Text für die '-A'-Option von mkisofs"
+
+#: modules/mediumpage.py:76
+msgid "Change the application ID of the iso"
+msgstr "iso-Anwendungsname ändern"
+
+#: modules/mediumpage.py:78
+msgid "Publisher:"
+msgstr "Hersteller:"
+
+#: modules/mediumpage.py:80
+msgid "The text passed to mkisofs with the -publisher option"
+msgstr "Text für die '-publisher'-Option von mkisofs"
+
+#: modules/mediumpage.py:82
+msgid "Change the publisher data of the iso"
+msgstr "iso-Hersteller-Daten ändern"
+
+#: modules/mediumpage.py:84
+msgid "Partition:"
+msgstr "Partition:"
+
+#: modules/mediumpage.py:86
+msgid "The partition to which the larch system is to be installed"
+msgstr "Die Partition, auf der das larch-System installiert werden soll"
+
+#: modules/mediumpage.py:87
+msgid "Choose"
+msgstr "Wählen"
+
+#: modules/mediumpage.py:88
+msgid "Select the partition to receive the larch system"
+msgstr "Die Partition für das larch-System wählen"
+
+#: modules/mediumpage.py:89
+msgid "Don't format"
+msgstr "Nicht formatieren"
+
+#: modules/mediumpage.py:90
+msgid ""
+"Copy the data to the partition without formatting first (not the normal "
+"procedure)"
+msgstr ""
+"Kopiere die Daten zur Partition ohne zuerst zu formatieren (nicht die "
+"normale Prozedur"
+
+#: modules/mediumpage.py:92
+msgid "Medium Detection"
+msgstr "Entdeckung des Mediums"
+
+#: modules/mediumpage.py:93
+msgid ""
+"Choose how the boot scripts determine where to look for the larch system"
+msgstr "Bestimme, wie die Bootskripts das larch-System entdecken"
+
+#: modules/mediumpage.py:95
+msgid "Use the partition's UUID to find it"
+msgstr "Partition-UUID zum Identifizieren verwenden"
+
+#: modules/mediumpage.py:97
+msgid "Use the partition's label to find it"
+msgstr "Partition-Label zum Identifizierung verwenden"
+
+#: modules/mediumpage.py:98
+msgid "Partition"
+msgstr "Partition"
+
+#: modules/mediumpage.py:99
+msgid "Use the partition name (/dev/sdb1, etc.)"
+msgstr "Partition-Bezeichnung (/dev/sdb1, usw.) verwenden"
+
+#: modules/mediumpage.py:100
+msgid "Search (for larchboot)"
+msgstr "Suche (nach 'larchboot')"
+
+#: modules/mediumpage.py:101
+msgid ""
+"Test all CD/DVD devices and partitions until the file larch/larchboot is "
+"found"
+msgstr ""
+"Alle Laufwerke und Partitionen durchsuchen, bis die Datei larch/larchboot "
+"gefunden wird"
+
+#: modules/mediumpage.py:103
+msgid "Medium label:"
+msgstr "Medium-'Label':"
+
+#: modules/mediumpage.py:105
+msgid "The label that the partition will be given"
+msgstr "Dieses 'Label' wird der Partition zugeordnet"
+
+#: modules/mediumpage.py:107
+msgid "Change the label"
+msgstr "'Label' ändern"
+
+#: modules/mediumpage.py:109
+msgid "Enable session saving"
+msgstr "Sitzungsabspeicherung"
+
+#: modules/mediumpage.py:110
+msgid "If checked, the medium will have the file 'larch/save'"
+msgstr "Wenn hier aktiviert, bekommt das Medium die Datei 'larch/save'"
+
+#: modules/mediumpage.py:112
+msgid "Bootloader"
+msgstr "Bootlader"
+
+#: modules/mediumpage.py:113
+msgid "You can choose between GRUB and syslinux/isolinux as bootloader"
+msgstr "Man hat die Wahl des Bootladers zwischen GRUB und syslinux/isolinux"
+
+#: modules/mediumpage.py:115
+msgid "Use GRUB as bootloader"
+msgstr "Verwende GRUB als Bootlader"
+
+#: modules/mediumpage.py:117
+msgid "Use syslinux (partition) or isolinux (CD/DVD) as bootloader"
+msgstr "Verwende syslinux (Partition) oder isolinux (CD/DVD) als Bootlader"
+
+#: modules/mediumpage.py:118 modules/mediumpage.py:222
+msgid "None"
+msgstr "Keiner"
+
+#: modules/mediumpage.py:119
+msgid ""
+"Don't install a bootloader (you'll need to provide some means of booting)"
+msgstr ""
+"Kein Bootloader installieren (die Bootfähigkeit muss anderweitig "
+"sichergestellt werden)"
+
+#: modules/mediumpage.py:121
+msgid "Bootable via search"
+msgstr "Boot über 'Suche"
+
+#: modules/mediumpage.py:122
+msgid ""
+"Create the file larch/larchboot to mark the medium as a bootable larch system"
+msgstr ""
+"Erzeuge die Datei larch/larchboot um das Medium als bootfähiges larch-System "
+"zu kennzeichnen"
+
+#: modules/mediumpage.py:124
+msgid "Edit boot entries"
+msgstr "Boot-Optionen editieren"
+
+#: modules/mediumpage.py:125
+msgid "Edit the file determining the boot entries"
+msgstr "Die Datei editieren, die die Boot-Einträge bestimmt"
+
+#: modules/mediumpage.py:126 modules/mediumpage.py:127
+msgid "Edit grub template"
+msgstr "'grub'-Schablone editieren"
+
+#: modules/mediumpage.py:128 modules/mediumpage.py:129
+msgid "Edit syslinux/isolinux template"
+msgstr "'syslinux'/'isolinux'-Schablone editieren"
+
+#: modules/mediumpage.py:131
+msgid "Create boot iso"
+msgstr "Boot-iso erstellen"
+
+#: modules/mediumpage.py:132
+msgid ""
+"Create a small boot iso for this system (for machines that can't boot from "
+"USB)"
+msgstr ""
+"Ein kleines Boot-iso für das vorhandene System herstellen (für Rechner, die "
+"nicht von USB bootem können)"
+
+#: modules/mediumpage.py:133
+msgid "Create larch medium"
+msgstr "Medium Vorbereiten"
+
+#: modules/mediumpage.py:134
+msgid "Create the larch iso or set up the chosen partition"
+msgstr "Das larch-iso herstellen oder die gewählte Partition einrichten"
+
+#: modules/mediumpage.py:136
+msgid ""
+"Edit cd-root\n"
+"(open in file browser)"
+msgstr ""
+"'cd-root' editieren\n"
+"(im Datei-Browser öffnen)"
+
+#: modules/mediumpage.py:137
+msgid "Open a file browser on the profile's 'cd-root' folder"
+msgstr "'cd-root'-Ordner vom Profil im Datei-Browser öffnen"
+
+#: modules/mediumpage.py:223
+msgid "Choose Partition"
+msgstr "Partition wählen"
+
+#: modules/mediumpage.py:224
+msgid ""
+"BE CAREFUL - if you select the wrong\n"
+"   partition you might well destroy your system!\n"
+"\n"
+"Select the partition to receive the larch system:"
+msgstr ""
+"ACHTUNG - wenn du die falsche Partition wählst,\n"
+"   kann dein System zerstört werden!\n"
+"\n"
+"Wähle die Partition für das larch-System:"
+
+#: modules/mediumpage.py:242
+msgid "Editing larch boot entries"
+msgstr "Editiere die larch Boot-Einträge"
+
+#: modules/mediumpage.py:253
+msgid "Editing grub template"
+msgstr "Editiere die GRUB-Schablone"
+
+#: modules/mediumpage.py:265
+msgid "Editing syslinux/isolinux template"
+msgstr "Editiere die syslinux/isolinux-Schablone"
+
+#: modules/mediumpage.py:270
+msgid "Enter new label for the boot medium:"
+msgstr "Neues 'Label' für das Boot-Medium eingeben:"
+
+#: modules/mediumpage.py:284
+msgid "Enter new application ID for the boot iso:"
+msgstr "Neuen Anwendungsnamen für das Boot-iso eingeben:"
+
+#: modules/mediumpage.py:298
+msgid "Enter new publisher for the boot iso:"
+msgstr "Neue Herstellerdaten das Boot-iso eingeben:"
+
+#: modules/mediumpage.py:355
+msgid "No partition selected for larch"
+msgstr "Keine Partition für larch gewählt"
+
+#: modules/mediumpage.py:378
+msgid ""
+"The partition containing the larch live system\n"
+"must be specifed."
+msgstr ""
+"Die Partition mit dem larch-System\n"
+"muss angegeben werden."
+
+#: modules/projectpage.py:50
+msgid "Profile"
+msgstr "Profil"
+
+#: modules/projectpage.py:52
+msgid "Choose Existing Profile:"
+msgstr "Vorhandenes Profil Wählen"
+
+#: modules/projectpage.py:54
+msgid "New Profile:"
+msgstr "Neues Profil:"
+
+#: modules/projectpage.py:56
+msgid "Choose a profile from those already in your larch working folder"
+msgstr "Ein Profil von den im Arbeitsverzeichnis schon vorhandenen wählen"
+
+#: modules/projectpage.py:57
+msgid "Browse for Profile"
+msgstr "Profil suchen"
+
+#: modules/projectpage.py:58
+msgid "Fetch a profile from the file-system"
+msgstr "Ein Profil vom Datei-System holen"
+
+#: modules/projectpage.py:59
+msgid "Rename"
+msgstr "Umbenennen"
+
+#: modules/projectpage.py:60
+msgid "Rename the current profile"
+msgstr "Aktuelles Profil umbenennen"
+
+#: modules/projectpage.py:61 modules/projectpage.py:76
+msgid "Delete"
+msgstr "Löschen"
+
+#: modules/projectpage.py:62
+msgid "Delete the current profile"
+msgstr "Aktuelles Profil löschen"
+
+#: modules/projectpage.py:64
+msgid "Platform (processor architecture):"
+msgstr "Prozessor-Klasse"
+
+#: modules/projectpage.py:66
+msgid "Which processor architecture?"
+msgstr "Welche Prozessor-Klasse?"
+
+#: modules/projectpage.py:70
+msgid "Project"
+msgstr "Projekt"
+
+#: modules/projectpage.py:71
+msgid "Choose Existing Project:"
+msgstr "Vorhandenes Projekt Wählen:"
+
+#: modules/projectpage.py:73
+msgid "Choose a project from those already defined"
+msgstr "Ein Projekt von den schon definierten wählen"
+
+#: modules/projectpage.py:74
+msgid "New Project"
+msgstr "Neues Projekt"
+
+#: modules/projectpage.py:75
+msgid "Create a new project"
+msgstr "Ein neues Projekt erstellen"
+
+#: modules/projectpage.py:77
+msgid "Delete the current project"
+msgstr "Aktuelles Projekt löschen"
+
+#: modules/projectpage.py:81
+msgid "The root directory of the Arch installation to larchify"
+msgstr "Das Root-Verzeichnis der zu larchifizierenden Arch-Installation"
+
+#: modules/projectpage.py:83
+msgid "Change the root directory of the Arch installation"
+msgstr "Das Root-Verzeichnis der Arch-Installation ändern"
+
+#: modules/projectpage.py:113
+msgid "Profile directory mismatch: '%s' vs. '%s'"
+msgstr "Fehler beim Profil-Ordner: '%s' vs. '%s'"
+
+#: modules/projectpage.py:120
+msgid "Profile '%s' doesn't exist"
+msgstr "Profil '%s' existiert nicht"
+
+#: modules/projectpage.py:165
+msgid "Select profile source folder and enter new name"
+msgstr "Profil-Quellordner wählen und neuen Namen eingeben"
+
+#: modules/projectpage.py:166
+msgid "New name:"
+msgstr "Neuer Name:"
+
+#: modules/projectpage.py:183
+msgid "Enter new name for current profile:"
+msgstr "Neuen Namen für aktuelles Profil eingeben:"
+
+#: modules/projectpage.py:208
+msgid "Do you really want to delete profile '%s'?"
+msgstr "Profil '%s' wirklich löschen?"
+
+#: modules/projectpage.py:218
+msgid "Profile '%s' in use by project '%s"
+msgstr "Profil '%s' wird vom Projekt '%s' gebraucht"
+
+#: modules/projectpage.py:229
+msgid ""
+"WARNING: Double check your path -\n"
+"  If you make a mistake here it could destroy your system!\n"
+"\n"
+"Enter new installation path:"
+msgstr ""
+"ACHTUNG: Den Pfad gut kontrollieren -\n"
+"  Ein Fehler könnte dein System zerstören!\n"
+"\n"
+"Neuen Installationspfad eingeben:"
+
+#: modules/projectpage.py:251
+msgid ""
+"Your selected installation path (%s) contains unexpected items:\n"
+" %s\n"
+"\n"
+"Is that really ok?"
+msgstr ""
+"Der gewählte Installationspfad (%s) enthält unerwartete Dateien:\n"
+" %s\n"
+"\n"
+"Ist das wirklich in Ordnung?"
+
+#: modules/projectpage.py:266
+msgid "Enter name for new project:"
+msgstr "Neuen Projektnamen eingeben:"
+
+#: modules/projectpage.py:274
+msgid "Project '%s' already exists."
+msgstr "Projekt '%s' existiert schon."
+
+#: modules/projectpage.py:282
+msgid "Can't delete the only existing project."
+msgstr "Das einzige definierte Projekt kann nicht gelöscht werden."
+
+#: modules/projectpage.py:290
+msgid "Do you really want to delete project '%s'?"
+msgstr "Projekt '%s' wirklich löschen?"
+
+#: modules/tweakpage.py:45
+msgid "Package Management"
+msgstr "Paketverwaltung"
+
+#: modules/tweakpage.py:46
+msgid "Synchronize db"
+msgstr "Paket-Datenbank synchronisieren"
+
+#: modules/tweakpage.py:47
+msgid "Synchronize the pacman db on the target (pacman -Sy)"
+msgstr "Paketen-Datenbank (Zielsystem) synchronisieren (pacman -Sy)"
+
+#: modules/tweakpage.py:48
+msgid "Update / Add package    [-U]"
+msgstr "Paket aktualisieren/installieren  [-U]"
+
+#: modules/tweakpage.py:49
+msgid "Update / Add a package from a package file using pacman -U"
+msgstr ""
+"Ein Paket von einer Paketdatei mittels pacman -U aktualisieren / installieren"
+
+#: modules/tweakpage.py:50
+msgid "Add package(s)    [-S]"
+msgstr "Paket(e) installieren  [-S]"
+
+#: modules/tweakpage.py:51
+msgid "Add one or more packages (space separated) using pacman -S"
+msgstr ""
+"Ein oder mehr Pakete (mit Leerzeichen getrennt) mittels pacman -S "
+"installieren"
+
+#: modules/tweakpage.py:52
+msgid "Remove package(s)    [-Rs]"
+msgstr "Paket(e) entfernen  [-Rs]"
+
+#: modules/tweakpage.py:53
+msgid "Remove one or more packages (space separated) using pacman -Rs"
+msgstr ""
+"Ein oder mehr Pakete (mit Leerzeichen getrennt) mittels pacman -Rs entfernen"
+
+#: modules/tweakpage.py:73
+msgid "Package to add/update"
+msgstr "Paket zum Installieren / Aktualisieren"
+
+#: modules/tweakpage.py:75
+msgid "Packages"
+msgstr "Pakete"
+
+#: modules/tweakpage.py:82
+msgid "Error during package update."
+msgstr "Fehler beim Paket-Aktualisieren."
+
+#: modules/tweakpage.py:87
+msgid ""
+"Enter the names of packages to install -\n"
+"  separated by spaces:"
+msgstr ""
+"Die Namen der zu installierenden Pakete eingeben -\n"
+"  mit Leerzeichen getrennt:"
+
+#: modules/tweakpage.py:96
+msgid "Error during package installation."
+msgstr "Fehler beim Paket-Installieren"
+
+#: modules/tweakpage.py:101
+msgid ""
+"Enter the names of packages to remove -\n"
+"  separated by spaces:"
+msgstr ""
+"Die Namen der zu entfernenden Pakete eingeben -\n"
+"  mit Leerzeichen getrennt:"
+
+#: modules/tweakpage.py:110
+msgid "Error during package removal."
+msgstr "Fehler beim Paket-Entfernen."

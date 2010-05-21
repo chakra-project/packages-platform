@@ -1,0 +1,31 @@
+<div class="larchdocs">
+<h2 id="pagetitle" level="1">Recompressing the whole system</h2>
+
+<p>The <em>larch-live</em> package provides the 'larch-rebuild' script, which
+regenerates the system archives 'system.sqf' and 'mods.sqf' from the state of the
+system at the last session save (i.e. from the files on the boot medium). All the
+changes which have been gathered in the overlay archive are merged into the new
+'system.sqf', thus (potentially) reducing the space requirements considerably. The
+directory for the storage of these new archives must be passed as argument to the
+script.
+</p>
+
+<p>No further handling of these new archives is provided with  <em>larch</em>
+at present, for the simple reason that it is difficult to find a general solution to the
+question of what to do with them. They cannot just replace the archives on the
+boot medium because these are required to keep the <em>live</em> system running.
+So some temporary storage is needed for them, and it is quite conceivable that there
+is not enough space on the medium (as that might well be the reason for wanting
+to recompress the system in the first place).
+</p>
+
+<p>Thus some details of how to implement this rebuild feature are currently left to
+the creativity of the user. I would, however suggest that the medium file 'larch/boot-init'
+(see <a href="larch_sessionsave.html#boot-init">boot-init</a>) might be a useful place
+to perform the replacement of the archives. You would just have to write a script
+using 'larch-rebuild' to save the new archives somewhere, and write this 'boot-init'
+script to replace the old ones with the new ones, remembering to also delete any
+sqf files ending in '_' and '~' and the 'overlay.tar.lzo' archive.
+</p>
+
+</div>

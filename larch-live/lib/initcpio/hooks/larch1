@@ -1,0 +1,148 @@
+# larch1 -  live 'hook' for mkinitcpio: set up tmpfs and find boot device
+
+# Author: Michael Towers (gradgrind) <mt.42@web.de>
+#
+# This file is part of the larch project.
+#
+#    larch is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    larch is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with larch; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#
+#----------------------------------------------------------------------------
+#2010.02.15
+
+# Replacement for msg which includes leading and trailing spaces
+msg_ () { [ "${quiet}" != "y" ] && echo "$@"; }
+# Version which requires 'verbose' flag to output
+msg_v () { [ "${quiet}" != "y" ] && [ "${verbose}" = "y" ] && echo "$@"; }
+
+testdevice ()
+{
+    fstype=$( blkid -s TYPE -o value ${LDEV} )
+    /bin/mount -r -t ${fstype} -o noatime "${LDEV}" "${cdmount}" >/dev/null 2>/dev/null
+    if [ $? -eq 0 ]; then
+        if [ -f "${cdmount}/larch/system.sqf" ]; then
+            msg ":: larch system at ${LDEV}"
+        else
+            /bin/umount "${cdmount}" 2>/dev/null
+            msg_v  "!! No larch system at ${LDEV}"
+            LDEV=""
+        fi
+    else
+        msg_v "!! Couldn't mount ${LDEV}"
+        LDEV=""
+    fi
+}
+
+run_hook ()
+{
+    msg ":: Creating writeable filesystem (tmpfs)"
+    /bin/mkdir "/tfs"
+    # Boot option copy-to-ram (c2r)
+    if [ "${c2r}" = "y" ]; then
+        TFSSIZE="90%"
+    else
+        TFSSIZE="60%"
+    fi
+    [ "x${tmpfs}" != "x" ] && TFSSIZE="${tmpfs}"
+    /bin/mount -t tmpfs -o "size=${TFSSIZE}" tmpfs "/tfs"
+
+    # Directory for test mounts (and then for live CD, etc.)
+    cdmount="/livecd"
+    /bin/mkdir "${cdmount}"
+
+    modprobe loop
+
+    # Loop device test every second up to some limit
+    if [ "x${usbdelay}" != "x" ]; then
+        waittime=${usbdelay}
+    else
+        waittime=12
+    fi
+    waitcount=0
+    while [ ${waittime} -ne ${waitcount} ]; do
+
+        if [ "x${uuid}" != "x" ]; then
+            [ ${waitcount} -eq 0 ] && msg ":: Looking for UUID ${uuid}"
+            LDEV=$( blkid -U ${uuid} )
+            if [ "x${LDEV}" != "x" ]; then
+                testdevice
+            fi
+
+        elif [ "x${label}" != "x" ]; then
+            [ ${waitcount} -eq 0 ] && msg ":: Looking for LABEL ${label}"
+            LDEV=$( blkid -L ${label} )
+            if [ "x${LDEV}" != "x" ]; then
+                testdevice
+            fi
+
+        elif [ "x${root}" != "x" ]; then
+            [ ${waitcount} -eq 0 ] && msg ": Looking for ${root}"
+            # Set LDEV directly, e.g. /dev/sda1
+            if [ -e ${root} ]; then
+                LDEV=${root}
+                testdevice
+            fi
+
+        else
+            [ ${waitcount} -eq 0 ] && msg ":: Looking for boot device"
+            if [ "x${nocd}" = "x" ]; then
+                # Look for CD
+                cdroms=$( /bin/cat /proc/sys/dev/cdrom/info | { while read a b c; do
+                        if [ "${a}" = "drive" -a "${b}" = "name:" ]; then
+                            echo "${c}"
+                            break
+                        fi
+                    done
+                } )
+                for i in ${cdroms}; do
+                    LDEV=/dev/${i}
+                    testdevice
+                    if [ "x${LDEV}" != "x" ]; then
+                        break
+                    fi
+                done
+            fi
+
+            # Test partitions
+            if [ "x${LDEV}" = "x" ]; then
+                for d in /dev/sd[a-z][0-9]*; do
+                    LDEV=${d}
+                    testdevice
+                    if [ "x${LDEV}" != "x" ]; then
+                        if [ -f "${cdmount}/larch/larchboot" ]; then
+                            break
+                        else
+                            msg ":: ${LDEV} has no /larch/larchboot file"
+                            LDEV=""
+                        fi
+                    fi
+                done
+            fi
+
+        fi
+
+        [ "x${LDEV}" != "x" ] && break
+
+        /bin/sleep 1
+        waitcount=$(( ${waitcount} + 1 ))
+    done
+
+    if [ "x${LDEV}" = "x" ]; then
+        echo "!! Sorry, couldn't find boot medium ..."
+        echo "!! If the larch system is on a partition you should specify"
+        echo "!! its UUID with 'uuid=xxxxxxx' or its LABEL with 'label=xxxxxx'"
+        echo "!! as a boot parameter. 'root=/dev/sdXY' is another possibility."
+        break="y"
+    fi
+}

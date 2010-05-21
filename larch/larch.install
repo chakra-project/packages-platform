@@ -1,0 +1,23 @@
+_destdir=opt/apps/larch/modules
+
+post_install() {
+  post_upgrade
+}
+
+post_upgrade() {
+  echo "byte-compile python modules ..."
+  python -m compileall $_destdir
+}
+
+pre_remove() {
+  pre_upgrade
+}
+
+pre_upgrade() {
+  echo "Remove .pyc files ..."
+  rm -f $_destdir/*.pyc
+}
+
+op=$1
+shift
+$op $*

@@ -1,0 +1,14 @@
+Larch
+
+Author: Michael Towers (larch42 at googlemail dot com)
+Licence: GPL (see COPYING, LICENCE)
+
+The documentation is in the html subdirectory, please read it.
+
+To start the program run the 'larch.py' script in the root directory.
+
+Logos are derived from the Arch Linux logos, and are released under a
+Creative Commons Licence, see 'http://www.archlinux.org/art'.
+
+The larch project uses Arch Linux as its basis, but is not an official
+Arch Linux ('http://www.archlinux.org') project.

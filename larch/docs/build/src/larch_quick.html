@@ -1,0 +1,77 @@
+<div class="larchdocs">
+<h2 id="pagetitle" level="1">Quick Start</h2>
+
+<p>The gui should make exploration of the possibilities offered by <em>larch</em>
+quite straightforward. The documentation should provide enough information to
+understand how a <em>larch live</em> system works, so that further customizations
+can be performed beyond those directly supported.
+</p>
+<p>The general sequence of events starts with creating a 'project', which will
+determine certain aspects of the build environment (such as where to place the
+installation files), and select a profile. The profile describes the system to be
+installed (primarily which packages, but also various other aspects). All this
+configuration information is stored in the user's home directory (~/.config/larch),
+so that it is retained from one <em>larch</em> run to the next.
+</p>
+
+<ul>
+   <li>At present I only maintain a repository for 'i686', as I don't run a 64-bit
+   <em>Arch</em> machine, but as all the current <em>larch</em> packages
+   have architecture 'any', both architectures should be supported.
+   </li>
+   <li>Make sure you have 'pyqt' and 'python-pexpect' packages installed.
+   </li>
+   <li>Download the latest
+   <a href="ftp://ftp.berlios.de/pub/larch/larch7/i686/larch-setup">
+   <strong>larch-setup</strong></a> script
+   to an empty working directory. Then run it (it is a shell script).
+   It will download and prepare the uipi and larch packages so that larch
+   can be run from this directory. You can also (if you are running
+   <em>Arch</em>) install them normally with 'pacman -U uipi* larch*'
+   (or you can put the <em>larch</em> repository in pacman.conf if you
+   like, and run 'pacman -Sy larch').
+   </li>
+   <li>If you install it as a package it should be available via the
+   desktop application list, or just by running 'larch'.
+   If you haven't installed it, run './larch' in the working directory.
+   As it is a gui program, you must of course be running xorg (see
+   <a href="larch_console.html">Command-Line Interface</a>
+   for use from the command line). In general you should start <em>larch</em>
+   as a normal, unprivileged user.
+   </li>
+   <li>To build a <em>larch live</em> system you basically just have to go through
+   the first four pages one after the other.
+   </li>
+   <li>The first page allows you to create a project and select a profile. The 'mini'
+   (no xorg) and 'xmini' (a fairly minimal xfce desktop) examples (from the supplied
+   'profiles' folder) might be good places to start. The default installation path should
+   be alright for most purposes, but you might need to move it if you don't have
+   enough space on that partition. Be careful! If you put a silly path in here you might
+   overwrite your system.
+   </li>
+   <li>The 'Installation' page performs the installation of the system to be squashed,
+   by downloading and installing all the requested packages to the installation path
+   set for the project. You can adjust a few aspects of this process, for example
+   to use a local package mirror, or to add repositories to pacman.conf. The default
+   is to use the mirror set on the host system and also to use the host's package
+   cache, so that repeated builds don't need to download the packages all over
+   again.
+   </li>
+   <li>The 'Larchify' page compresses the installation using squashfs, also building
+   a squashed overlay containing all the customizations necessary for the
+   <em>live</em> system and those specified in the profile.
+   </li>
+   <li>Finally the 'Medium' page writes the prepared <em>larch</em> files to an
+   <em>iso</em> file (for CD or DVD), or to the partition of your choice (be careful!),
+   so that you end up with a bootable <em>larch</em> system.
+   </li>
+   <li>Particular things that you might want to customize even in a first test run might
+   be the supported <strong>locales</strong> and <strong>rc.conf</strong>.
+   </li>
+   <li>Further details of the customization process are in the section
+   <a href="larch_profiles.html">Profiles</a>.
+   </li>
+   <li>  Share and Enjoy!</li>
+</ul>
+
+</div>
