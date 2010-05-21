@@ -1,0 +1,26 @@
+#
+# Chakra Packages for Chakra, part of chakra-project.org
+#
+# maintainer (i686): Phil Miller <philm[at]chakra-project[dog]org>
+# maintainer (x86_64): Manuel Tortosa <manutortosa[at]chakra-project[dot]org>
+
+# include global config
+source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
+
+pkgname=chakra-hardware-detection
+pkgver=20100412
+pkgrel=1
+pkgdesc="Hardware detection scripts for Chakra"
+arch=('any')
+url="http://www.chakra-project.org"
+depends=('bc' 'util-linux-ng')
+license=('GPL')
+
+build() {
+	cp -rf ${startdir}/etc ${startdir}/pkg
+	cp -rf ${startdir}/opt ${startdir}/pkg
+
+	#remove nasty .svn folders
+	cd ${startdir}/pkg
+	rm -rfv `find . -type d -name .svn`
+}

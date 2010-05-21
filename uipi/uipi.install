@@ -1,0 +1,23 @@
+_pylib=/usr/lib/python2.6/site-packages
+
+post_install() {
+  echo "byte-compile python modules ..."
+  python -m py_compile ${_pylib}/uipi.py
+}
+
+pre_remove() {
+  echo "Remove .pyc files ..."
+  rm -f ${_pylib}/uipi.pyc
+}
+
+post_upgrade() {
+  post_install
+}
+
+pre_upgrade() {
+  pre_remove
+}
+
+op=$1
+shift
+$op $*

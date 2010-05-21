@@ -1,0 +1,24 @@
+# Maintainer: Michael Towers (larch42 at googlemail dot com)
+# 2010.04.04
+pkgname=larch-live
+pkgver=7.0.102
+pkgrel=1.chakra.2010.04.11
+
+pkgdesc="larch: compulsory components for the live system"
+url="http://larch.berlios.de"
+depends=("squashfs-tools" "lzop")
+arch=(any)
+license=("GPL")
+
+build() {
+  mkdir -p ${startdir}/pkg/opt/larch
+  mkdir -p ${startdir}/pkg/usr/sbin
+  cp -d ${startdir}/run/* ${startdir}/pkg/usr/sbin
+  cp -dr ${startdir}/session-save ${startdir}/pkg/opt/larch
+  cp -dr ${startdir}/etc ${startdir}/pkg
+  cp -dr ${startdir}/lib ${startdir}/pkg
+
+  #remove nasty .svn folders
+  cd ${startdir}/pkg
+  rm -rfv `find . -type d -name .svn`
+}
