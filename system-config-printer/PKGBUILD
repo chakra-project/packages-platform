@@ -1,0 +1,67 @@
+#
+# Chakra Packages for Chakra, part of chakra-project.org
+#
+# maintainer (i686): Phil Miller <philm[at]chakra-project[dog]org>
+# maintainer (x86_64): Manuel Tortosa <manutortosa[at]chakra-project[dot]org>
+
+# include global config
+source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
+
+pkgbase=system-config-printer
+pkgname=('system-config-printer')
+pkgver=1.2.2
+pkgrel=1
+pkgdesc="A CUPS printer configuration tool and status applet"
+url="http://cyberelk.net/tim/software/system-config-printer/"
+arch=('any')
+license=('GPL')
+makedepends=('intltool' 'python' 'xmlto' 'docbook-xsl' 'desktop-file-utils' 'libcups' 'libxml2')
+source=("http://cyberelk.net/tim/data/${pkgbase}/1.2/${pkgbase}-${pkgver}.tar.bz2")
+md5sums=('c3bbaf5282535e2332fe5072a72814cc')
+
+build() {
+  cd ${srcdir}/${pkgbase}-${pkgver}
+
+  ./configure --prefix=/usr \
+    --sbindir=/usr/bin \
+    --sysconfdir=/etc \
+    --disable-nls
+  make || return 1
+}
+
+package() {
+  pkgdesc='Pygtk CUPS Configuration'
+  depends=('pycups' 'dbus-python' 'pysmbc')
+  optdepends=('system-config-printer-gnome: for the GTK frontend'
+	'kdeadmin-system-config-printer-kde: for the administration tool in KDE System Settings')
+  replaces=('system-config-printer')
+  provides=("system-config-printer=$pkgver" 'system-config-printer-common')
+  conflicts=('system-config-printer')
+
+  cd ${srcdir}/${pkgbase}-${pkgver}
+  install -d ${pkgdir}/usr/share/${pkgbase}
+  install -m644 config.py \
+    debug.py \
+    installpackage.py \
+    monitor.py \
+    PhysicalDevice.py \
+    ppdippstr.py \
+    probe_printer.py \
+    SearchCriterion.py \
+    smburi.py \
+    statereason.py \
+    XmlHelper.py \
+    ${pkgdir}/usr/share/${pkgbase}/ || return 1
+
+  install -m755 pysmb.py \
+    ${pkgdir}/usr/share/${pkgbase}/ || return 1
+
+  install -d ${pkgdir}/etc/dbus-1/system.d/
+  install -m644 newprinternotification.conf \
+    ${pkgdir}/etc/dbus-1/system.d/ || return 1
+
+  for file in build/lib/cupshelpers/*.py; do
+    install -Dm644 $file \
+      ${pkgdir}/usr/lib/python2.6/site-packages/cupshelpers/$(basename $file) || return 1
+  done
+}

@@ -1,0 +1,29 @@
+# Contributor: Chris Brannon <cmbrannon@cox.net>
+pkgname=dotconf
+pkgver=1.0.13
+pkgrel=3
+pkgdesc='A C library for parsing configuration files'
+arch=('i686' 'x86_64')
+makedepends=('pkgconfig' 'findutils')
+options=('!libtool')
+url="http://www.azzit.de/dotconf/"
+license=('LGPL2')
+source=("http://www.azzit.de/dotconf/download/v1.0/dotconf-1.0.13.tar.gz")
+md5sums=('bbf981a5f4a64e94cc6f2a693f96c21a')
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+
+  ./configure --prefix=/usr
+  make || return 1
+  make DESTDIR="$pkgdir" install
+  # There are no manpages.  Docu consists of textfiles and small examples.
+  # "make install" didn't install the docu, so do it manually.
+  mkdir -p ${pkgdir}/usr/share/doc/${pkgname}
+  cp -a doc/*.txt README examples/ ${pkgdir}/usr/share/doc/${pkgname}
+  # Get rid of files specific to Microsoft products:
+  find ${pkgdir}/usr/share/doc/${pkgname} -name '*.dsp' |xargs rm
+  # Dotconf uses libpool internally for memory management.  No need to install.
+  rm -f ${pkgdir}/usr/lib/libpool.a
+  rm -f ${pkgdir}/usr/include/libpool.h
+}
