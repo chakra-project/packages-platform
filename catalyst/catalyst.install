@@ -1,4 +1,4 @@
-KERNEL_VERSION=2.6.33-ARCH
+KERNEL_VERSION=2.6.33-CHAKRA
 
 pre_install() {
  if [ ! -e /usr/lib/xorg/modules/extensions/libdri.so ]; then

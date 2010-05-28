@@ -1,14 +1,21 @@
-# $Id: PKGBUILD 56261 2009-10-20 19:13:10Z hugo $
-# Maintainer: Paul Mattal <paul@archlinux.org>
+#
+# Chakra Packages for Chakra, part of chakra-project.org
+#
+# maintainer (i686): Phil Miller <philm[at]chakra-project[dog]org>
+# maintainer (x86_64): Manuel Tortosa <manutortosa[at]chakra-project[dot]org>
+
+# include global config
+source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
+
 
 pkgname=lirc-utils
 pkgver=0.8.6
-pkgrel=4
+pkgrel=5
 pkgdesc="Linux Infrared Remote Control utils"
 arch=('i686' 'x86_64')
 url="http://www.lirc.org/"
 license=('GPL')
-_kernver=2.6.33-ARCH
+_kernver=`uname -r`
 depends=('alsa-lib' 'libusb' 'libx11' 'libsm' 'python' 'libftdi')
 makedepends=('help2man')
 replaces=('lirc+pctv')

@@ -1,12 +1,18 @@
-# $Id: PKGBUILD 70646 2010-02-27 18:40:10Z tpowa $
-# Originally by kleptophobiac <kleptophobiac@gmail.com>
-# Modified by James Rayner for the repositories <iphitus@gmail.com>
+#
+# Chakra Packages for Chakra, part of chakra-project.org
+#
+# maintainer (i686): Phil Miller <philm[at]chakra-project[dog]org>
+# maintainer (x86_64): Manuel Tortosa <manutortosa[at]chakra-project[dot]org>
 
-_kernver=2.6.33-ARCH
+# include global config
+source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
+
+
+_kernver=`uname -r`
 
 pkgname=madwifi
 pkgver=0.9.4.4119
-pkgrel=1
+pkgrel=2
 pkgdesc="Madwifi drivers for Atheros wireless chipsets. For stock arch 2.6 kernel"
 arch=(i686 x86_64)
 license=('GPL')

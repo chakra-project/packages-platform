@@ -9,8 +9,8 @@ source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
 
 pkgname=nvidia
 pkgver=195.36.24
-_kernver='2.6.33-ARCH'
-pkgrel=1
+_kernver=`uname -r`
+pkgrel=2
 pkgdesc="NVIDIA drivers for kernel26."
 arch=('i686' 'x86_64')
 [ "$CARCH" = "i686"   ] && ARCH=x86
