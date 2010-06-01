@@ -1,0 +1,26 @@
+#
+# Chakra Packages for Chakra, part of chakra-project.org
+#
+# maintainer (i686): Phil Miller <philm[at]chakra-project[dog]org>
+# maintainer (x86_64): Manuel Tortosa <manutortosa[at]chakra-project[dot]org>
+
+pkgname=libgcal
+pkgver=0.9.3
+pkgrel=3
+pkgdesc="ANSI C library that does allow communication with google calendar and contacts"
+url="http://code.google.com/p/libgcal/"
+arch=('i686' 'x86_64')
+makedepends=('cmake' 'pkgconfig')
+options=('!libtool')
+depends=('libxml2' 'curl')
+license=('GPL')
+source=(http://libgcal.googlecode.com/files/$pkgname-$pkgver.tar.bz2)
+md5sums=('da5f842905111b0b88ee79049282dac3')
+
+build() 
+{
+  cd $srcdir/$pkgname-$pkgver
+  ./configure --prefix=/usr
+  make || return 1
+  make DESTDIR=$pkgdir install || return 1
+}
