@@ -1,5 +1,12 @@
-# $Id: PKGBUILD 60262 2009-12-02 16:19:48Z ibiru $
-# Maintainer: Juergen Hoetzel <juergen@archlinux.org>
+#
+# Platform Packages for Chakra, part of chakra-project.org
+#
+# maintainer (i686): Phil Miller <philm[at]chakra-project[dog]org>
+# maintainer (x86_64): Manuel Tortosa <manutortosa[at]chakra-project[dot]org>
+
+# include global config
+source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
+
 pkgname=clisp
 pkgver=2.48
 pkgrel=1
