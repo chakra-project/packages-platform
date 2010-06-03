@@ -18,7 +18,7 @@ md5sums=('1d71584fb4e04214c0085108f95e24c8'
 
 build() {
   # fix build
-  if [ "${_arch}" "i686" ]; then
+  if [ "${_arch}" = "i686" ]; then
     export CXXFLAGS="-march=i686 -mtune=generic -O2 -pipe -D__STDC_CONSTANT_MACROS"
   else
     export CXXFLAGS="-march=x86_64 -mtune=generic -O2 -pipe -D__STDC_CONSTANT_MACROS"
