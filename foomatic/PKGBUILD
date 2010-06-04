@@ -1,9 +1,16 @@
-# Maintainer: Manuel Tortosa <manutortosa@gmail.com>
+#
+# Chakra Packages for Chakra, part of chakra-project.org
+#
+# maintainer (i686): Phil Miller <philm[at]chakra-project[dog]org>
+# maintainer (x86_64): Manuel Tortosa <manutortosa[at]chakra-project[dot]org>
+
+# include global config
+source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
  
 pkgbase="foomatic"
 pkgname=('foomatic-db' 'foomatic-filters' 'foomatic-db-engine' 'foomatic-db-nonfree')
 arch=('i686' 'x86_64') # needs to be changed  in the subpackages when makepkg will support it
-_snapdate=20100218
+_snapdate=20100604
 _relver=4.0.4
 pkgver=${_relver}_${_snapdate}
 pkgrel=1
@@ -13,10 +20,11 @@ source=(http://www.openprinting.org/download/foomatic/$pkgbase-{filters,db-engin
         http://www.openprinting.org/download/foomatic/$pkgbase-db-nonfree-${_snapdate}.tar.gz)
 url="http://www.linuxprinting.org/foomatic.html"
 options=('force' '!emptydirs')
-md5sums=('f67fc793ee8d4d076c6671d6e6a72367'
-         '675999e0ab8d59ad34a805c378830354'
-         '88e4498390ad82ff13f8c7f43520e786'
-         'eb82108c1479b292de2b1e077dc3b0a3')
+md5sums=('f67fc793ee8d4d076c6671d6e6a72367'  # foomatic-filters-4.0.4.tar.gz
+         '675999e0ab8d59ad34a805c378830354'  # foomatic-db-engine-4.0.4.tar.gz
+         '56cbccaa258593e735e43e42ab7107cc'  # foomatic-db-4.0-20100604.tar.gz
+         'df29c9c74f99a8ffb0528435e4045a62') # foomatic-db-nonfree-20100604.tar.gz
+)
 
 build() {
  /bin/true
