@@ -1,8 +1,11 @@
-# $Id: PKGBUILD 22974 2008-12-30 11:27:09Z ronald $
-# Maintainer: Ronald van Haren <ronald.archlinux.org>
-# Contributor: Damir <damir.archlinux.org>
-# Contributor: Eric Belanger <belanger@astro.umontreal.ca>
-# Contributor: William Rea <sillywilly@gmail.com>
+#
+# Chakra Packages for Chakra, part of chakra-project.org
+#
+# maintainer (i686): Phil Miller <philm[at]chakra-project[dog]org>
+# maintainer (x86_64): Manuel Tortosa <manutortosa[at]chakra-project[dot]org>
+
+# include global config
+source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
 
 pkgname=blas
 pkgver=20070405
@@ -12,6 +15,7 @@ arch=('i686' 'x86_64')
 url="http://www.netlib.org/blas"
 license=('custom')
 depends=('gcc-libs>=4.3.2')
+makedepends=('gcc-fortran')
 source=(http://www.netlib.org/blas/blas.tgz
 	make.inc
 	license.txt)
