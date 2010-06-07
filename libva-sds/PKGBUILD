@@ -1,0 +1,41 @@
+# This is an example PKGBUILD file. Use this as a start to creating your own,
+# and remove these comments. For more information, see 'man PKGBUILD'.
+# NOTE: Please fill out the license field for your package! If it is unknown,
+# then please put 'unknown'.
+
+# Contributor: Your Name <youremail@domain.com>
+pkgname=libva-sds
+_pkgname=libva
+_pkgver_sds=13
+_pkgver_libva=0.31.0
+_pkgver_libva_minor=1
+pkgver=${_pkgver_libva}_${_pkgver_libva_minor}_${_pkgver_sds}
+pkgrel=1
+pkgdesc="libva with patches to extend VA API with data needed for VDPAU and XvBA backends."
+arch=('i686' 'x86_64')
+url="http://www.splitted-desktop.com/~gbeauchesne/libva/"
+license=('MIT')
+groups=()
+depends=()
+makedepends=()
+optdepends=()
+provides=(libva=${_pkgver_libva})
+conflicts=(libva)
+replaces=(libva)
+backup=()
+options=()
+install=
+source=(http://www.splitted-desktop.com/~gbeauchesne/$_pkgname/${_pkgname}_$_pkgver_libva-$_pkgver_libva_minor+sds$_pkgver_sds.tar.gz)
+noextract=()
+md5sums=('0e3d5a49d336cf77e497dfa741d592a2')
+
+build() {
+  cd "$srcdir/$_pkgname-$_pkgver_libva"
+  for p in debian/patches/*.patch; do patch -p1 < $p || return 1; done
+  autoreconf --install -v || return 1
+  ./configure --prefix=/usr --disable-i965-driver --disable-dummy-driver
+  make || return 1
+  make DESTDIR="$pkgdir/" install
+}
+
+# vim:set ts=2 sw=2 et:

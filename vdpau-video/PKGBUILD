@@ -1,0 +1,36 @@
+# This is an example PKGBUILD file. Use this as a start to creating your own,
+# and remove these comments. For more information, see 'man PKGBUILD'.
+# NOTE: Please fill out the license field for your package! If it is unknown,
+# then please put 'unknown'.
+
+# Contributor: Your Name <youremail@domain.com>
+pkgname=vdpau-video
+pkgver=0.6.9
+pkgrel=1
+pkgdesc="VDPAU backend for VA API"
+arch=('i686' 'x86_64')
+url="http://www.splitted-desktop.com/~gbeauchesne/vdpau-video/"
+license=('GPL')
+groups=()
+depends=('libva-sds>=0.31.0_1_12-1' 'libvdpau')
+makedepends=()
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=()
+install=
+source=(http://www.splitted-desktop.com/~gbeauchesne/vdpau-video/$pkgname-$pkgver.tar.gz)
+noextract=()
+md5sums=('0aa9a5d444f1c661ad4f5bde1a89dcba')
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+
+  ./configure --prefix=/usr
+  make || return 1
+  make DESTDIR="$pkgdir/" install
+}
+
+# vim:set ts=2 sw=2 et:

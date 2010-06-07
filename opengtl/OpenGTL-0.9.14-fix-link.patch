@@ -1,0 +1,11 @@
+--- OpenGTL/GTLCore/CMakeLists.txt.link	2010-05-18 03:04:12.000000000 +0200
++++ OpenGTL/GTLCore/CMakeLists.txt	2010-05-18 03:04:17.000000000 +0200
+@@ -125,7 +125,7 @@
+ # Create GTLCore library
+ add_library(GTLCore SHARED ${GTLCore_SRCS} ${llvm_objects})
+ 
+-target_link_libraries(GTLCore ${LLVM_LDFLAGS} ${LLVM_LIBS} )
++target_link_libraries(GTLCore ${LLVM_LDFLAGS} ${LLVM_LIBS} dl)
+ 
+ # Set the ABI version of the library
+ set_target_properties(GTLCore PROPERTIES VERSION ${OPENGTL_LIB_VERSION} SOVERSION ${OPENGTL_LIB_SOVERSION} )
