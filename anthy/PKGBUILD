@@ -12,7 +12,7 @@ license=('LGPL' 'GPL')
 depends=('glibc')
 options=('!libtool' 'force')
 source=("http://downloads.sourceforge.jp/anthy/${_filecode}/$pkgname-$pkgver.tar.gz")
-md5sums=('1f558ff7ed296787b55bb1c6cf131108')
+md5sums=('0ba643efcf180d07459778e48d8c0df3')
 
 build() {
   cd $srcdir/$pkgname-$pkgver
