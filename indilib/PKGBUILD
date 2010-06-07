@@ -1,24 +1,31 @@
-# $Id: PKGBUILD 62103 2010-01-02 09:17:22Z tpowa $
-# Maintainer: Tobias Powalowski <tpowa@archlinux.org>
+#
+# Chakra Packages for Chakra, part of chakra-project.org
+#
+# maintainer (i686): Phil Miller <philm[at]chakra-project[dog]org>
+# maintainer (x86_64): Manuel Tortosa <manutortosa[at]chakra-project[dot]org>
+
+# include global config
+source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
 
 pkgname=indilib
-pkgver=0.6
-pkgrel=2
+pkgver=0.6.1
+_ver=61
+pkgrel=1
 pkgdesc="INDI is an instrument neutral distributed interface control protocol that aims to provide backend driver support and automation for a wide range of Astronomical devices (telescopes, focusers, CCDs..etc)."
 url="http://indi.sourceforge.net/"
 license=('GPL2')
 arch=('i686' 'x86_64')
 depends=('gcc-libs' 'zlib' 'libnova>=0.13.0')
 makedepends=('pkgconfig' 'cmake')
-source=(http://downloads.sourceforge.net/sourceforge/indi/libindi0_$pkgver.tar.gz)
+source=(http://downloads.sourceforge.net/sourceforge/indi/libindi0_$_ver.tar.gz)
 options=(!libtool)
-md5sums=('49218ad15a40dfa8a2366a2694477595')
+md5sums=('005e6ae3bc6fc1eeb5aa7700a65e2584')
 
 build() {
         cd $srcdir
 	mkdir build
 	cd build
-	cmake ../libindi0-${pkgver} \
+	cmake ../libindi \
 		-DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_INSTALL_PREFIX=/usr || return 1
 	make || return 1

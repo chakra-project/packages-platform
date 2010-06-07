@@ -1,6 +1,11 @@
-# $Id: PKGBUILD 77228 2010-04-11 15:07:18Z andrea $
-# Maintainer:
-# Contributor: Tobias Powalowski <tpowa@archlinux.org>
+#
+# Chakra Packages for Chakra, part of chakra-project.org
+#
+# maintainer (i686): Phil Miller <philm[at]chakra-project[dog]org>
+# maintainer (x86_64): Manuel Tortosa <manutortosa[at]chakra-project[dot]org>
+
+# include global config
+source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
 
 pkgname=opencv
 pkgver=2.1.0
@@ -21,7 +26,7 @@ build() {
   if [ "${_arch}" = "i686" ]; then
     export CXXFLAGS="-march=i686 -mtune=generic -O2 -pipe -D__STDC_CONSTANT_MACROS"
   else
-    export CXXFLAGS="-march=x86_64 -mtune=generic -O2 -pipe -D__STDC_CONSTANT_MACROS"
+    export CXXFLAGS="-march=x86-64 -mtune=generic -O2 -pipe -D__STDC_CONSTANT_MACROS"
   fi
 
   cd ${srcdir}/OpenCV-${pkgver}

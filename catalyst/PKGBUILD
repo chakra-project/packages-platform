@@ -10,35 +10,29 @@ source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
 _kernver=`uname -r`
 
 pkgname=catalyst
-pkgver=10.4
-pkgrel=3
+pkgver=10.5
+pkgrel=1
 pkgdesc="AMD/ATI drivers for Radeon brand cards"
 arch=('i686' 'x86_64')
 url="http://www.ati.amd.com"
 license=('custom')
 depends=('xorg-server<1.9.0' 'kernel26>=2.6.29' 'kernel26<2.6.35' 'kernel26-headers' 'netkit-bsd-finger' 'libstdc++5' 'libxrandr' 'libsm' 'fontconfig' 'libxcursor' 'libxi' 'gcc-libs')
 
-conflicts=('catalyst-utils' 'nvidia' 'libgl' 'catalyst-leaked' 'xf86-video-ati' 'xf86-video-radeonhd' 'ati-dri')
-provides=('libgl' 'libatical')
+conflicts=('catalyst' 'catalyst-utils' 'nvidia' 'libgl' 'catalyst-leaked' 'xf86-video-ati' 'xf86-video-radeonhd' 'ati-dri')
+provides=('catalyst' 'libgl' 'libatical')
 install=catalyst.install
-source=(https://launchpad.net/ubuntu/lucid/+source/fglrx-installer/2:8.723.1-0ubuntu1/+files/fglrx-installer_8.723.1.orig.tar.gz
-    catalyst.sh amdcccle.desktop atieventsd.sh fglrx-2.6.33.patch)
-md5sums=('c5bed046747747b8f8e66f0338c81907'
+source=(http://www2.ati.com/drivers/linux/ati-driver-installer-${pkgver/./-}-x86.x86_64.run
+    catalyst.sh amdcccle.desktop atieventsd.sh fglrx-2.6.33.patch fglrx-2.6.34-rc4.patch)
+md5sums=('869a923891ae052b7636f92062189266'
          'bdafe749e046bfddee2d1c5e90eabd83'
          '4efa8414a8fe9eeb50da38b5522ef81d'
          'f729bf913613f49b0b9759c246058a87'
-	 'c5eb5571782fed5232461f59a789fb08')
+	 'c5eb5571782fed5232461f59a789fb08'
+	 '5d464f7068fb45a9d2013cbd6a0b2021')
 
 build() {
 
-##Preparing ubuntu's fglrx to work with old archs pkgbuild
-tar zxvf fglrx-installer_8.723.1.orig.tar.gz
-cd fglrx-installer-8.723.1
-mkdir common
-mv  etc usr lib common
-cp common/usr/share/doc/fglrx/ATI_LICENSE.TXT .
-cd ..
-
+/bin/sh ./ati-driver-installer-${pkgver/./-}-x86.x86_64.run --extract archive_files
 
 ##Build kernel modules
 
@@ -51,15 +45,16 @@ BUILDARCH=i386
 _archdir=x86
 fi
 
-##patching for kernel 2.6.33 or 2.6.34 support
+#patching for kernel 2.6.33 or 2.6.34 support
 if [ `uname -r |grep -c "2.6.33"` != 0 ] || [ `uname -r |grep -c "2.6.34"` != 0 ]; then
-cd "${srcdir}/fglrx-installer-8.723.1/"
+cd "${srcdir}/archive_files/"
 patch -Np1 -i ../fglrx-2.6.33.patch || return 1
+patch -Np1 -i ../fglrx-2.6.34-rc4.patch || return 1
 fi
 
 
-cd "${srcdir}/fglrx-installer-8.723.1/common/lib/modules/fglrx/build_mod"
-cp "${srcdir}/fglrx-installer-8.723.1/arch/${_archdir}/lib/modules/fglrx/build_mod/libfglrx_ip.a.GCC4" . || return 1
+cd "${srcdir}/archive_files/common/lib/modules/fglrx/build_mod"
+cp "${srcdir}/archive_files/arch/${_archdir}/lib/modules/fglrx/build_mod/libfglrx_ip.a.GCC4" . || return 1
 cp 2.6.x/Makefile . || return 1
 
 make -C /lib/modules/${_kernver}/build SUBDIRS="`pwd`" ARCH=${BUILDARCH} modules || return 1
@@ -94,13 +89,12 @@ install -m755 -d "${pkgdir}/usr/share/ati/amdcccle"
 install -m755 -d "${pkgdir}/usr/share/licenses/${pkgname}"
 install -m755 -d "${pkgdir}/usr/share/man/man8"
 install -m755 -d "${pkgdir}/usr/share/pixmaps"
-install -m755 -d "${pkgdir}/opt/${pkgname}"
 
 # X driver installation
 if [ "${CARCH}" = "i686" ]; then
-cd "${srcdir}/fglrx-installer-8.723.1/x750/usr/X11R6/lib/modules" || return 1
+cd "${srcdir}/archive_files/x750/usr/X11R6/lib/modules" || return 1
 elif [ "${CARCH}" = "x86_64" ]; then
-cd "${srcdir}/fglrx-installer-8.723.1/x750_64a/usr/X11R6/lib64/modules" || return 1
+cd "${srcdir}/archive_files/x750_64a/usr/X11R6/lib64/modules" || return 1
 fi
 
 #install -m644 *.a "${pkgdir}/usr/lib/xorg/modules/" || return 1
@@ -112,10 +106,10 @@ install -m755 extensions/libglx.so "${pkgdir}/usr/lib/xorg/modules/extensions/" 
 
 # Controlcenter / library installation
 if [ "${CARCH}" = "i686" ]; then
-cd "${srcdir}/fglrx-installer-8.723.1/arch/x86/usr" || return 1
+cd "${srcdir}/archive_files/arch/x86/usr" || return 1
 _lib=lib
 elif [ "${CARCH}" = "x86_64" ]; then
-cd "${srcdir}/fglrx-installer-8.723.1/arch/x86_64/usr" || return 1
+cd "${srcdir}/archive_files/arch/x86_64/usr" || return 1
 _lib=lib64
 fi
 
@@ -130,12 +124,12 @@ install -m755 ${_lib}/*.so* "${pkgdir}/usr/lib/" || return 1
 ln -sf /usr/lib/xorg/modules/dri ${pkgdir}/usr/lib/dri
 ln -sf libfglrx_dm.so.1.0 "${pkgdir}/usr/lib/libfglrx_dm.so.1"
 ln -sf libfglrx_pp.so.1.0 "${pkgdir}/usr/lib/libfglrx_pp.so.1"
-ln -sf libfglrx_tvout.so.1.0 "${pkgdir}/usr/lib/libfglrx_tvout.so.1"
+#ln -sf libfglrx_tvout.so.1.0 "${pkgdir}/usr/lib/libfglrx_tvout.so.1"
 ln -sf libfglrx_gamma.so.1.0 "${pkgdir}/usr/lib/libfglrx_gamma.so.1"
 ln -sf libGL.so.1.2 "${pkgdir}/usr/lib/libGL.so.1"
 ln -sf libGL.so.1.2 "${pkgdir}/usr/lib/libGL.so"
 
-cd "${srcdir}"/fglrx-installer-8.723.1/common
+cd "${srcdir}"/archive_files/common
 install -m644 etc/ati/* "${pkgdir}/etc/ati/" || return 1
 chmod 755 "${pkgdir}/etc/ati/authatieventsd.sh" || return 1
 
@@ -161,8 +155,5 @@ install -m755 "${srcdir}/atieventsd.sh" "${pkgdir}/etc/rc.d/atieventsd" || retur
 install -m755 "${srcdir}/catalyst.sh" "${pkgdir}/etc/profile.d/" || return 1
 
 # License
-install -m644 "${srcdir}/fglrx-installer-8.723.1/ATI_LICENSE.TXT" "${pkgdir}/usr/share/licenses/${pkgname}/" || return 1
-
-# hw_ati_hwdb
-install -m644 "${srcdir}/fglrx-installer-8.723.1/common/lib/modules/fglrx/build_mod/fglrxko_pci_ids.h" "${pkgdir}/opt/${pkgname}/" || return 1
+install -m644 "${srcdir}/archive_files/ATI_LICENSE.TXT" "${pkgdir}/usr/share/licenses/${pkgname}/" || return 1
 }

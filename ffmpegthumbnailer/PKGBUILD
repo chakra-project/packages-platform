@@ -1,0 +1,29 @@
+#
+# Chakra Packages for Chakra, part of chakra-project.org
+#
+# maintainer (i686): Phil Miller <philm[at]chakra-project[dog]org>
+# maintainer (x86_64): Manuel Tortosa <manutortosa[at]chakra-project[dot]org>
+
+# include global config
+source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
+
+pkgname=ffmpegthumbnailer
+pkgver=2.0.2
+pkgrel=1
+pkgdesc="Lightweight video thumbnailer that can be used by file managers."
+url="http://code.google.com/p/ffmpegthumbnailer/"
+license=('GPL2')
+arch=('i686' 'x86_64')
+depends=('ffmpeg' 'libjpeg>=8')
+source=(http://ffmpegthumbnailer.googlecode.com/files/$pkgname-$pkgver.tar.gz)
+options=(!libtool)
+md5sums=('ee473a26e7e8da216e64bbb33e87772c')
+
+build() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+
+	./configure --prefix=/usr
+	make || return 1
+	make DESTDIR="${pkgdir}" install || return 1
+}
+
