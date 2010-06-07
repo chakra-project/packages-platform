@@ -1,9 +1,14 @@
-# $Id: PKGBUILD 28115 2009-02-27 23:59:50Z eric $
-# Maintainer: damir <damir@archlinux.org>
+#
+# Chakra Packages for Chakra, part of chakra-project.org
+#
+# maintainer (i686): Phil Miller <philm[at]chakra-project[dog]org>
+# maintainer (x86_64): Manuel Tortosa <manutortosa[at]chakra-project[dot]org>
+
+# include global config
+source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
 
 pkgname=anthy
 pkgver=9100h
-_filecode=37536
 pkgrel=1
 pkgdesc="Hiragana text to Kana Kanji mixed text Japanese input method"
 arch=("i686" "x86_64")
@@ -11,8 +16,8 @@ url="http://sourceforge.jp/projects/anthy/"
 license=('LGPL' 'GPL')
 depends=('glibc')
 options=('!libtool' 'force')
-source=("http://downloads.sourceforge.jp/anthy/${_filecode}/$pkgname-$pkgver.tar.gz")
-md5sums=('0ba643efcf180d07459778e48d8c0df3')
+source=("http://chakra-project.org/sources/anthy/$pkgname-$pkgver.tar.gz")
+md5sums=('2df9326aafa6f927a167dba10a2da141')
 
 build() {
   cd $srcdir/$pkgname-$pkgver
