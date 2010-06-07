@@ -1,0 +1,23 @@
+# Maintainer: Norberto Lopes <shelika@mail.telepac.pt>
+# Contributor: Kao Dome <kaodome@gmail.com>
+# Contributor: Dmitrij D. Czarkoff <czarkoff@gmail.com>
+# Contributor: Mathias Rohnstock <linksoft@gmx.de>
+pkgname=libmicrohttpd
+pkgver=0.4.6
+pkgrel=3
+pkgdesc="a small C library that is supposed to make it easy to run an HTTP server as part of another application."
+arch=('i686' 'x86_64')
+url="http://www.gnu.org/software/libmicrohttpd/"
+license=('LGPL')
+depends=('curl' 'libgcrypt')
+source=(ftp://ftp.gnu.org/gnu/libmicrohttpd/$pkgname-$pkgver.tar.gz)
+md5sums=('61698da6aa04744ea076c327f66fc05a')
+
+build() {
+cd $startdir/src/$pkgname-$pkgver
+./configure --prefix=/usr --disable-dependency-tracking --enable-largefile --enable-curl --enable-messages --with-pic
+make || return 1
+make DESTDIR=$pkgdir install || return 1
+cd src/include
+mv platform.h plibc.h $pkgdir/usr/include
+}
