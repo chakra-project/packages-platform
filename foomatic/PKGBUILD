@@ -10,7 +10,7 @@ source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
 pkgbase="foomatic"
 pkgname=('foomatic-db' 'foomatic-filters' 'foomatic-db-engine' 'foomatic-db-nonfree')
 arch=('i686' 'x86_64') # needs to be changed  in the subpackages when makepkg will support it
-_snapdate=20100604
+_snapdate=20100608
 _relver=4.0.4
 pkgver=${_relver}_${_snapdate}
 pkgrel=1
@@ -22,9 +22,8 @@ url="http://www.linuxprinting.org/foomatic.html"
 options=('force' '!emptydirs')
 md5sums=('f67fc793ee8d4d076c6671d6e6a72367'  # foomatic-filters-4.0.4.tar.gz
          '675999e0ab8d59ad34a805c378830354'  # foomatic-db-engine-4.0.4.tar.gz
-         '56cbccaa258593e735e43e42ab7107cc'  # foomatic-db-4.0-20100604.tar.gz
-         'df29c9c74f99a8ffb0528435e4045a62') # foomatic-db-nonfree-20100604.tar.gz
-)
+         '07e329f6ff67973108c03c3b9849bf11'  # foomatic-db-4.0-20100608.tar.gz
+         'd4a17e93a0d4ce6739dfbc7517c02f3c') # foomatic-db-nonfree-20100608.tar.gz
 
 build() {
  /bin/true
