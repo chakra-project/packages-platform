@@ -1,11 +1,15 @@
-# maintainer: Steve Holmes <steve.holmes88@gmail.com>
-# Contributor: Alexander Jenisch <nt@divzero.at>
-# Contributor: Chris Brannon <cmbrannon@cox.net>
-# Contributor: Andreas Messer <andi@bupfen.de>
+#
+# Chakra Packages for Chakra, part of chakra-project.org
+#
+# maintainer (i686): Phil Miller <philm[at]chakra-project[dog]org>
+# maintainer (x86_64): Manuel Tortosa <manutortosa[at]chakra-project[dot]org>
+
+# include global config
+source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
 
 pkgname=speech-dispatcher
 pkgver=0.6.7
-pkgrel=1
+pkgrel=2
 arch=('i686' 'x86_64')
 pkgdesc="High-level device independent layer for speech synthesis interface"
 license=('GPL2' 'FDL')
@@ -17,7 +21,8 @@ options=('!libtool')
 url="http://www.freebsoft.org/speechd"
 source=("http://www.freebsoft.org/pub/projects/speechd/$pkgname-$pkgver.tar.gz" \
   "spd-respect-DESTDIR.diff" \
-  "speechd")
+  "speechd"
+  "getline.patch")
 
 install="speech-dispatcher.install"
 
@@ -43,6 +48,8 @@ build() {
   # One part of the build process ignores DESTDIR, so apply a tiny patch.
   # Patch has been submitted to upstream.
   patch -p1 < ${startdir}/spd-respect-DESTDIR.diff
+  # fix getline
+  patch -p1 < ${startdir}/getline.patch
 
   # Building speechd
   
@@ -56,4 +63,5 @@ build() {
 }
 md5sums=('67432ad655b50fd7c1f1f79e012cfe3f'
          '4585be4a40ab33f375c31f6ab3a1915f'
-         '53aece3bfea37d40dad62f02f7c5755e')
+         '53aece3bfea37d40dad62f02f7c5755e'
+         'f70b4b13d2a8fe500f69bf30b0897946')

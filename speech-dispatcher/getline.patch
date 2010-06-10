@@ -1,0 +1,35 @@
+diff -Npur speech-dispatcher-0.6.7.orig/src/modules/Makefile.am speech-dispatcher-0.6.7/src/modules/Makefile.am
+--- speech-dispatcher-0.6.7.orig/src/modules/Makefile.am	2008-06-27 14:30:01.000000000 +0200
++++ speech-dispatcher-0.6.7/src/modules/Makefile.am	2010-04-06 11:52:11.000000000 +0200
+@@ -7,7 +7,7 @@ SNDFILE_LIBS = @SNDFILE_LIBS@
+
+ EXTRA_DIST = module_main.c module_utils_addvoice.c festival_client.c festival_client.h ivona_client.c dummy.c dummy-message.wav
+
+-AM_CFLAGS = -Wall -DLOCALEDIR=\"$(localedir)\" -DDATADIR=\"$(snddatadir)\" -I/usr/include/ $(inc_local) @glib_include@ -L$(top_srcdir)/src/audio -I$(top_srcdir)/src/audio -I../../intl/ $(ibmtts_include) @SNDFILE_CFLAGS@ -Wl,--rpath -Wl,$(spdlibdir)
++AM_CFLAGS = -Wall -DLOCALEDIR=\"$(localedir)\" -DDATADIR=\"$(snddatadir)\" -I/usr/include/ $(inc_local) @glib_include@ -L$(top_srcdir)/src/audio -I$(top_srcdir)/src/audio -I../../intl/ $(ibmtts_include) @SNDFILE_CFLAGS@ -Wl,--rpath -Wl,$(spdlibdir) -D_GNU_SOURCE
+
+ modulebin_PROGRAMS = sd_dummy sd_generic sd_festival sd_cicero
+
+diff -Npur speech-dispatcher-0.6.7.orig/src/modules/module_main.c speech-dispatcher-0.6.7/src/modules/module_main.c
+--- speech-dispatcher-0.6.7.orig/src/modules/module_main.c	2008-06-27 14:29:26.000000000 +0200
++++ speech-dispatcher-0.6.7/src/modules/module_main.c	2010-04-06 11:53:13.000000000 +0200
+@@ -21,8 +21,6 @@
+  * $Id: module_main.c,v 1.16 2008-06-27 12:29:26 hanke Exp $
+  */
+
+-/* So that gcc doesn't comply */
+-int getline(char**, size_t*, FILE*);
+
+ #define PROCESS_CMD(command, function) \
+ if (!strcmp(cmd_buf, #command"\n")){ \
+diff -Npur speech-dispatcher-0.6.7.orig/src/modules/module_utils.h speech-dispatcher-0.6.7/src/modules/module_utils.h
+--- speech-dispatcher-0.6.7.orig/src/modules/module_utils.h	2008-07-30 10:53:07.000000000 +0200
++++ speech-dispatcher-0.6.7/src/modules/module_utils.h	2010-04-06 11:53:44.000000000 +0200
+@@ -420,8 +420,6 @@ void module_report_event_pause(void);
+
+
+
+-/* So that gcc doesn't complain */
+-int getline(char**, size_t*, FILE*);
+
+ pthread_mutex_t module_stdout_mutex;
