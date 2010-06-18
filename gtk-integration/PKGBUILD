@@ -41,13 +41,17 @@ post_install() {
 		#+ following (Adjust the font name and size to your liking):
 
 		include "/usr/share/themes/kde${_kdever}-oxygen-molecule/gtk-2.0/gtkrc"
+		include "/etc/gtk-2.0/gtkrc"
 		
 		style "user-font"
 		{
+			font_name="Sans Serif"
 		}
 		widget_class "*" style "user-font"
 		gtk-theme-name="kde${_kdever}-oxygen-molecule"
-		gtk-font-name="DejaVu Sans 9"
+		gtk-font-name="San Serif 10"
+		gtk-icon-theme-name="oxygenrefit2"
+
 
 		################################################################################
 		#  If you want GTK+ apps run with root privileges to be themed as well, copy
