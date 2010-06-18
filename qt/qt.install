@@ -1,7 +1,7 @@
 post_install() {
 		echo " "
-        echo " > Qt 4.6.2"
-        echo "   kde-qt 6dbbf15fcef976fafc3f55e048f9b4daaa4c0d19"
+        echo " > Qt 4.6.3"
+        echo "   kde-qt (this time not patched)"
 		echo " "
 		echo "   Prefix: /usr"
 		echo " "
@@ -9,7 +9,6 @@ post_install() {
 		echo "   Some components are split into separate packages:"
 		echo " "
 		echo "   qt       : Base libraries and tools"
-		echo "   qt-debug : Debugging Symbols"
 		echo "   qt-doc   : Documentation"
 		echo "   qt-demos : Demos & Examples"
 		echo "   qt-tools : Development Tools (Assistant, Designer, Linguist)"

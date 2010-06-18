@@ -12,12 +12,14 @@ _origname=qt
 pkgbase=('qt')
 pkgname=('qt'
          'qt-doc'
-         'qt-debug'
+#disable debug-pkg creation
+#         'qt-debug'
          'qt-demos'
          'qt-tools')
 
-pkgver=4.6.2
+pkgver=4.6.3
 pkgrel=1
+_kdeqt=0
 
 pkgdesc="A cross-platform application and UI framework"
 arch=('i686' 'x86_64')
@@ -51,7 +53,7 @@ makedepends=('inputproto'
 	'libxcursor'
 	'libxinerama'
 	'libmysqlclient>=5.1.42'
-	'gconf') #	'git'
+ 	'git') # 'gconf'
 
 _pkgfqn=${_origname}-everywhere-opensource-src-${pkgver}
 
@@ -65,12 +67,10 @@ source=("ftp://ftp.qt.nokia.com/qt/source/${_pkgfqn}.tar.gz"
 	'enable-qt3support-debug-info.patch'
 	'enable-qtwebkit-debug-info.patch'
 	'qmake-linker-flags-as-needed.patch'
-	'ca-certificates.patch'
+	'ca-certificates.patch')
 
-	'kde-qt-6dbbf15fcef976fafc3f55e048f9b4daaa4c0d19.patch'
-	'qt.install')
 
-md5sums=('eb651ee4b157c01696aa56777fc6e0e5
+md5sums=('5c69f16d452b0bb3d44bc3c10556c072
 20d333282c43f9e643cb8e91b6307dcc
 bf89ee0bdd178933f19d8bc4090173ec
 a9bfeeffab8ba103bc8153fdb31474a1
@@ -80,33 +80,36 @@ a9bfeeffab8ba103bc8153fdb31474a1
 bb99a4ad35f89b0a4f34795ba2ccc776
 9113f9964bdaeb59165b815cce503b4c
 c436732fc467271e8a3838145c122070
-d5c4cad7af93f1d736d4569a207bd739
-
-9717e204abc8f849ba1d0d99a77ef26e
-c40c32c34a619336ba2e215f8059a568')
+d5c4cad7af93f1d736d4569a207bd739')
 
 
 
-# FIXME create kde-qt patches temp disabled
+
 
 build()
 {
 	#Create patches
-#	msg "creating kde-qt patches"
-#	local codir=$(mktemp -d)
-#	mkdir -p "${codir}/kde-qt"
-#	git clone git://gitorious.org/+kde-developers/qt/kde-qt.git "${codir}/kde-qt"
-#	pushd "${codir}/kde-qt"
-#	git checkout --track -b ${pkgver}-patched origin/${pkgver}-patched
-#	local kdeqtver=$(git --no-pager show --format='%H' "${pkgver}-patched" | head -1)
-#	git diff "v${pkgver}..${pkgver}-patched" > "${codir}/kde-qt-${kdeqtver}.patch"
-#	popd
-#	mv "${codir}/kde-qt-${kdeqtver}.patch" .
-#	rm -rf "${codir}"
+	if [ "$_kdeqt" == "1" ]; then
+	  msg "creating kde-qt patches"
+	  local codir=$(mktemp -d)
+	  mkdir -p "${codir}/kde-qt"
+	  git clone git://gitorious.org/+kde-developers/qt/kde-qt.git "${codir}/kde-qt"
+	  pushd "${codir}/kde-qt"
+	  git checkout --track -b ${pkgver}-patched origin/${pkgver}-patched
+	  local kdeqtver=$(git --no-pager show --format='%H' "${pkgver}-patched" | head -1)
+	  git diff "v${pkgver}..${pkgver}-patched" > "${codir}/kde-qt-${kdeqtver}.patch"
+	  popd
+	  mv "${codir}/kde-qt-${kdeqtver}.patch" .
+	  rm -rf "${codir}"
+	fi
 
-	#editing qt.install
-#	sed -i -e 's/^.*> Qt .*/        echo " > Qt '${pkgver}'"/' $startdir/qt.install
-#	sed -i -e 's/^.*kde-qt .*/        echo "   kde-qt '${kdeqtver}'"/' $startdir/qt.install
+	# editing qt.install
+	sed -i -e 's/^.*> Qt .*/        echo " > Qt '${pkgver}'"/' $startdir/qt.install
+	if [ "$_kdeqt" == "1" ]; then
+	  sed -i -e 's/^.*kde-qt .*/        echo "   kde-qt '${kdeqtver}'"/' $startdir/qt.install
+	else
+	  sed -i -e 's/^.*kde-qt .*/        echo "   kde-qt (this time not patched)"/' $startdir/qt.install
+	fi
 
 	cd $srcdir/$_pkgfqn
 
@@ -115,11 +118,12 @@ build()
 	export PATH=${QT4DIR}/bin:${PATH}
 	export LD_LIBRARY_PATH=${QT4DIR}/lib:${LD_LIBRARY_PATH}
 
-	msg "applying kde-qt patches"
 	cd $srcdir/$_pkgfqn
-#	patch -p1 -i $srcdir/kde-qt-${kdeqtver}.patch || return 1
-
-	patch -p1 -i $startdir/kde-qt-6dbbf15fcef976fafc3f55e048f9b4daaa4c0d19.patch || return 1
+	if [ "$_kdeqt" == "1" ]; then
+	  msg "applying kde-qt patches"
+	  cd $srcdir/$_pkgfqn
+	  patch -p1 -i $srcdir/kde-qt-${kdeqtver}.patch || return 1
+	fi
 
 	msg "apply other patches"
 	patch -Np1 -i ${srcdir}/install-qdoc3.patch || return 1
@@ -164,7 +168,7 @@ build()
 		-system-libmng \
 		-system-libjpeg \
 		-no-rpath \
-		-gtkstyle \
+		-no-gtkstyle \
 		-opengl \
 		-glib \
 		-ptmalloc || return 1
@@ -182,8 +186,8 @@ package_qt()
 	depends=('libpng>=1.4.0' 'libxi' 'mesa' 'fontconfig' 'libxrandr' 'glib2' 'libtiff>=3.9.2-2' 'libmng>=1.0.10-3' 'libjpeg>=8' 'sqlite3' 'dbus' 'libxcursor' 'libxinerama')
 	optdepends=('postgresql-libs : PostgreSQL support' 
 	'libmysqlclient  : MySQL support'
-	'iodbc/unixodbc  : ODBC support'
-	'gconf           : qgtkstyle theme support for GTK')
+	'iodbc/unixodbc  : ODBC support')
+#	'gconf           : qgtkstyle theme support for GTK')
 	provides=("qt4=${pkgver}" "qt=${pkgver}") # "phonon=4.3.80"
 	replaces=('qt-devel' 'qtmod')
 	conflicts=('qt4' 'qtmod')
