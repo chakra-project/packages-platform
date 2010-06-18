@@ -1,0 +1,103 @@
+#
+# Packages for Chakra, part of chakra-project.org
+#
+# maintainer (i686): Phil Miller <philm[at]chakra-project[dog]org>
+# maintainer (x86_64): Manuel Tortosa <manutortosa[at]chakra-project[dot]org>
+
+# include global config
+source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
+
+pkgname=gtk-integration
+pkgver=1.0
+pkgrel=1
+iconspkgver=2.4.0
+widgetpkgver=3.2
+_kdever=44
+_colors=3.0
+
+pkgdesc="A bundles and gtk apps integration package for Chakra GNU/Linux"
+arch=('i686' 'x86_64')
+
+url="http://www.nanolx.org/home/item/75-oxygen-refit / http://kde-look.org/content/show.php/Oxygen-Molecule+KDE+%26+GTK%2B+unified+theme?content=103741"
+license=('LGPL3' 'GPL')
+
+depends=('qt' 'oxygen-icons')
+makedepends=('findutils' 'imagemagick')
+provides=('gtk-integration' 'oxygenrefit2-icon-theme' 'oxygen-molecule-theme')
+replaces=('oxygenrefit2-icon-theme' 'oxygen-molecule-theme')
+
+source=("http://www.nanolx.org/free/Artwork/OxygenRefit2-$iconspkgver.tar.bz2"
+        "http://kde-look.org/CONTENT/content-files/103741-Oxygen-Molecule_${widgetpkgver}_theme.tar.gz")
+md5sums=('f7f05922489e5e6d6c677d26b29cd251'
+	 'def46dbdf629f6d7daddf7536aa36ce9')
+
+function create_install() {
+cat > "${startdir}/${pkgname}.install" <<EOF
+post_install() {
+	cat <<-'EOF'
+		################################################################################
+		#  In order to use this theme, you will need to modify (please backup the file
+		#+ first) or create the \`.gtkrc-2.0-kde4' file in your \$HOME directory with the 
+		#+ following (Adjust the font name and size to your liking):
+
+		include "/usr/share/themes/kde${_kdever}-oxygen-molecule/gtk-2.0/gtkrc"
+		
+		style "user-font"
+		{
+		}
+		widget_class "*" style "user-font"
+		gtk-theme-name="kde${_kdever}-oxygen-molecule"
+		gtk-font-name="DejaVu Sans 9"
+
+		################################################################################
+		#  If you want GTK+ apps run with root privileges to be themed as well, copy
+		#+ your newly created \`~/.gtkrc-2.0-kde4' file to \`/root/gtkrc-2.0'
+
+		sudo cp ~/.gtkrc-2.0-kde4 /root/.gtkrc-2.0
+
+		################################################################################
+		#  You may apply the Oxygen-Molecule color scheme to your KDE apps by going to
+		#+ \`System Settings -> Appearance -> Colors' and selecting the OxygenMolecule.
+		#
+		#  Also, to make sure your GTK apps use only the Oxygen Molecule color scheme,
+		#+ navigate to \`System Settings -> Appearance -> Colors -> Options (tab)' and
+		#+ uncheck the "Apply colors to non-KDE4 applications" option.
+	EOF
+}
+
+post_upgrade() {
+	post_install \$1
+}
+
+op=\$1
+shift
+\$op \$*
+EOF
+}
+
+function build() {
+
+        # Icon theme
+	cd ${srcdir}/oxygen-refit-2
+	sh buildallsizes.sh || return 1 
+	cd ${srcdir}
+	install -d ${pkgdir}/usr/share/icons/
+	cp -rf "oxygen-refit-2" ${pkgdir}/usr/share/icons/ || return 1
+	find -type f -print0 | xargs -0 chmod 644
+
+
+        # Widget theme
+	mkdir -p "${pkgdir}/usr/bin"
+	mkdir -p "${pkgdir}/usr/share/themes"
+	mkdir -p "${pkgdir}/usr/share/apps/color-schemes"
+}
+
+function package() {
+	tar -xzf kde${_kdever}-oxygen-molecule.tar.gz -C "${pkgdir}/usr/share/themes"
+	cp Oxygen-Molecule_${_colors}.colors "${pkgdir}/usr/share/apps/color-schemes"
+	install -m 755 flatmolecule "${pkgdir}/usr/bin/"
+	
+	# Create the install file
+	create_install
+	export install="${pkgname}.install"
+}

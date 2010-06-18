@@ -1,0 +1,14 @@
+# Gtk-integration package
+
+include "/usr/share/themes/kde44-oxygen-molecule/gtk-2.0/gtkrc"
+include "/etc/gtk-2.0/gtkrc"
+
+style "user-font"
+{
+	font_name="Sans Serif"
+}
+widget_class "*" style "user-font"
+
+gtk-theme-name="kde44-oxygen-molecule"
+gtk-font-name="Sans Serif 10"
+gtk-icon-theme-name="oxygenrefit2"
