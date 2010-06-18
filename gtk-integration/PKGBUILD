@@ -11,7 +11,7 @@ pkgname=gtk-integration
 pkgver=1.0
 pkgrel=1
 iconspkgver=2.4.0
-widgetpkgver=3.2
+widgetpkver=3.2
 _kdever=44
 _colors=3.0
 
@@ -49,9 +49,8 @@ post_install() {
 		}
 		widget_class "*" style "user-font"
 		gtk-theme-name="kde${_kdever}-oxygen-molecule"
-		gtk-font-name="San Serif 10"
-		gtk-icon-theme-name="oxygenrefit2"
-
+		gtk-font-name="Sans Serif 10"
+                gtk-icon-theme-name="oxygenrefit2"
 
 		################################################################################
 		#  If you want GTK+ apps run with root privileges to be themed as well, copy
@@ -82,6 +81,7 @@ EOF
 function build() {
 
         # Icon theme
+	build() {
 	cd ${srcdir}/oxygen-refit-2
 	sh buildallsizes.sh || return 1 
 	cd ${srcdir}
@@ -105,3 +105,4 @@ function package() {
 	create_install
 	export install="${pkgname}.install"
 }
+
