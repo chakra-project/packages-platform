@@ -36,7 +36,7 @@ build() {
 	install -D -m644 ${srcdir}/fbcondecor.conf           etc/conf.d/fbcondecor &&
 	install -D -m755 ${srcdir}/fbcondecor.daemon         etc/rc.d/fbcondecor   || return 1
 }
-md5sums=('3e933a7d0e4581b7316cf6ebe4527ae9'
+md5sums=('9d15e2c3c946ed173833977739f57ebf'
          'fb7fdf7469b1918dc6d61fef1e8b8cef'
          '249b4ad977235242d2b1b9cc6e1b6254'
          'dbc9aa259cb6bdd19f361ffd1cd5e32a'
