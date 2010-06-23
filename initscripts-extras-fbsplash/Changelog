@@ -1,0 +1,160 @@
+
+Chakra GNU/Linux initscripts extras and supplemental functions for Fbsplash
+ aka initscripts-extras-fbsplash
+
+Changelog
+
+ 1.0    First mature version (destilled from experimental releases below)
+ 1.0.1  Implemented a fixed splash_setup() to avoid breaking variables
+        Added console stat_busy messages when starting/stopping Fbsplash
+        Don't run if not splash silent or verbose set on the kernel line
+ 1.1    Renamed 'fbsplash' daemon script to 'fbcondecor' to avoid confusion
+        Improved the test script
+        Streamlined the code
+ 1.1.1  Use decipercent for fsck progress and paint once per second
+ 1.2    Provide initscripts services derived from stat_busy messages
+        More fine-grained and steady progress
+        Also support rc.local/rc.local.shutdown service
+        Code refactoring - splash-functions.sh merely used for fbcondecor
+        Gain speed by exporting only functions essential for theme hooks
+        Avoid gpm garbling the splash even on shutdown
+        Set SPLASH_EFFECTS from the kernel line
+        Moved bare minimum scripts out to package 'fbsplash-scripts'
+ 1.2.1  Allways stay on silent splash screen on exit on SPLASH_XSERVICE
+        Keep the in-RAM FS until end of initscript
+        Don't defere start on shutdown until Xorg stopped
+        Skip backgrounded 'daemons' when writing svclist
+        Fix svclist 'daemons' order on shutdown
+ 1.2.2  Just cleaned up the test/simulation script code
+ 1.2.3  Fix slow background daemons killed because of additional ESC(K
+ 1.2.4  Don't activate the splash again when entering multi-user mode
+ 1.2.5  Fix fsck error behaviour
+        Support fsck progress on shutdown and for loop filesystems
+ 1.2.6  Avoid delayed fsck progress messages, revert decipercent usage
+ 
+Former experimental releases:
+
+  Note: All releases up to 16 where included in
+        Chakra GNU/Linux package fbsplash 1.5.4.3-<release>
+
+  3     [ Initial version by Greg Helton <gt at fallendusk dot org> ]
+  4     Added an initcpio hook to start the fbsplash daemon early
+  5     Use killall -qw without redirection
+  6     initcpio hook: Use fbcondecor_helper instead of the daemon
+  7     initcpio hook, daemon script: avoid screen blinking
+  8     Support customized splash status messages
+  9     Fixed clean exit of the splash daemon
+ 10     (no script changes)
+ 11     Don't exit before the daemon is dead
+ 12     Added experimental option to start daemon before udev
+ 13     Added config option for initcpio silent splash message
+ 14     Support SPLASH_VERBOSE_ON_ERRORS config option
+ 15     Workaround splash going black because of CONSOLEFONT
+ 16     Support SPLASH_EFFECTS config option
+ 17     Override scripts provided by old package fbsplash 1.5.4.3-11 (AUR)
+ 18     Improved overriding of old scripts
+ 19     Removed the obsolete overriding hack
+ 20     Don't start splash if system was started into runlevel 1
+ 21     Renamed /etc/conf.d/fbsplash.conf to /etc/conf.d/fbsplash
+ 22     Better upstream Fbsplash script integration - start/exit splash
+ 23     Better upstream Fbsplash script integration - services, config file
+ 24     Fixed splash start and stop when single user mode requested
+ 25     Fixed a typo in inithooks
+ 26     Added SPLASH_DISABLE_SVC_EVENTS config option
+ 27     Don't save the steps count if the daemon didn't run
+ 28     Send stat_{busy,done,fail} messages to the daemon message log
+ 29     Restart the splash daemon when killed on shutdown
+ 30     Added SPLASH_MSGLOG_{BUSY,DONE,FAIL} config options
+ 31     Renamed config option SPLASH_F2_MESSAGE to SPLASH_KEYS_MSG
+ 32     Don't count progress for backgrounded daemons
+ 33     Get rid of using saved step counts from previous boot/shutdown
+ 34     Don't write to the filesystem if no cache FS is mounted
+ 35     Don't start the daemon at boot if fbsplash not in DAEMONS
+ 36     Don't call 'splash rc_init boot' twice
+ 37     Use Udev instead of the experimental mknod hack
+ 38     Avoid error messages if rc.multi fails to read from the cache FS
+ 39     Added 'fbsplash-dummy' fake service for overall status display
+ 40     Use UTF-8 no-break space to avoid blank message killing the daemon
+ 41     Removed SPLASH_DISABLE_SVC_EVENTS config option
+ 42     initcpio hook: Support /etc/splash/default symlink
+ 43     Use svc_started event to show the daemon icons early on shutdown
+ 44     Eliminate echo in eval commands
+ 45     Don't clean up before fbcondecor_ctl is done at boot
+ 46     Fixed missing stat_fail when fbsplash not in DAEMONS
+ 47     Fixed daemon not stopped when booting through single-user mode
+ 48     Get the fadein and fadeout effects to work
+ 49     Always start the splash daemon early now
+ 50     Cosmetic changes
+ 51     Get rid of KEYS_MSG
+ 52     Cosmetic changes
+ 53     Spell corrections
+ 54     Added some comments
+ 55     Don't use shutdown icons workaround on sysinit
+ 56     Fix functions missing when starting fbsplash daemon script manually
+ 57     export some additional functions
+ 58     Use rc_init shutdown for splash_restart
+ 59     Initialize cache FS, steps and daemons list before first stat_busy
+ 60     Don't block rc.sysinit because of waiting on fadein
+ 61     initcpio-hook: Determine required mode from kernel params
+ 62     Remove/paint icon emblems also when background daemons finish
+ 63     Mostly cosmetic changes and some additional comments
+ 64     initcpio-hook: Get rid of the sed binary
+ 65     Don't update progress from start_daemon_bkgd - might go backward
+ 66     Simplify fbsplash.inithooks
+ 67     Recognize stat_fail from daemon scripts started as a dependency
+ 68     Support netcfg net-profiles menu input
+ 69     Fix CONSOLEFONT for initscripts 2009.07
+ 70     Implemented the layout change for devices created if udev missing
+ 71     Fix some problems when /usr lives on a separate filesystem
+ 72     Don't use miscsplashutils fgconsole on shutdown (doesn't work always)
+ 73     test script: Fix the cache mount/umount
+ 74     Updated CONSOLEFONT stuff from initscripts 2009.08
+ 75     Use the new hooks-system introduced by initscripts 2009.11
+ 76     Removed the obsolete static dev and uevent benchmark stuff
+ 77     Clean up the test script and the ChangeLog a bit
+ 78     Simplify sysinit and shutdown step counting
+ 79     Don't count fbsplash in DAEMONS as a step
+ 80     Run any theme hooks for the fbsplash-dummy fake service too
+ 81     Fix early sysinit step count and svc_done saving
+ 82     Drop the obsolete check for multiple daemon stop attempts
+ 83     Don't update the status message from backgrounded daemons
+ 84     Start the daemon even without fbsplash in DAEMONS
+ 85     Fix splash daemon not started sometimes with initcpio fadein
+ 86     Do a splash paint in svc-functions where update_progress dropped
+ 87     Simplified initcpio fadein wait
+ 88     Fix fbsplash-dummy failed status on daemon restart
+ 89     Fix local declarations missing in splash_init_shutdown
+ 90     Get rid of the cache FS kept after bootup
+ 91     Fix CONSOLEFONT not loaded when fbsplash not in DAEMONS
+ 92     Fix shutdown steps incremented on splash daemon restarts
+ 93     Don't display previous busy msg on sysinit fadein (w/o initcpio)
+ 94     Better support for using the splash script without initscripts
+ 95     Fix blank message kill workaround missing in splash_log_msg
+ 96     Don't call stat_busy from splash-functions-arch.sh
+ 97     Stop the daemon at end of rc.sysinit and restart from rc.multi
+ 98     Only mess with CONSOLEFONT in silent mode
+ 99     Drop the SIGTERM message workaround (initscripts 2010.01)
+100     Enabled splash for single-user mode
+101     Fix error message on cache FS umount if no files to copy
+102     Don't skip copy on umount silently because of readonly filesystem
+103     Avoid any theme blendin on rc_init boot
+104     Increase the timeout wait time for splash daemons fadeout
+105     Fix sysinit unable to count daemons
+106     Fix fbsplash.daemon shutdown from single-user mode
+107     Made the daemon counting stuff a bit more robust and elegant
+108     Give the theme a chance to prepare for splash daemon kill
+109     Fix initcio hook for the new busybox mkinitcpio
+110     Avoid killing caller when using set -e
+111     Use $SPLASH_XSERVICE as suggested upstream
+112     Made progress calculation more robust
+113     Made initcpio install able to add files for given screen sizes only
+114     Added support for stat_append and fsck (initscripts>2010.01)
+115     Avoid blinking on splash daemon restarts on shutdown
+116     Don't run theme hooks with the fbsplash-dummy fake service
+117     Catch exit codes of daemon scripts
+118     Fix splash_get_mode
+        Simplify fsck daemon
+        Better handling of SIGTERM
+        Many cosmetic changes
+
+# EOF #

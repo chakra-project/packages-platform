@@ -1,0 +1,15 @@
+
+post_install() {
+	cat <<EOT
+----------------------------------------------------------------------------
+> Configuration:  /etc/conf.d/splash
+>     WIKI page:  http://wiki.archlinux.org/index.php/Fbsplash
+----------------------------------------------------------------------------
+EOT
+}
+
+post_upgrade() {
+	post_install
+}
+
+# EOF
