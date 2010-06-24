@@ -13,7 +13,7 @@ source=('http://chakra-project.org/sources/${pkgname}/gl.dic'
 	'http://chakra-project.org/sources/${pkgname}/COPYRIGHT')
 
 md5sums=('8e6e0ed975c5d5586e8442cf7bf11e67'
-	 'd784fa8b6d98d27699781bd9a7cf19f0'
+	 '4ddb098bbe599b988f7793a2c9b6089d'
          'a899ad19e572ce3fc658f5ff3e2ff3fd')
 
 build() {
