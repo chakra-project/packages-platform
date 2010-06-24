@@ -8,34 +8,46 @@
 source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
 
 pkgname=nvidia
-pkgver=195.36.24
+pkgver=256.35
+pkgrel=1
+pkgdesc="NVIDIA beta drivers for kernel26." 
+arch=('i686' 'x86_64') 
 _kernver=`uname -r`
-pkgrel=2
-pkgdesc="NVIDIA drivers for kernel26."
-arch=('i686' 'x86_64')
-[ "$CARCH" = "i686"   ] && ARCH=x86
-[ "$CARCH" = "x86_64" ] && ARCH=x86_64
-url="http://www.nvidia.com/"
-depends=('kernel26>=2.6.33' 'kernel26<2.6.34' "nvidia-utils=${pkgver}")
-makedepends=('kernel26-headers>=2.6.33' 'kernel26-headers<2.6.34')
-conflicts=('nvidia-96xx' 'nvidia-173xx')
-license=('custom')
+[ "$CARCH" = "i686" ] && ARCH=x86 && _srcname=NVIDIA-Linux-x86-${pkgver}
+[ "$CARCH" = "x86_64" ] && ARCH=x86_64 && _srcname=NVIDIA-Linux-x86_64-${pkgver}-no-compat32 
+provides=("nvidia=${pkgver}")
+replaces=('nvidia')
+url="http://www.nvidia.com/" 
+depends=('kernel26' "nvidia-utils=${pkgver}") 
+makedepends=('kernel26-headers')
+conflicts=('nvidia-96xx' 'nvidia-71xx' 'nvidia-legacy' 'nvidia') 
+license=('custom') 
 install=nvidia.install
-source=("http://download.nvidia.com/XFree86/Linux-$ARCH/${pkgver}/NVIDIA-Linux-$ARCH-${pkgver}-pkg0.run")
-md5sums=('97d3e5f69707092aa643fb901bb94003')
-[ "$CARCH" = "x86_64" ] && md5sums=('9d58114ed8c89cd66fbaccad0c997ee8')
+source=("ftp://download.nvidia.com/XFree86/Linux-$ARCH/${pkgver}/${_srcname}.run")
 
-build() {
-	cd $srcdir
-	sh NVIDIA-Linux-$ARCH-${pkgver}-pkg0.run --extract-only
-	cd NVIDIA-Linux-$ARCH-${pkgver}-pkg0/usr/src/nv
-	make SYSSRC=/lib/modules/${_kernver}/build module || return 1
+md5sums=('f6af8917a500de28396a438f3f548c88')
+[ "$CARCH" = "x86_64" ] && md5sums=('7b5924f14a4d2326b4d916efdb7852ff')
+
+
+build()
+{
+
+  # Extract the nvidia drivers
+  cd $srcdir
+  if [ -d ${_srcname} ]; then
+    rm -rf ${_srcname}
+  fi
+  sh ${_srcname}.run --extract-only || return 1
+  cd ${_srcname}/kernel
+  make SYSSRC=/usr/src/linux-${_kernver} module  || return 1
 }
 
 package() {
-	install -D -m644 $srcdir/NVIDIA-Linux-$ARCH-${pkgver}-pkg0/usr/src/nv/nvidia.ko \
-		$pkgdir/lib/modules/${_kernver}/kernel/drivers/video/nvidia.ko || return 1
-        mkdir -p $pkgdir/etc/modprobe.d
-        echo "blacklist nouveau" >> $pkgdir/etc/modprobe.d/nouveau_blacklist.conf || return 1
-	sed -i -e "s/KERNEL_VERSION='.*'/KERNEL_VERSION='${_kernver}'/" $startdir/nvidia.install
+
+  cd $srcdir/${_srcname}/kernel  
+
+  # Install kernel module
+  mkdir -p $startdir/pkg/lib/modules/${_kernver}/kernel/drivers/video/
+  install -m644 nvidia.ko $startdir/pkg/lib/modules/${_kernver}/kernel/drivers/video/ || return 1
+
 }
