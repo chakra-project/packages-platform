@@ -1,0 +1,34 @@
+# Maintainer: Adrián Chaves Fernández (Gallaecio) <adriyetichaves@gmail.com>, 2009-2010.
+
+pkgname=hunspell-gl
+pkgver=20100613
+pkgrel=1
+pkgdesc="Galician spellchecker for Hunspell"
+arch=('any')
+url="http://trasno.net/"
+license=('custom')
+depends=('hunspell')
+source=('http://chakra-project.org/sources/${pkgname}/gl.dic'
+	'http://chakra-project.org/sources/${pkgname}/gl.aff'
+	'http://chakra-project.org/sources/${pkgname}/COPYRIGHT')
+
+md5sums=('8e6e0ed975c5d5586e8442cf7bf11e67'
+	 'd784fa8b6d98d27699781bd9a7cf19f0'
+         'a899ad19e572ce3fc658f5ff3e2ff3fd')
+
+build() {
+
+  # Creation of necesary folders...
+  mkdir -p $pkgdir/usr/share/myspell
+  mkdir -p $pkgdir/usr/share/enchant
+    
+  # Fix so Enchant can use dictionaries for Hunspell too.  
+  ln -s /usr/share/myspell $pkgdir/usr/share/enchant/hunspell
+  
+  # Actual installation...
+  install -D -m644 $srcdir/gl.aff $pkgdir/usr/share/myspell/gl.aff || return 1
+  install -D -m644 $srcdir/gl.dic $pkgdir/usr/share/myspell/gl.dic || return 1
+  
+  # COPYRIGHT file (in Galician).
+  install -D -m644 $srcdir/COPYRIGHT ${pkgdir}/usr/share/licenses/${pkgname}/license || return 1
+}
