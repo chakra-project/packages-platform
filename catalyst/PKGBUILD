@@ -11,7 +11,7 @@ _kernver=`uname -r`
 
 pkgname=catalyst
 pkgver=10.6
-pkgrel=1
+pkgrel=2
 pkgdesc="AMD/ATI drivers for Radeon brand cards"
 arch=('i686' 'x86_64')
 url="http://www.ati.amd.com"

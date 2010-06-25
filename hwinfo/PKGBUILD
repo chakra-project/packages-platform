@@ -1,0 +1,43 @@
+#
+# Chakra Packages for Chakra, part of chakra-project.org
+#
+# maintainer (i686): Phil Miller <philm[at]chakra-project[dog]org>
+# maintainer (x86_64): Manuel Tortosa <manutortosa[at]chakra-project[dot]org>
+
+# include global config
+source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
+
+pkgname=hwinfo
+pkgver=17.3
+_minorver=1.1
+pkgrel=1
+pkgdesc="A simple program that lists results from the hardware detection library."
+arch=('i686' 'x86_64')
+url="http://www.opensuse.org"
+license=('GPL2')
+depends=('hal' 'perl' 'libx86emu')
+makedepends=('sysfsutils' 'rpmextract' 'flex')
+options=('!emptydirs')
+source=("http://download.opensuse.org/source/factory/repo/oss/suse/src/${pkgname}-${pkgver}-${_minorver}.src.rpm"
+        "kbd.patch")
+build() {
+
+  cd ${srcdir}
+  rpmextract.sh ${pkgname}-${pkgver}-${_minorver}.src.rpm || return 1
+  tar -xjf ${pkgname}-${pkgver}.tar.bz2
+
+  cd ${srcdir}/${pkgname}-${pkgver}
+
+# Apply patch for custom ioctl
+  patch -p 0 < ../kbd.patch
+
+# Fix Makefile using /usr/lib64 instead of /usr/lib - it broke x86_64, possibly i686 too. 
+# Comment if this fix breaks it.
+  sed -i 's_usr/lib64_usr/lib_' src/hd/Makefile 
+
+  make -j1 || return 1
+  make DESTDIR=${pkgdir} install || return 1
+
+}
+md5sums=('9bcc3f6b057c31d6f309fac7666ce0af'
+         '1500ecfa26f6aaf4d7967eea74e86e5d')
