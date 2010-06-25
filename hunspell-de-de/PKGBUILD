@@ -1,0 +1,25 @@
+# Maintainer: Alexander Fehr <pizzapunk gmail com>
+
+pkgname=hunspell-de-de
+pkgver=20091006
+pkgrel=1
+pkgdesc="German (Germany) dictionary for Hunspell"
+arch=('any')
+url="http://www.j3e.de/ispell/igerman98/"
+license=('GPL' 'custom:OASIS')
+depends=('hunspell')
+makedepends=('ispell')
+source=(http://www.j3e.de/ispell/igerman98/dict/igerman98-$pkgver.tar.bz2)
+md5sums=('96383fa731e49b3a4e63ef026e150ac0')
+
+build() {
+  cd $srcdir/igerman98-$pkgver
+
+  make hunspell/de_DE.aff hunspell/de_DE.dic || return 1
+
+  install -D -m644 hunspell/de_DE.dic $pkgdir/usr/share/myspell/de_DE.dic || return 1
+  install -D -m644 hunspell/de_DE.aff $pkgdir/usr/share/myspell/de_DE.aff || return 1
+
+  install -D -m644 hunspell/Copyright $pkgdir/usr/share/licenses/hunspell-de-de/Copyright || return 1
+  install -D -m644 hunspell/COPYING_OASIS $pkgdir/usr/share/licenses/hunspell-de-de/COPYING_OASIS || return 1
+}
