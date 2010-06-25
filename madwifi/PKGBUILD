@@ -12,7 +12,7 @@ _kernver=`uname -r`
 
 pkgname=madwifi
 pkgver=0.9.4.4119
-pkgrel=2
+pkgrel=3
 pkgdesc="Madwifi drivers for Atheros wireless chipsets. For stock arch 2.6 kernel"
 arch=(i686 x86_64)
 license=('GPL')

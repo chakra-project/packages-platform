@@ -1,0 +1,9 @@
+
+fbsplash-scripts
+ for Arch Linux mkinitcpio and initscripts
+
+Changelog
+
+ 1.0    First version
+ 1.1    Allow initcpio-only mode without daemon for maximum boot speed
+ 1.2    Make the no-daemon mode a bit more smart and nice

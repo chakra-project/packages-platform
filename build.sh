@@ -36,7 +36,9 @@ current_repo="$_cur_repo"
 build_it()
 {
 	_mkpkg_flags=$1
-        [ -n "$MODE" ] || error "you need to specify a package list defined in _/buildscripts/${_cur_repo}-${_build_arch}-pkgs.conf\n -> ${_available_pkglists}" && exit
+        if [ "$MODE" = "" ] ; then
+		error "you need to specify a package list defined in _/buildscripts/${_cur_repo}-${_build_arch}-pkgs.conf\n -> ${_available_pkglists}" && exit
+	fi
 
 	cd $_build_work
 

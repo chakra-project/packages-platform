@@ -1,0 +1,77 @@
+
+# /etc/rc.d/functions.d/functions-hooks.sh
+#
+
+#### Functions overriding those from initscripts to add more hooks
+####
+
+#### These should be removed as soon as they are released there
+
+stat_bkgd() {
+    printf "${C_OTHER}${PREFIX_REG} ${C_MAIN}${1}${C_CLEAR} "
+    deltext
+    printf "   ${C_OTHER}[${C_BKGD}BKGD${C_OTHER}]${C_CLEAR} "
+    local statmsg="${1}"
+    run_hook stat_bkgd
+}
+
+stat_busy() {
+    printf "${C_OTHER}${PREFIX_REG} ${C_MAIN}${1}${C_CLEAR} "
+    printf "${SAVE_POSITION}"
+    deltext
+    printf "   ${C_OTHER}[${C_BUSY}BUSY${C_OTHER}]${C_CLEAR} "
+    local statmsg="${1}"
+    run_hook stat_busy
+}
+
+stat_append() {
+    printf "${RESTORE_POSITION}"
+    printf -- "${C_MAIN}${1}${C_CLEAR}"
+    printf "${SAVE_POSITION}"
+    local statmsg="${1}"
+    run_hook stat_append
+}
+
+stat_done() {
+    deltext
+    printf "   ${C_OTHER}[${C_DONE}DONE${C_OTHER}]${C_CLEAR} \n"
+    run_hook stat_done
+}
+
+stat_fail() {
+    deltext
+    printf "   ${C_OTHER}[${C_FAIL}FAIL${C_OTHER}]${C_CLEAR} \n"
+    run_hook stat_fail
+}
+
+start_daemon() {
+    local daemon=$1
+    run_hook pre_daemon_start
+    /etc/rc.d/$1 start
+    local daemonret=$?
+    run_hook post_daemon_start
+    return $daemonret
+}
+
+start_daemon_bkgd() {
+    stat_bkgd "Starting $1"
+    local daemon=$1
+    run_hook fork_daemon_bkgd
+    (
+        run_hook pre_daemon_bkgd
+        /etc/rc.d/$1 start
+        local daemonret=$?
+        run_hook post_daemon_bkgd
+    ) &>/dev/null &
+}
+
+stop_daemon() {
+    local daemon=$1
+    run_hook pre_daemon_stop
+    /etc/rc.d/$1 stop
+    local daemonret=$?
+    run_hook post_daemon_stop
+    return $daemonret
+}
+
+# EOF #

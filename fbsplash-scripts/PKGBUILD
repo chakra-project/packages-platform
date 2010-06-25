@@ -1,0 +1,45 @@
+
+# Maintainer: Kurt J. Bosch <kjb-temp-2009 at alpenjodel dot de>
+
+pkgname=fbsplash-scripts
+pkgver=1.2
+pkgrel=1
+pkgdesc="Simple Fbsplash scripts for Chakra GNU/Linux"
+arch=('any')
+url="http://aur.archlinux.org/packages.php?ID=35428"
+license=('GPL')
+depends=('fbsplash' 'initscripts>=2010.05')
+optdepends=(
+	'fbsplash-theme-chakra-phoix: Chakra GNU/Linux Fbsplash theme with the new logo'
+	'initscripts-extras-fbsplash: Support for fsck, daemons-icons and more'
+)
+conflicts=('initscripts-splashy')
+backup=('etc/conf.d/splash')
+install=fbsplash-scripts.install
+source=(
+	splash.conf
+	fbsplash.sh
+	fbsplash.initcpio_install
+	fbsplash.initcpio_hook
+	fbcondecor.daemon
+	fbcondecor.conf
+	Changelog
+)
+build() {
+	cd ${pkgdir}
+	# Install config file and scripts
+	install -D -m644 ${srcdir}/splash.conf               etc/conf.d/splash                &&
+	install -D -m644 ${srcdir}/fbsplash.sh               etc/rc.d/functions.d/fbsplash.sh &&
+	install -D -m644 ${srcdir}/fbsplash.initcpio_install lib/initcpio/install/fbsplash    &&
+	install -D -m644 ${srcdir}/fbsplash.initcpio_hook    lib/initcpio/hooks/fbsplash      || return 1
+	# Install the fbcodecor daemon script and config file
+	install -D -m644 ${srcdir}/fbcondecor.conf           etc/conf.d/fbcondecor &&
+	install -D -m755 ${srcdir}/fbcondecor.daemon         etc/rc.d/fbcondecor   || return 1
+}
+md5sums=('9d15e2c3c946ed173833977739f57ebf'
+         'fb7fdf7469b1918dc6d61fef1e8b8cef'
+         '249b4ad977235242d2b1b9cc6e1b6254'
+         'dbc9aa259cb6bdd19f361ffd1cd5e32a'
+         '715926469d05eecd345c052e6248ca32'
+         'b3db9d4fd902b62ac9e38589677e2d16'
+         '9b04661a121682c0daf8eb5e969b59c0')
