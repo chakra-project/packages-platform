@@ -7,7 +7,8 @@
 # include global config
 source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
 
-_kernver=`uname -r`
+# Find the kernel name inside the chroot
+_kernver=`pacman -Qf kernel26 | cut -c10-15 | sed 's/kernel26 //g'`-CHAKRA
 
 pkgname=catalyst
 pkgver=10.6
