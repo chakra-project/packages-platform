@@ -8,7 +8,7 @@
 source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
 
 pkgname=chakra-hardware-detection
-pkgver=20100412
+pkgver=20100625
 pkgrel=1
 pkgdesc="Hardware detection scripts for Chakra"
 arch=('any')
