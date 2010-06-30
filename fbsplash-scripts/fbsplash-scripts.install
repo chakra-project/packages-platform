@@ -8,8 +8,4 @@ post_install() {
 EOT
 }
 
-post_upgrade() {
-	post_install
-}
-
 # EOF

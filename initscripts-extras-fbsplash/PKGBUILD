@@ -1,52 +1,57 @@
+#
+# Chakra Packages for Chakra, part of chakra-project.org
+#
+# maintainer (i686): Phil Miller <philm[at]chakra-project[dog]org>
+# maintainer (x86_64): Manuel Tortosa <manutortosa[at]chakra-project[dot]org>
+# Maintainer: Kurt J. Bosch <kjb-temp-2009 at alpenjodel.de>
 
-# Maintainer: Kurt J. Bosch <kjb-temp-2009 at alpenjodel dot de>
+# include global config
+source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
 
 pkgname=initscripts-extras-fbsplash
-pkgver=1.2.6
-pkgrel=1
+pkgver=2.0
+pkgrel=2
 pkgdesc="Improved Fbsplash scripts for Chakra GNU/Linux"
 arch=('any')
 url="http://aur.archlinux.org/packages.php?ID=26039"
-license=('GPL2' 'GPL')
-depends=(
-	'bash>=4'
-	'fbsplash>=1.5.4.3-1'
-	'fbsplash-scripts'
-	'initscripts>=2010.05'
-)
-conflicts=('initscripts-splashy')
-backup=('etc/conf.d/fbsplash-extras')
-install=initscripts-extras-fbsplash.install
+license=( 'GPL' )
+depends=( 'bash>=4' 'fbsplash>=1.5.4.3-1' 'initscripts>=2010.06' 'mkinitcpio>=0.6.6' )
+conflicts=( 'fbsplash-scripts' 'initscripts-splashy')
+provides=( 'fbsplash-scripts')
+optdepends=( 'fbsplash-themes-chakra-phoix: sample theme' )
+backup=('etc/conf.d/splash')
+install=$pkgname.install
 source=(
-	fbsplash-extras.conf
-	fbsplash-extras.sh
-	splash-functions-extra.sh
-	fbsplash-initscripts-services-get
-	fbsplash-initscripts-simulate
-	fbsplash-initscripts-simulate-functions
 	Changelog
-	functions-hooks
+	splash.conf
+	fbsplash-extras.sh
+	fbsplash-initscripts-services-get
+	fbsplash.initcpio_install
+	fbsplash.initcpio_hook
+	fbcondecor.daemon
+	fbcondecor.conf
 )
 build() {
 	cd ${pkgdir}
-	# Install config file and scripts
-	install -D -m644 ${srcdir}/fbsplash-extras.conf      etc/conf.d/fbsplash-extras &&
+	# Install Changelog
+	install -D -m644 ${srcdir}/Changelog usr/share/doc/${pkgname}/Changelog
+	# Install fbsplash scripts and config file
+	install -D -m644 ${srcdir}/splash.conf               etc/conf.d/splash                       &&
 	install -D -m644 ${srcdir}/fbsplash-extras.sh        etc/rc.d/functions.d/fbsplash-extras.sh &&
-	install -D -m644 ${srcdir}/splash-functions-extra.sh sbin/splash-functions-extra.sh || return 1
-	# Install initscripts functions with hooks
-	install -D -m644 ${srcdir}/functions-hooks           etc/rc.d/functions.d/functions-hooks.sh || return 1
-	# Install misc scripts and changelog
+	install -D -m644 ${srcdir}/fbsplash.initcpio_install lib/initcpio/install/fbsplash           &&
+	install -D -m644 ${srcdir}/fbsplash.initcpio_hook    lib/initcpio/hooks/fbsplash    || return 1
+	# Install utility script
 	mkdir -p usr/bin/
 	install -m755 ${srcdir}/fbsplash-initscripts-services-get   usr/bin/
-	install -m755 ${srcdir}/fbsplash-initscripts-simulate       usr/bin/
-	install -m644 ${srcdir}/fbsplash-initscripts-simulate-functions usr/bin/
-	install -D -m644 ${srcdir}/Changelog usr/share/doc/${pkgname}/Changelog
+	# Install fbcodecor script and config file
+	install -D -m644 ${srcdir}/fbcondecor.conf           etc/conf.d/fbcondecor &&
+	install -D -m755 ${srcdir}/fbcondecor.daemon         etc/rc.d/fbcondecor   || return 1
 }
-md5sums=('47cd836f99381959bb610c4d62c2c6b1'
-         'f160b493b175e4319553a0cb2954c0e5'
-         '5aaac100e594f207fe9ee801aed9cead'
+md5sums=('3e35ebf331bc2faee9bc2a8645d51503'
+         '87256fc4c2441a30f544ad5eaf411691'
+         '94518453b4ee30d30aaeabc501353b1a'
          '1821489d53b45c8c5c68d3695bc78d36'
-         '731c6ad2c59f503769dc92c51a50977b'
-         '13f0b1d80d4959f85ea98f13512e706a'
-         'f0b7440764ee4d63b05de13cfd0221cb'
-         '6c4c8c52acda39572b3b4bebfc4f6370')
+         'b34b1a8d85f52bae2e36c046e23a9fb3'
+         '390dacdfb3be761728ff2a1cdafd178b'
+         '715926469d05eecd345c052e6248ca32'
+         'b3db9d4fd902b62ac9e38589677e2d16')

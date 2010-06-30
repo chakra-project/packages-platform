@@ -9,7 +9,7 @@ source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
 
 pkgname=nvidia
 pkgver=256.35
-pkgrel=1
+pkgrel=2
 pkgdesc="NVIDIA beta drivers for kernel26." 
 arch=('i686' 'x86_64') 
 

@@ -12,7 +12,7 @@ _kernver=`pacman -Qf kernel26 | cut -c10-15 | sed 's/kernel26 //g'`-CHAKRA
 
 pkgname=catalyst
 pkgver=10.6
-pkgrel=2
+pkgrel=3
 pkgdesc="AMD/ATI drivers for Radeon brand cards"
 arch=('i686' 'x86_64')
 url="http://www.ati.amd.com"

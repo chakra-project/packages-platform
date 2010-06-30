@@ -7,7 +7,7 @@ pkgver=96.43.16
 # Find the kernel name inside the chroot
 _kernver=`pacman -Qf kernel26 | cut -c10-15 | sed 's/kernel26 //g'`-CHAKRA
 
-pkgrel=4
+pkgrel=5
 pkgdesc="NVIDIA drivers for kernel26, 96xx branch."
 arch=('i686' 'x86_64')
 [ "$CARCH" = "i686"   ] && ARCH=x86

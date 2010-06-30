@@ -12,7 +12,7 @@ _kernver=`pacman -Qf kernel26 | cut -c10-15 | sed 's/kernel26 //g'`-CHAKRA
 
 pkgname=madwifi
 pkgver=0.9.4.4119
-pkgrel=3
+pkgrel=4
 pkgdesc="Madwifi drivers for Atheros wireless chipsets. For stock arch 2.6 kernel"
 arch=(i686 x86_64)
 license=('GPL')
