@@ -10,7 +10,7 @@ source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
 
 
 
-pkgname=fbsplash-scripts
+pkgname=fbsplash-scripts-testing
 pkgver=2.0
 pkgrel=1
 pkgdesc="Basic Fbsplash scripts for Chakra GNU/Linux"
@@ -18,7 +18,7 @@ arch=('any')
 url="http://aur.archlinux.org/packages.php?ID=35428"
 license=( 'GPL' )
 depends=( 'bash>=4' 'fbsplash>=1.5.4.3-1' 'initscripts>=2010.06' 'mkinitcpio>=0.6.6'  )
-conflicts=( 'initscripts-extras-fbsplash' 'initscripts-splashy')
+conflicts=( 'initscripts-extras-fbsplash' 'initscripts-splashy' 'fbsplash-scripts' 'initscripts-extras-fbsplash-testing')
 backup=('etc/conf.d/splash')
 install=fbsplash-scripts.install
 source=(

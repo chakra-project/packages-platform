@@ -8,7 +8,8 @@
 # include global config
 source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
 
-pkgname=initscripts-extras-fbsplash
+pkgname=initscripts-extras-fbsplash-testing
+_pkgname=initscripts-extras-fbsplash
 pkgver=2.0
 pkgrel=2
 pkgdesc="Improved Fbsplash scripts for Chakra GNU/Linux"
@@ -16,11 +17,11 @@ arch=('any')
 url="http://aur.archlinux.org/packages.php?ID=26039"
 license=( 'GPL' )
 depends=( 'bash>=4' 'fbsplash>=1.5.4.3-1' 'initscripts>=2010.06' 'mkinitcpio>=0.6.6' )
-conflicts=( 'fbsplash-scripts' 'initscripts-splashy')
-provides=( 'fbsplash-scripts')
+conflicts=( 'fbsplash-scripts' 'initscripts-splashy' 'fbsplash-scripts-testing' 'initscripts-extras-fbsplash')
+provides=( 'fbsplash-scripts' 'initscripts-extras-fbsplash')
 optdepends=( 'fbsplash-themes-chakra-phoix: sample theme' )
 backup=('etc/conf.d/splash')
-install=$pkgname.install
+install=$_pkgname.install
 source=(
 	Changelog
 	splash.conf
@@ -34,7 +35,7 @@ source=(
 build() {
 	cd ${pkgdir}
 	# Install Changelog
-	install -D -m644 ${srcdir}/Changelog usr/share/doc/${pkgname}/Changelog
+	install -D -m644 ${srcdir}/Changelog usr/share/doc/${_pkgname}/Changelog
 	# Install fbsplash scripts and config file
 	install -D -m644 ${srcdir}/splash.conf               etc/conf.d/splash                       &&
 	install -D -m644 ${srcdir}/fbsplash-extras.sh        etc/rc.d/functions.d/fbsplash-extras.sh &&

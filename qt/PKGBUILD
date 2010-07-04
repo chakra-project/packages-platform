@@ -12,13 +12,12 @@ _origname=qt
 pkgbase=('qt')
 pkgname=('qt'
          'qt-doc'
-#disable debug-pkg creation
-#         'qt-debug'
+         'qt-debug'
          'qt-demos'
          'qt-tools')
 
 pkgver=4.6.3
-pkgrel=1
+pkgrel=2
 _kdeqt=0
 
 pkgdesc="A cross-platform application and UI framework"

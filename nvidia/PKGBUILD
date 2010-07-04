@@ -9,10 +9,13 @@ source ../_buildscripts/${current_repo}-${_arch}-cfg.conf
 
 pkgname=nvidia
 pkgver=256.35
-pkgrel=1
+pkgrel=2
 pkgdesc="NVIDIA beta drivers for kernel26." 
 arch=('i686' 'x86_64') 
-_kernver=`uname -r`
+
+# Find the kernel name inside the chroot
+_kernver=`pacman -Qf kernel26 | cut -c10-15 | sed 's/kernel26 //g'`-CHAKRA
+
 [ "$CARCH" = "i686" ] && ARCH=x86 && _srcname=NVIDIA-Linux-x86-${pkgver}
 [ "$CARCH" = "x86_64" ] && ARCH=x86_64 && _srcname=NVIDIA-Linux-x86_64-${pkgver}-no-compat32 
 provides=("nvidia=${pkgver}")
